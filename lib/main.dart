@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:rankless/Employee.dart';
-import 'package:rankless/SignUp.dart';
+import 'package:rankless/auth.dart';
+import 'package:rankless/wrapper.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,108 +12,28 @@ void main() {
 }
 
 class AppStarter extends StatelessWidget {
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Rankless",
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  final Future<FirebaseApp> firebaseApp = Firebase.initializeApp();
-
-  //FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final String title;
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState(firebaseApp);
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  Future<FirebaseApp> firebaseApp;
-  FirebaseAuth auth = null;
-  int _currentIndex = 0;
-  PageController _pageController = new PageController();
-  Widget body;
-  //DatabaseReference referenceDatabase = FirebaseDatabase.instance.reference();
-
-  _MyHomePageState(this.firebaseApp) {
-    body = Center(child: CircularProgressIndicator());
-    firebaseApp.whenComplete(() => setState(() {
-          body = null;
-          auth = FirebaseAuth.instance;
-        }));
-  }
-
-  void _onTap(int index) {
-    bool animate = true;
-    setState(
-      () {
-        if ((index - _currentIndex).abs() > 1) animate = false;
-        _currentIndex = index;
-      },
-    );
-    if (animate) {
-      _pageController.animateToPage(
-        index,
-        duration: Duration(milliseconds: 200),
-        curve: Curves.easeIn,
-      );
-    } else {
-      _pageController.jumpToPage(
-        index,
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Icon(Icons.circle),
-        title: Text("Rankless"),
-      ),
-      body: body != null
-          ? body
-          : PageView(
-              controller: _pageController,
-              children: [
-                Center(
-                  child: Text("1"),
-                ),
-                Center(
-                  child: SignUp(),
-                ),
-                Center(
-                  child: Text("3"),
-                ),
-              ],
-              onPageChanged: (int index) {
-                _onTap(index);
-              },
+    return FutureBuilder(
+      future: _initialization,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Text("Something went wrong"),
+          );
+        }
+        if (snapshot.connectionState == ConnectionState.done) {
+          return StreamProvider<Employee>.value(
+            value: AuthService().employee,
+            child: MaterialApp(
+              title: "Rankless",
+              home: Wrapper(),
             ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        onTap: _onTap,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_outlined),
-            label: "Company",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.toc_rounded),
-            label: "Ranking",
-          ),
-        ],
-      ),
+          );
+        }
+        return CircularProgressIndicator();
+      },
     );
   }
 }
