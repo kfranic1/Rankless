@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rankless/Employee.dart';
+import 'package:rankless/SignUp.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Future<FirebaseApp> firebaseApp;
+  FirebaseAuth auth = null;
   int _currentIndex = 0;
   PageController _pageController = new PageController();
   Widget body;
@@ -40,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
     body = Center(child: CircularProgressIndicator());
     firebaseApp.whenComplete(() => setState(() {
           body = null;
+          auth = FirebaseAuth.instance;
         }));
   }
 
@@ -80,12 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text("1"),
                 ),
                 Center(
-                  child: RaisedButton(
-                    onPressed: () {
-                      Employee ante = new Employee("Ante", "Antic");
-                      ante.createData();
-                    },
-                  ),
+                  child: SignUp(),
                 ),
                 Center(
                   child: Text("3"),
