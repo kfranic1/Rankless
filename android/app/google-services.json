@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "979005066324",
+    "project_id": "rankless-3fbd2",
+    "storage_bucket": "rankless-3fbd2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979005066324:android:2eb9654f6bfe991dd8b1c1",
+        "android_client_info": {
+          "package_name": "com.Rankless.Rankless"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "979005066324-qrfupkbq6gu6pmgibmq0d1acal17er1s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Rankless.Rankless",
+            "certificate_hash": "be10609986b6a74d8763eb9ea5b2df9c92a72197"
+          }
+        },
+        {
+          "client_id": "979005066324-hcg0r5qt0hq3rnnu1erd4com8vtnmagk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClI10SgXH-hznWu_oYDNYb0H_CfVpCDZ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "979005066324-hcg0r5qt0hq3rnnu1erd4com8vtnmagk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
