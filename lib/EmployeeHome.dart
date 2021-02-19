@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rankless/custom_app_bar.dart';
 
 class EmployeeHome extends StatefulWidget {
   @override
@@ -7,8 +8,13 @@ class EmployeeHome extends StatefulWidget {
 
 class _EmployeeHomeState extends State<EmployeeHome> {
   @override
+  final CustomAppBar _appBar = CustomAppBar();
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      appBar: _appBar.build('Rankless', null),
+      body: Center(
+        child: Text('You are registered'),
+      ),
+    );
   }
 }

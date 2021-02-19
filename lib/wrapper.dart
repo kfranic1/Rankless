@@ -9,14 +9,17 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Employee employee = Provider.of<Employee>(context);
+    //Return to log in screen -- implicitly by creating new instance of Authenticate
     if (employee == null) return Authenticate();
-    if (employee.name == 'anonymus')
+    //Handle anonymus login
+    if (employee.anonymus)
       return Scaffold(
-        appBar: CustomAppBar().build("Guest", true),
+        appBar: CustomAppBar().build("Guest", employee),
         body: Center(
           child: Text("You are a guest!"),
         ),
       );
+    //Handle user login
     return EmployeeHome();
   }
 }

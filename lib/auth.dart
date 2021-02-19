@@ -8,8 +8,10 @@ class AuthService {
   Employee _employeeFromFirebase(User user) {
     return user != null
         ? Employee(
+            user.isAnonymous,
             uid: user.uid,
-            name: user.isAnonymous ? "anonymus" : user.displayName)
+            email: user.email,
+          )
         : null;
   }
 
@@ -21,6 +23,18 @@ class AuthService {
     try {
       UserCredential user = await _auth.signInAnonymously();
       return _employeeFromFirebase(user.user);
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future registerWithEmailAndPassword(String email, String password) async {
+    try {
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      User user = result.user;
+      return _employeeFromFirebase(user);
     } catch (e) {
       print(e.toString());
       return null;

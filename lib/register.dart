@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rankless/Employee.dart';
 import 'package:rankless/auth.dart';
 
 import 'custom_app_bar.dart';
@@ -13,27 +14,36 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
   final CustomAppBar appBar = CustomAppBar();
+  final _formKey = GlobalKey<FormState>();
+
+  Employee employee;
+
   String email = '';
   String password = '';
   String name = '';
   String surname = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar.build("Register", false),
+      appBar: appBar.build("Register", employee),
       body: Center(
-        child: Column(
+        child: ListView(
           children: [
             Flexible(
               flex: 10,
               child: Form(
+                key: _formKey,
                 child: Column(
                   children: [
                     SizedBox(
                       height: 20,
                     ),
                     TextFormField(
+                      validator: (value) {
+                        return value.isEmpty ? "Name can't be empty" : null;
+                      },
                       decoration: InputDecoration(hintText: 'name'),
                       onChanged: (value) {
                         setState(() => name = value);
@@ -43,6 +53,9 @@ class _RegisterState extends State<Register> {
                       height: 20,
                     ),
                     TextFormField(
+                      validator: (value) {
+                        return value.isEmpty ? "Surname can't be empty" : null;
+                      },
                       decoration: InputDecoration(hintText: 'surname'),
                       onChanged: (value) {
                         setState(() => surname = value);
@@ -70,11 +83,23 @@ class _RegisterState extends State<Register> {
                     SizedBox(
                       height: 20,
                     ),
+                    Text(error),
+                    SizedBox(
+                      height: 20,
+                    ),
                     RaisedButton(
                       child: Text("Register"),
                       onPressed: () async {
-                        print(email);
-                        print(password);
+                        if (_formKey.currentState.validate()) {
+                          dynamic result = await _auth
+                              .registerWithEmailAndPassword(email, password);
+                          if (result == null) {
+                            setState(() {
+                              error = 'There was an error';
+                            });
+                          }
+                          //automatic homescreen from stream
+                        }
                       },
                     ),
                     SizedBox(
@@ -94,6 +119,8 @@ class _RegisterState extends State<Register> {
                 dynamic result = await _auth.signInAnonymus();
                 if (result != null) {
                   print("You are a guest");
+                } else {
+                  employee = result;
                 }
               },
             ),
