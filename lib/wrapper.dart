@@ -13,6 +13,9 @@ class Wrapper extends StatelessWidget {
     if (employee.name == 'anonymus')
       return Scaffold(
         appBar: CustomAppBar().build("Guest", true),
+        body: Center(
+          child: Text("You are a guest!"),
+        ),
       );
     return EmployeeHome();
   }

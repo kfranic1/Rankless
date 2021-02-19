@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rankless/sign_in.dart';
+import 'package:rankless/log_in.dart';
+import 'package:rankless/register.dart';
 
 class Authenticate extends StatefulWidget {
   @override
@@ -7,8 +8,16 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticationState extends State<Authenticate> {
+  bool showLogIn = true;
+
+  void toogleView() {
+    setState(() {
+      showLogIn = !showLogIn;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SignIn();
+    return showLogIn ? LogIn(toogleView: toogleView) : Register(toogleView: toogleView);
   }
 }

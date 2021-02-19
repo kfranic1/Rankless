@@ -16,8 +16,8 @@ class CustomAppBar {
                 onPressed: () async {
                   await _auth.signOut();
                 },
-                icon: Icon(Icons.person),
-                label: Text("logout"),
+                icon: Icon(Icons.login),
+                label: Text("login"),
               )
             : Container(),
       ],

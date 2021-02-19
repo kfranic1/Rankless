@@ -5,12 +5,12 @@ import 'package:rankless/Company.dart';
 class Employee {
   String uid;
   String name;
-  String lastname;
+  String surname;
   Company company;
   String email;
   List<String> roles;
   //List<Komentar> comments;
   //List<Survey> surveys;
 
-  Employee({this.uid, this.name, this.lastname, this.email, this.roles});
+  Employee({this.uid, this.name, this.surname, this.email, this.roles});
 }
