@@ -20,6 +20,6 @@ class Wrapper extends StatelessWidget {
         ),
       );
     //Handle user login
-    return EmployeeHome();
+    return EmployeeHome(employee);
   }
 }

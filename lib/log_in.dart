@@ -15,11 +15,13 @@ class LogIn extends StatefulWidget {
 class _LogInState extends State<LogIn> {
   final CustomAppBar appBar = CustomAppBar();
   final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
 
   Employee employee;
 
   String email = '';
   String password = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class _LogInState extends State<LogIn> {
         child: ListView(
           children: [
             Form(
+              key: _formKey,
               child: Column(
                 children: [
                   SizedBox(
@@ -53,11 +56,23 @@ class _LogInState extends State<LogIn> {
                   SizedBox(
                     height: 20,
                   ),
+                  Text(error),
+                  SizedBox(
+                    height: 20,
+                  ),
                   RaisedButton(
                     child: Text("Log In"),
                     onPressed: () async {
-                      print(email);
-                      print(password);
+                      if (_formKey.currentState.validate()) {
+                        dynamic result = await _auth.logInWithEmailAndPassword(
+                            email, password);
+                        if (result == null) {
+                          setState(() {
+                            error = result;
+                          });
+                        }
+                        //automatic homescreen from stream
+                      }
                     },
                   ),
                   SizedBox(

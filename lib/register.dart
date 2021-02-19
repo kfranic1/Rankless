@@ -95,7 +95,7 @@ class _RegisterState extends State<Register> {
                               .registerWithEmailAndPassword(email, password);
                           if (result == null) {
                             setState(() {
-                              error = 'There was an error';
+                              error = result;
                             });
                           }
                           //automatic homescreen from stream
