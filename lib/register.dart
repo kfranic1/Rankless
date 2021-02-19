@@ -93,7 +93,7 @@ class _RegisterState extends State<Register> {
                         if (_formKey.currentState.validate()) {
                           dynamic result = await _auth
                               .registerWithEmailAndPassword(email, password);
-                          if (result == null) {
+                          if (result is String) {
                             setState(() {
                               error = result;
                             });

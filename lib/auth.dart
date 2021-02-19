@@ -46,8 +46,9 @@ class AuthService {
           email: email, password: password);
       User user = result.user;
       return _employeeFromFirebase(user);
-    } catch (e) {
-      return e.toString();
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+      return e.message;
     }
   }
 

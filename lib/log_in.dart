@@ -66,9 +66,10 @@ class _LogInState extends State<LogIn> {
                       if (_formKey.currentState.validate()) {
                         dynamic result = await _auth.logInWithEmailAndPassword(
                             email, password);
-                        if (result == null) {
+                        if (result is String) {
                           setState(() {
-                            error = result;
+                            print("result is " + result.toString());
+                            error = result.toString();
                           });
                         }
                         //automatic homescreen from stream
