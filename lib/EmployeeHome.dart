@@ -4,6 +4,7 @@ import 'package:rankless/custom_app_bar.dart';
 import 'Employee.dart';
 
 class EmployeeHome extends StatefulWidget {
+  //Pazi employee moze biti guest to provjeravas sa employee.anonymus TODO
   final Employee employee;
   EmployeeHome(this.employee);
   @override
