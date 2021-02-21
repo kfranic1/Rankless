@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rankless/auth.dart';
 
 import 'Employee.dart';
@@ -18,8 +17,8 @@ class CustomAppBar {
                     onPressed: () async {
                       await _auth.signOut();
                     },
-                    icon: Icon(Icons.login),
-                    label: Text("login"),
+                    icon: Icon(Icons.person),
+                    label: Text("Create a profile"),
                   )
                 : FlatButton.icon(
                     onPressed: () async {

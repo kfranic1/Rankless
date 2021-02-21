@@ -23,110 +23,125 @@ class _RegisterState extends State<Register> {
   String name = '';
   String surname = '';
   String error = '';
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar.build("Register", employee),
-      body: Center(
-        child: ListView(
-          children: [
-            Flexible(
-              flex: 10,
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        return value.isEmpty ? "Name can't be empty" : null;
-                      },
-                      decoration: InputDecoration(hintText: 'name'),
-                      onChanged: (value) {
-                        setState(() => name = value);
-                      },
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        return value.isEmpty ? "Surname can't be empty" : null;
-                      },
-                      decoration: InputDecoration(hintText: 'surname'),
-                      onChanged: (value) {
-                        setState(() => surname = value);
-                      },
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(hintText: 'email'),
-                      onChanged: (value) {
-                        setState(() => email = value);
-                      },
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(hintText: 'password'),
-                      obscureText: true,
-                      onChanged: (value) {
-                        setState(() => password = value);
-                      },
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(error),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    RaisedButton(
-                      child: Text("Register"),
-                      onPressed: () async {
-                        if (_formKey.currentState.validate()) {
-                          dynamic result = await _auth
-                              .registerWithEmailAndPassword(email, password);
-                          if (result is String) {
-                            setState(() {
-                              error = result;
-                            });
+    return loading
+        //TODO swap with custom loader
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Center(
+            child: ListView(
+              children: [
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        initialValue: name,
+                        validator: (value) {
+                          return value.isEmpty ? "Name can't be empty" : null;
+                        },
+                        decoration: InputDecoration(hintText: 'name'),
+                        onChanged: (value) {
+                          setState(() => name = value);
+                        },
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        initialValue: surname,
+                        validator: (value) {
+                          return value.isEmpty
+                              ? "Surname can't be empty"
+                              : null;
+                        },
+                        decoration: InputDecoration(hintText: 'surname'),
+                        onChanged: (value) {
+                          setState(() => surname = value);
+                        },
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        initialValue: email,
+                        decoration: InputDecoration(hintText: 'email'),
+                        onChanged: (value) {
+                          setState(() => email = value);
+                        },
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        initialValue: password,
+                        decoration: InputDecoration(hintText: 'password'),
+                        obscureText: true,
+                        onChanged: (value) {
+                          setState(() => password = value);
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        error,
+                        style: TextStyle(color: Colors.red[350]),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      RaisedButton(
+                        child: Text("Register"),
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            setState(() => loading = true);
+                            dynamic result = await _auth
+                                .registerWithEmailAndPassword(email, password);
+                            if (result is String) {
+                              setState(() {
+                                error = result;
+                                loading = false;
+                              });
+                            }
+                            //automatic homescreen from stream
                           }
-                          //automatic homescreen from stream
-                        }
-                      },
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    FlatButton(
-                      child: Text("Already have an acount? Log in here."),
-                      onPressed: widget.toogleView,
-                    )
-                  ],
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                SizedBox(
+                  height: 20,
+                ),
+                FlatButton(
+                  child: Text("Already have an acount? Log in here."),
+                  onPressed: widget.toogleView,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                FlatButton(
+                  child: Text("Continue as guest"),
+                  onPressed: () async {
+                    setState(() => loading = true);
+                    dynamic result = await _auth.signInAnonymus();
+                    if (result != null) {
+                      print("You are a guest");
+                    } else {
+                      setState(() => loading = false);
+                    }
+                  },
+                ),
+              ],
             ),
-            FlatButton(
-              child: Text("Continue as guest"),
-              onPressed: () async {
-                dynamic result = await _auth.signInAnonymus();
-                if (result != null) {
-                  print("You are a guest");
-                } else {
-                  employee = result;
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }

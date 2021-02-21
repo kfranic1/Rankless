@@ -10,7 +10,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final Employee employee = Provider.of<Employee>(context);
     //Return to log in screen -- implicitly by creating new instance of Authenticate
-    if (employee == null) return Authenticate();
+    if (employee == null) return Authenticate(employee);
     //Handle anonymus login
     if (employee.anonymus)
       return Scaffold(

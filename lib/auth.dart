@@ -23,9 +23,8 @@ class AuthService {
     try {
       UserCredential user = await _auth.signInAnonymously();
       return _employeeFromFirebase(user.user);
-    } catch (e) {
-      print(e.toString());
-      return null;
+    } on FirebaseAuthException catch (e) {
+      return e.message;
     }
   }
 
@@ -35,8 +34,8 @@ class AuthService {
           email: email, password: password);
       User user = result.user;
       return _employeeFromFirebase(user);
-    } catch (e) {
-      return e.toString();
+    } on FirebaseAuthException catch (e) {
+      return e.message;
     }
   }
 
@@ -47,7 +46,6 @@ class AuthService {
       User user = result.user;
       return _employeeFromFirebase(user);
     } on FirebaseAuthException catch (e) {
-      print(e.message);
       return e.message;
     }
   }
@@ -55,9 +53,8 @@ class AuthService {
   Future signOut() async {
     try {
       return await _auth.signOut();
-    } catch (e) {
-      print(e.toString());
-      return null;
+    } on FirebaseAuthException catch (e) {
+      return e.message;
     }
   }
 }

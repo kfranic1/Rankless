@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +31,14 @@ class AppStarter extends StatelessWidget {
             ),
           );
         }
-        return CircularProgressIndicator();
+        return MaterialApp(
+          home: Scaffold(
+            body: Center(
+              //TODO swap with custom loader
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        );
       },
     );
   }
