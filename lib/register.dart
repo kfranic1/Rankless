@@ -133,10 +133,11 @@ class _RegisterState extends State<Register> {
                   onPressed: () async {
                     setState(() => loading = true);
                     dynamic result = await _auth.signInAnonymus();
-                    if (result != null) {
-                      print("You are a guest");
-                    } else {
-                      setState(() => loading = false);
+                    if (result is String) {
+                      setState(() {
+                        error = result;
+                        loading = false;
+                      });
                     }
                   },
                 ),
