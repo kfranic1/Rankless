@@ -5,12 +5,14 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   //Transform users to employees on changes
-  Employee _employeeFromFirebase(User user) {
+  Employee _employeeFromFirebase(User user, {name, surname}) {
     return user != null
         ? Employee(
             user.isAnonymous,
             uid: user.uid,
             email: user.email,
+            name: name,
+            surname: surname,
           )
         : null;
   }
@@ -22,19 +24,21 @@ class AuthService {
   Future signInAnonymus() async {
     try {
       UserCredential result = await _auth.signInAnonymously();
-      User user = result.user;
-      return _employeeFromFirebase(user);
+      _employeeFromFirebase(result.user);
+      return;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
 
-  Future registerWithEmailAndPassword(String email, String password) async {
+  Future registerWithEmailAndPassword(
+      String email, String password, String name, String surname) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      User user = result.user;
-      return _employeeFromFirebase(user);
+      await _employeeFromFirebase(result.user, name: name, surname: surname)
+          .createEmployee();
+      return;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
@@ -44,8 +48,8 @@ class AuthService {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      User user = result.user;
-      return _employeeFromFirebase(user);
+      await _employeeFromFirebase(result.user).getEmployee();
+      return;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }

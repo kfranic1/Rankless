@@ -2,6 +2,7 @@ import 'Employee.dart';
 import 'Post.dart';
 
 class Company {
+  String uid;
   String name;
   String industry;
   //SLIKA
@@ -10,7 +11,7 @@ class Company {
   //List<Survey> surveys;
   List<Post> posts;
 
-  Company(this.name, this.industry, this.employees);
+  Company(this.uid, {this.name, this.industry, this.employees});
 
   Future<void> createData() async {}
   Future<void> getData() async {}
