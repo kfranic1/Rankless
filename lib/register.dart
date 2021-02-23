@@ -16,8 +16,6 @@ class _RegisterState extends State<Register> {
   final CustomAppBar appBar = CustomAppBar();
   final _formKey = GlobalKey<FormState>();
 
-  Employee employee;
-
   String email = '';
   String password = '';
   String name = '';
@@ -103,8 +101,9 @@ class _RegisterState extends State<Register> {
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
                             setState(() => loading = true);
-                            dynamic result = await _auth
-                                .registerWithEmailAndPassword(email, password);
+                            dynamic result =
+                                await _auth.registerWithEmailAndPassword(
+                                    email, password, name, surname);
                             if (result is String) {
                               setState(() {
                                 error = result;

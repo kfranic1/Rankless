@@ -8,7 +8,7 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Employee employee = Provider.of<Employee>(context);
-    //Return to register screen -- implicitly by creating new instance of Authenticate
+    //Return to register screen implicitly by creating new instance of Authenticate
     if (employee == null) return Authenticate();
     //Handle user/guest login
     return EmployeeHome(employee);
