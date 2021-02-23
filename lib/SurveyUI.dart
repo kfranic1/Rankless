@@ -14,6 +14,7 @@ class _SurveyUIState extends State<SurveyUI> {
   Survey survey;
   _SurveyUIState(this.survey);
   DateTime selectedFrom = DateTime.now();
+  DateTime selectedTo = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,6 +59,7 @@ class _SurveyUIState extends State<SurveyUI> {
                 SizedBox(
                   width: 20,
                 ),
+                //from
                 FlatButton(
                   child: Text(
                     "${selectedFrom.toLocal()}".split(' ')[0],
@@ -75,21 +77,22 @@ class _SurveyUIState extends State<SurveyUI> {
                 SizedBox(
                   child: Divider(
                     color: Colors.white,
-                    indent: 7,
-                    endIndent: 7,
-                    thickness: 5,
+                    indent: 8,
+                    endIndent: 8,
+                    thickness: 4,
                   ),
-                  width: 30,
+                  width: 35,
                 ),
+                //to
                 FlatButton(
                   child: Text(
-                    "${selectedFrom.toLocal()}".split(' ')[0],
+                    "${selectedTo.toLocal()}".split(' ')[0],
                     style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
-                  onPressed: () => _selectFrom(context),
+                  onPressed: () => _selectTo(context),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: BorderSide(color: Colors.white),
@@ -98,8 +101,22 @@ class _SurveyUIState extends State<SurveyUI> {
               ],
             ),
             alignment: Alignment.bottomLeft,
-            margin: EdgeInsets.only(left: 25),
-          )
+            margin: EdgeInsets.only(left: 30),
+          ),
+          FlatButton.icon(
+            onPressed: null,
+            icon: Container(
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+            label: Text(
+              "Add answer",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            padding: EdgeInsets.only(top: 35),
+          ),
         ],
       ),
     ));
@@ -118,10 +135,56 @@ class _SurveyUIState extends State<SurveyUI> {
         );
       },
     );
-    if (picked != null && picked != this.survey.from)
+    if (picked.isBefore(selectedFrom)) {
+      return showAlertDialog(context);
+    }
+    if (picked != null && picked != selectedFrom)
       setState(() {
         selectedFrom = picked;
         this.survey.from = selectedFrom;
       });
+  }
+
+  _selectTo(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: selectedTo,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2025),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.dark(),
+          child: child,
+        );
+      },
+    );
+    if (picked.isBefore(selectedFrom)) {
+      return showAlertDialog(context);
+    }
+    if (picked != null && picked != this.survey.from)
+      setState(() {
+        selectedTo = picked;
+        this.survey.to = selectedTo;
+      });
+  }
+
+  showAlertDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+        title: Text(
+          "You've entered a wrong date",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.red[600]),
+        ),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.white),
+        ));
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
