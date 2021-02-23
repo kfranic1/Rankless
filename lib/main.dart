@@ -5,6 +5,8 @@ import 'package:rankless/Employee.dart';
 import 'package:rankless/auth.dart';
 import 'package:rankless/wrapper.dart';
 
+import 'testing.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(AppStarter());
@@ -12,34 +14,42 @@ void main() {
 
 class AppStarter extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+//#region testiranje
+  //ako zelite testirat nesto samo u test stavite true i u testing ime widgeta kojeg testirate
+  final bool test = false;
+  final Widget testing = null;
+//#endregion
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initialization,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-            child: Text("Something went wrong"),
+    return test
+        ? Testing(testing)
+        : FutureBuilder(
+            future: _initialization,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Something went wrong"),
+                );
+              }
+              if (snapshot.connectionState == ConnectionState.done) {
+                return StreamProvider<Employee>.value(
+                  value: AuthService().employee,
+                  child: MaterialApp(
+                    title: "Rankless",
+                    home: Wrapper(),
+                  ),
+                );
+              }
+              return MaterialApp(
+                home: Scaffold(
+                  body: Center(
+                    //TODO swap with custom loader
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              );
+            },
           );
-        }
-        if (snapshot.connectionState == ConnectionState.done) {
-          return StreamProvider<Employee>.value(
-            value: AuthService().employee,
-            child: MaterialApp(
-              title: "Rankless",
-              home: Wrapper(),
-            ),
-          );
-        }
-        return MaterialApp(
-          home: Scaffold(
-            body: Center(
-              //TODO swap with custom loader
-              child: CircularProgressIndicator(),
-            ),
-          ),
-        );
-      },
-    );
   }
 }
