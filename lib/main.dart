@@ -47,6 +47,9 @@ class AppStarter extends StatelessWidget {
                 );
               }
               return MaterialApp(
+                theme: ThemeData(
+                  fontFamily: 'Mulish',
+                ),
                 home: Scaffold(
                   body: Center(
                     //TODO swap with custom loader
