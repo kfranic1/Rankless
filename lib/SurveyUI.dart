@@ -35,12 +35,15 @@ class _SurveyUIState extends State<SurveyUI> {
                   border: InputBorder.none,
                   hintText: this.survey.name,
                   hintStyle: TextStyle(
+                    fontFamily: 'Mulish',
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   )),
               textAlign: TextAlign.center,
               style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Mulish',
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
@@ -55,7 +58,10 @@ class _SurveyUIState extends State<SurveyUI> {
             child: Row(
               children: <Widget>[
                 Text('Date',
-                    style: TextStyle(fontSize: 20, color: Colors.white)),
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontFamily: 'Mulish')),
                 SizedBox(
                   width: 20,
                 ),
