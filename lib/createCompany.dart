@@ -59,6 +59,10 @@ class _CreateCompanyState extends State<CreateCompany> {
                     }),
                     builder: (context, snapshot) {
                       return DropdownSearch(
+                        hint: 'Category',
+                        dropdownSearchDecoration:
+                            InputDecoration(border: OutlineInputBorder()),
+                        searchDelay: Duration.zero,
                         mode: Mode.MENU,
                         showSearchBox: true,
                         items: categories,
