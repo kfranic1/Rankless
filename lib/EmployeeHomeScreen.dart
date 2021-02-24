@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rankless/createCompany.dart';
 import 'package:rankless/custom_app_bar.dart';
 
 import 'Employee.dart';
@@ -26,10 +27,19 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 return Center(
                   child: Text('You are not loged in'),
                 );
-              return Center(
-                child: Text(
-                  "Hello " + widget.employee.name,
-                ),
+              return ListView(
+                children: [
+                  Text(
+                    "Hello " + widget.employee.name,
+                  ),
+                  FlatButton(
+                      child: Text("Create Company"),
+                      color: Colors.grey,
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreateCompany()))),
+                ],
               );
             },
           );
