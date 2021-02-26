@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rankless/Company.dart';
+import 'package:rankless/CompanyHomeScreen.dart';
 import 'package:rankless/custom_app_bar.dart';
 import 'EmployeeHomeScreen.dart';
 
@@ -15,9 +17,9 @@ class EmployeeHome extends StatefulWidget {
 
 class _EmployeeHomeState extends State<EmployeeHome> {
   List<Widget> _screens;
-  bool loading = true;
   String message = '';
   int _currentIndex = 1;
+  Company company;
   //0 - user with comapny / 1 - user with no company / 2 - guest
 
   @override
@@ -51,16 +53,28 @@ class _EmployeeHomeState extends State<EmployeeHome> {
           if (!snapshot
                   .hasData /*||
               snapshot.connectionState != ConnectionState.active*/
-              )
+              ) {
+            print(snapshot.toString());
             return Center(child: CircularProgressIndicator());
-          else {
+          } else {
             _screens = [
-              Center(
-                child: Text("This is company screen"),
-              ),
+              //TODO maknuti loading prilikom svakog ulaska na ovaj dio ekrana
+              FutureBuilder(
+                  future: widget.employee.getCompanyData(),
+                  initialData: this.company,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done ||
+                        snapshot.hasData) {
+                      this.company = widget.employee.company;
+                      if (this.company == null)
+                        return CircularProgressIndicator();
+                      return CompanyHomeScreen(this.company);
+                    } else
+                      return Center(child: CircularProgressIndicator());
+                  }),
               EmployeeHomeScreen(widget.employee),
               Center(
-                child: Text('This is company list'),
+                child: Text("This is company list screen"),
               ),
             ];
             return _screens[_currentIndex];

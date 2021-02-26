@@ -15,33 +15,29 @@ class EmployeeHomeScreen extends StatefulWidget {
 class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return widget.employee == null
-        ? Center(
-            child: Text("There is no user"),
-          )
-        : StreamBuilder(
-            initialData: widget.employee,
-            stream: widget.employee.self,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return Center(
-                  child: Text('You are not loged in'),
-                );
-              return ListView(
-                children: [
-                  Text(
-                    "Hello " + widget.employee.name,
-                  ),
-                  FlatButton(
-                      child: Text("Create Company"),
-                      color: Colors.grey,
-                      onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateCompany()))),
-                ],
-              );
-            },
+    return StreamBuilder(
+      initialData: widget.employee,
+      stream: widget.employee.self,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return Center(
+            child: Text('You are not loged in'),
           );
+        return ListView(
+          children: [
+            Text(
+              "Hello " + widget.employee.name,
+            ),
+            FlatButton(
+                child: Text("Create Company"),
+                color: Colors.grey,
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CreateCompany(widget.employee)))),
+          ],
+        );
+      },
+    );
   }
 }

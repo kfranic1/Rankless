@@ -8,7 +8,7 @@ class AuthService {
   Employee _employeeFromFirebase(User user, {name, surname}) {
     return user != null
         ? Employee(
-            user.isAnonymous,
+            anonymus: user.isAnonymous,
             uid: user.uid,
             email: user.email,
             name: name,

@@ -6,6 +6,7 @@ class Employee {
   String uid;
   String name;
   String surname;
+  String companyUid;
   Company company;
   String email;
   List<String> roles;
@@ -15,31 +16,41 @@ class Employee {
   CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
-  Employee(this.anonymus,
-      {this.uid, this.name, this.surname, this.email, this.roles});
+  Employee(
+      {this.anonymus,
+      this.uid,
+      this.name,
+      this.surname,
+      this.email,
+      this.roles});
 
   Future createEmployee() async {
     return await userCollection.doc(this.uid).set({
       'name': this.name,
       'surname': this.surname,
       'email': this.email,
-      'company': null,
+      'companyUid': null,
       'roles': null,
     });
   }
 
   //Update name and surname only
-  Future updateEmployee({newName, newSurname}) async {
+  Future updateEmployee({newName, newSurname, newRoles, newCompanyUid}) async {
     if (newName != null) this.name = newName;
     if (newSurname != null) this.surname = newSurname;
+    if (newRoles != null) this.roles = newRoles;
+    if (newCompanyUid != null) this.companyUid = newCompanyUid;
     return await userCollection.doc(this.uid).set({
       'name': this.name,
       'surname': this.surname,
+      'roles': this.roles,
+      'companyUid': this.companyUid,
     });
   }
 
   Future getEmployee() async {
     updateData(await userCollection.doc(this.uid).get());
+    if (this.company == null) await getCompanyData();
   }
 
   //will be used for updating users
@@ -56,10 +67,18 @@ class Employee {
 
   Employee updateData(DocumentSnapshot ref) {
     this.name = ref.data()['name'];
-    this.surname = ref.data()['name'];
+    this.surname = ref.data()['surname'];
     this.email = ref.data()['email'];
-    this.company = ref.data()['company'];
-    this.roles = ref.data()['roles'] as List<String>;
+    this.companyUid = ref.data()['companyUid'];
+    this.roles = (ref.data()['roles'] as List<dynamic>)
+        .map((e) => e.toString())
+        .toList();
+    this.company = Company(uid: this.companyUid);
     return this;
+  }
+
+  Future getCompanyData() async {
+    if (this.companyUid == null) return;
+    return await this.company.getData();
   }
 }

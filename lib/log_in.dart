@@ -65,6 +65,7 @@ class _LogInState extends State<LogIn> {
                         child: Text("Log In"),
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
+                            _formKey.currentState.
                             setState(() => loading = true);
                             dynamic result = await _auth
                                 .logInWithEmailAndPassword(email, password);
