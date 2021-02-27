@@ -69,7 +69,9 @@ class _EmployeeHomeState extends State<EmployeeHome> {
         }),
         controller: _controller,
         children: [
-          CompanyHomeScreen(widget.company),
+          widget.company == null
+              ? Text("You are not in any company")
+              : CompanyHomeScreen(widget.company),
           EmployeeHomeScreen(widget.employee),
           Center(
             child: Text("This is company list screen"),

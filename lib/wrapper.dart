@@ -23,6 +23,8 @@ class Wrapper extends StatelessWidget {
               future: employee.getEmployee(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
+                  if (employee.companyUid == null)
+                    return EmployeeHome(employee, null);
                   Company company = Company(uid: employee.companyUid);
                   return FutureBuilder(
                     future: company.getData(),
