@@ -12,12 +12,18 @@ class Company {
   List<Employee> employees;
   //List<Survey> surveys;
   List<Post> posts;
+  Employee me;
 
   CollectionReference companiesCollection =
       FirebaseFirestore.instance.collection('companies');
 
   Company(
-      {this.uid, this.name, this.industry, this.employees, this.description});
+      {this.uid,
+      this.name,
+      this.industry,
+      this.employees,
+      this.description,
+      this.me});
 
   Future createCompany() async {
     List<String> employeeUids = employees.map((e) => e.uid).toList();
@@ -32,9 +38,10 @@ class Company {
     return this;
   }
 
-  Future getData() async {
+  Future<Company> getData() async {
     updateData(await companiesCollection.doc(this.uid).get());
-    if (this.employees == null) await getEmployees();
+    await getEmployees();
+    return this;
   }
 
   Future<void> changeData() async {}
@@ -50,14 +57,13 @@ class Company {
     this.name = ref['name'];
     this.description = ref['description'];
     this.industry = ref['industry'];
-    this.employees = (ref['employees'] as List<dynamic>)
-        .map((e) => Employee(uid: e as String))
-        .toList();
+    this.employees = (ref['employees'] as List<dynamic>);
+    if (this.employees != null)
+      this.employees.map((e) => Employee(uid: e as String)).toList();
     return this;
   }
 
   Future getEmployees() async {
-    if (this.employees == null) return;
-    for (Employee e in employees) await e.getEmployee();
+    for (Employee e in employees) if (e.uid != me.uid) await e.getEmployee();
   }
 }

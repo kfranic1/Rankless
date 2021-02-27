@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rankless/Company.dart';
 import 'package:rankless/Employee.dart';
 import 'package:rankless/EmployeeHome.dart';
 import 'package:rankless/authenticate.dart';
@@ -14,6 +15,28 @@ class Wrapper extends StatelessWidget {
     //Handle user/guest login
     return Scaffold(
       appBar: CustomAppBar().build('Rankless', employee),
-      body: employee.anonymus ? Center(child: Text("You are anonymus"),) : EmployeeHome(employee),);
+      body: employee.anonymus
+          ? Center(
+              child: Text("You are anonymus"),
+            )
+          : FutureBuilder(
+              future: employee.getEmployee(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  Company company = Company(uid: employee.companyUid);
+                  return FutureBuilder(
+                    future: company.getData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return EmployeeHome(employee, company);
+                      }
+                      return Center(child: CircularProgressIndicator());
+                    },
+                  );
+                }
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+    );
   }
 }
