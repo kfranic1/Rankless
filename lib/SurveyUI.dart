@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:rankless/QuestionUICreate.dart';
 import 'Survey.dart';
 
 class SurveyUI extends StatefulWidget {
@@ -15,6 +18,7 @@ class _SurveyUIState extends State<SurveyUI> {
   _SurveyUIState(this.survey);
   DateTime selectedFrom = DateTime.now();
   DateTime selectedTo = DateTime.now();
+  DateFormat formatted = DateFormat('dd-MM-yyyy');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,11 +56,12 @@ class _SurveyUIState extends State<SurveyUI> {
               },
             ),
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.all(45.0),
+            padding: EdgeInsets.all(15),
           ),
           Container(
             child: Row(
               children: <Widget>[
+                //date
                 Text('Date',
                     style: TextStyle(
                         fontSize: 20,
@@ -68,10 +73,11 @@ class _SurveyUIState extends State<SurveyUI> {
                 //from
                 FlatButton(
                   child: Text(
-                    "${selectedFrom.toLocal()}".split(' ')[0],
+                    formatted.format(selectedFrom),
                     style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
+                        fontFamily: 'Mulish',
                         color: Colors.white),
                   ),
                   onPressed: () => _selectFrom(context),
@@ -92,8 +98,9 @@ class _SurveyUIState extends State<SurveyUI> {
                 //to
                 FlatButton(
                   child: Text(
-                    "${selectedTo.toLocal()}".split(' ')[0],
+                    formatted.format(selectedTo),
                     style: TextStyle(
+                        fontFamily: 'Mulish',
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
@@ -109,17 +116,42 @@ class _SurveyUIState extends State<SurveyUI> {
             alignment: Alignment.bottomLeft,
             margin: EdgeInsets.only(left: 30),
           ),
+          //for
+          Container(
+            child: Row(
+              children: [
+                Text(
+                  'For',
+                  style: TextStyle(
+                      fontSize: 20, color: Colors.white, fontFamily: 'Mulish'),
+                ),
+                TextFormField()
+              ],
+            ),
+            alignment: Alignment.bottomLeft,
+            margin: EdgeInsets.only(left: 30, top: 12),
+          ),
+          //add answer
           FlatButton.icon(
-            onPressed: null,
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Scaffold(
+                              body: Container(
+                            child: QuestionUICreate(),
+                          ))));
+            },
             icon: Container(
               child: Icon(
-                Icons.add,
+                Icons.add_circle_outline,
                 color: Colors.white,
               ),
             ),
             label: Text(
               "Add answer",
-              style: TextStyle(color: Colors.white, fontSize: 20),
+              style: TextStyle(
+                  color: Colors.white, fontSize: 20, fontFamily: 'Mulish'),
             ),
             padding: EdgeInsets.only(top: 35),
           ),
@@ -132,8 +164,8 @@ class _SurveyUIState extends State<SurveyUI> {
     final DateTime picked = await showDatePicker(
       context: context,
       initialDate: selectedFrom,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2025),
+      firstDate: DateTime(selectedFrom.year),
+      lastDate: DateTime(selectedFrom.year + 10),
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark(),
@@ -155,8 +187,8 @@ class _SurveyUIState extends State<SurveyUI> {
     final DateTime picked = await showDatePicker(
       context: context,
       initialDate: selectedTo,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2025),
+      firstDate: DateTime(selectedTo.year),
+      lastDate: DateTime(selectedTo.year + 10),
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark(),
