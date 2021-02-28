@@ -1,9 +1,12 @@
 import 'dart:ui';
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:rankless/Company.dart';
 import 'package:rankless/QuestionUICreate.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'Survey.dart';
 
 class SurveyUI extends StatefulWidget {
@@ -19,8 +22,23 @@ class _SurveyUIState extends State<SurveyUI> {
   DateTime selectedFrom = DateTime.now();
   DateTime selectedTo = DateTime.now();
   DateFormat formatted = DateFormat('dd-MM-yyyy');
+
+  //samo za provjeru
+  List<DropdownMenuItem> tags = [];
+
   @override
   Widget build(BuildContext context) {
+    //provjera za tagove
+    tags.add(DropdownMenuItem(
+      child: Text('teamOne'),
+    ));
+    tags.add(DropdownMenuItem(
+      child: Text('teamTwo'),
+    ));
+    tags.add(DropdownMenuItem(
+      child: Text('teamThree'),
+    ));
+    // ovo između služi samo za provjeru
     return Scaffold(
         body: Container(
       decoration: BoxDecoration(
@@ -34,6 +52,7 @@ class _SurveyUIState extends State<SurveyUI> {
       child: Column(
         children: <Widget>[
           Container(
+            //survey name
             child: TextField(
               decoration: InputDecoration(
                   border: InputBorder.none,
@@ -125,7 +144,30 @@ class _SurveyUIState extends State<SurveyUI> {
                   style: TextStyle(
                       fontSize: 20, color: Colors.white, fontFamily: 'Mulish'),
                 ),
-                TextFormField()
+                SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: SearchableDropdown.multiple(
+                    items:
+                        tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
+                    hint: Text(
+                      'teams',
+                      style: TextStyle(
+                          color: Colors.grey[600],
+                          fontFamily: 'Mulish',
+                          fontSize: 15),
+                    ),
+                    isCaseSensitiveSearch: true,
+                    onChanged: (items) {
+                      setState(() {
+                        widget.survey.tags = items;
+                      });
+                    },
+                    searchHint: 'Who should get the survey',
+                    isExpanded: true,
+                  ),
+                )
               ],
             ),
             alignment: Alignment.bottomLeft,
@@ -134,13 +176,14 @@ class _SurveyUIState extends State<SurveyUI> {
           //add answer
           FlatButton.icon(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Scaffold(
-                              body: Container(
-                            child: QuestionUICreate(),
-                          ))));
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      backgroundColor: Colors.blue,
+                      child: QuestionUICreate(),
+                    );
+                  });
             },
             icon: Container(
               child: Icon(
