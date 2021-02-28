@@ -5,10 +5,13 @@ enum TYPE { Text, RadioButton, Checkbox }
 class Question {
   String questionText;
   TYPE answerType;
-  String answerTextT;
-  List<String> answerTextR;
-  List<String> answerTextC;
+  String singleAnswer;
+  List<String> multipleAnswers = List.generate(3, (index) => 'q$index');
 
   Question(this.questionText, this.answerType,
-      {this.answerTextT, this.answerTextR, this.answerTextC});
+      {this.singleAnswer, this.multipleAnswers}) {
+    answerType = TYPE.Text;
+    singleAnswer = '';
+    multipleAnswers = List.generate(3, (index) => 'q$index');
+  }
 }
