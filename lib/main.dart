@@ -14,6 +14,8 @@ void main() {
   runApp(AppStarter());
 }
 
+Survey survey = Survey("Survey");
+
 class AppStarter extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
@@ -21,7 +23,7 @@ class AppStarter extends StatelessWidget {
   //ako zelite testirat nesto samo u test stavite true i u testing ime widgeta kojeg testirate
 
   final bool test = false;
-  final Widget testing = null;
+  final Widget testing = SurveyUI(survey);
 //#endregion
   @override
   Widget build(BuildContext context) {

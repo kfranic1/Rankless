@@ -23,9 +23,7 @@ class AuthService {
 
   Future signInAnonymus() async {
     try {
-      UserCredential result = await _auth.signInAnonymously();
-      _employeeFromFirebase(result.user);
-      return;
+      return await _auth.signInAnonymously();
     } on FirebaseAuthException catch (e) {
       return e.message;
     }

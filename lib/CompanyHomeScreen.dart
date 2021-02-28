@@ -18,8 +18,8 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: widget.company.self,
+      initialData: widget.company,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return CircularProgressIndicator();
         return Center(
           child: Text(
             "Company is " + widget.company.name,
