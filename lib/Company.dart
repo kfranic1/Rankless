@@ -12,6 +12,7 @@ class Company {
   List<Employee> employees;
   //List<Survey> surveys;
   List<Post> posts;
+  List<String> roles;
   Employee me;
 
   CollectionReference companiesCollection =
@@ -26,6 +27,7 @@ class Company {
       this.me});
 
   Future createCompany() async {
+    this.roles.add('admin');
     List<String> employeeUids = employees.map((e) => e.uid).toList();
     DocumentReference ref = companiesCollection.doc();
     await ref.set({
@@ -33,6 +35,7 @@ class Company {
       'industry': this.industry,
       'employees': employeeUids,
       'description': this.description,
+      'roles': this.roles,
     }).then((value) => print('done'));
     this.uid = ref.id;
     return this;
