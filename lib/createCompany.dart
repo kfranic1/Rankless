@@ -59,12 +59,14 @@ class _CreateCompanyState extends State<CreateCompany> {
                               .doc('GSM53sSt5zOWQbndHZH6')
                               .get()
                               .then((value) {
-                            categories.clear();
-                            value.data().forEach((key, value) {
-                              categories.add(value);
-                            });
+                            categories =
+                                (value.data()['categories'] as List<dynamic>)
+                                    .map((e) => e as String)
+                                    .toList();
                           }),
                           builder: (context, snapshot) {
+                            categories.sort();
+                            categories.add('Other');
                             return DropdownSearch(
                               hint: 'Category',
                               dropdownSearchDecoration:
