@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_tags/flutter_tags.dart';
 import 'package:intl/intl.dart';
 import 'package:rankless/Company.dart';
 import 'package:rankless/QuestionUICreate.dart';
@@ -24,22 +25,23 @@ class _SurveyUIState extends State<SurveyUI> {
   DateTime selectedTo = DateTime.now();
   DateFormat formatted = DateFormat('dd-MM-yyyy');
   List<int> selectedTags = [];
+  QuestionUICreate createdQ;
 
   //samo za provjeru
-  List<DropdownMenuItem> tags = [];
+  List<String> tags = [
+    'teamOne',
+    'teamTwo',
+    'teamThree',
+    'teamFour',
+    'teamFive',
+    'teamSix'
+  ];
 
   @override
   Widget build(BuildContext context) {
     //provjera za tagove
-    tags.add(DropdownMenuItem(
-      child: Text('teamOne'),
-    ));
-    tags.add(DropdownMenuItem(
-      child: Text('teamTwo'),
-    ));
-    tags.add(DropdownMenuItem(
-      child: Text('teamThree'),
-    ));
+    final GlobalKey<TagsState> _tagStateKey = GlobalKey<TagsState>();
+    List<String> who = tags;
     // ovo između služi samo za provjeru
     for (int i = 0; i < tags.length; i++) {
       selectedTags.add(i);
@@ -77,10 +79,11 @@ class _SurveyUIState extends State<SurveyUI> {
               ),
               onChanged: (value) {
                 setState(() => this.survey.name = value);
+                print(this.survey.name);
               },
             ),
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(20),
           ),
           Container(
             child: Row(
@@ -142,7 +145,7 @@ class _SurveyUIState extends State<SurveyUI> {
               ],
             ),
             alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.only(left: 17, right: 17),
+            padding: EdgeInsets.only(left: 15, right: 15),
           ),
           //for
           Container(
@@ -157,36 +160,48 @@ class _SurveyUIState extends State<SurveyUI> {
                   width: 20,
                 ),
                 Expanded(
-                  child: SearchableDropdown.multiple(
-                    items:
-                        tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Mulish',
+                  child: Tags(
+                    key: _tagStateKey,
+                    symmetry: false,
+                    columns: 0,
+                    horizontalScroll: false,
+                    textField: TagsTextField(
+                      helperTextStyle: TextStyle(color: Colors.white),
+                      textStyle: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Mulish',
+                      ),
+                      inputDecoration:
+                          InputDecoration(alignLabelWithHint: true),
+                      suggestions: tags,
+                      suggestionTextColor: Colors.blue,
+                      constraintSuggestion: true,
+                      onSubmitted: (string) {
+                        setState(() {
+                          if (tags.contains(string)) who.add(string);
+                        });
+                      },
                     ),
-                    hint: Text(
-                      'teams',
-                      style: TextStyle(
-                          color: Colors.grey[600],
-                          fontFamily: 'Mulish',
-                          fontSize: 15),
-                    ),
-                    isCaseSensitiveSearch: true,
-                    onChanged: (items) {
-                      setState(() {
-                        widget.survey.tags = items;
-                        selectedTags = items;
-                      });
+                    itemCount: who.length,
+                    itemBuilder: (index) {
+                      final item = tags[index];
+                      return ItemTags(
+                        key: Key(index.toString()),
+                        index: index,
+                        title: item,
+                        pressEnabled: true,
+                        singleItem: false,
+                        activeColor: Colors.blue,
+                        color: Colors.grey,
+                        //combine: ItemTagsCombine.withTextBefore,
+                      );
                     },
-                    closeButton: Container(),
-                    searchHint: 'Who should get the survey',
-                    isExpanded: true,
                   ),
-                )
+                ),
               ],
             ),
             alignment: Alignment.bottomCenter,
-            margin: EdgeInsets.only(left: 17, right: 17, top: 12),
+            padding: EdgeInsets.only(left: 15, right: 15, top: 12),
           ),
           //add question
           FlatButton.icon(
@@ -201,9 +216,12 @@ class _SurveyUIState extends State<SurveyUI> {
                           children: [
                             IconButton(
                                 icon: Icon(Icons.cancel), onPressed: null),
-                            QuestionUICreate(),
+                            createdQ = QuestionUICreate(),
                             FlatButton(
-                                onPressed: null,
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  //showQuestion(context, )
+                                },
                                 child: Text(
                                   'Add',
                                   style: TextStyle(color: Colors.white),
