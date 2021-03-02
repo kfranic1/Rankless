@@ -12,12 +12,17 @@ class QuestionUICreate extends StatefulWidget {
   _QuestionUICreateState createState() => _QuestionUICreateState();
 }
 
+Decoration lighterContainerDecoration = BoxDecoration(
+  borderRadius: borderRadius,
+  color: Colors.blue[200],
+);
+
 class _QuestionUICreateState extends State<QuestionUICreate> {
-  Question _createdQuestion;
-  String questionText = "";
-  int _answerType;
-  String _singleAnswer;
-  List<String> _answerTextRC = new List<String>();
+  Question _question = new Question();
+  // String questionText = ""; // question
+  // int _answerType; // question
+  // String _singleAnswer; // question
+  // List<String> _answerTextRC = new List<String>(); // question
   List<bool> _answerTypes = List.generate(3, (_) => false);
   // List<ListView> _proba = new List<ListView>();
   Widget _proba = Text('');
@@ -27,7 +32,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
 
   @override
   Widget build(BuildContext context) {
-    if (_answerType == 1)
+    if (_question.answerType == TYPE.RadioButton)
       _icon = Icon(Icons.radio_button_unchecked);
     else
       _icon = Icon(Icons.check_box_outline_blank);
@@ -36,7 +41,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
     );
     return ListView(children: [
       Container(
-        decoration: decoration,
+        decoration: popOutDecoration,
         padding: const EdgeInsets.all(20.0),
         margin: const EdgeInsets.all(20.0),
         // color: Colors.blue[300],
@@ -48,17 +53,21 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
               style: TextStyle(
                 fontFamily: 'Mulish',
                 color: Colors.white,
+                fontSize: 15,
               ),
               textAlign: TextAlign.left,
             ),
-            TextFormField(
-              initialValue: '',
-              decoration: InputDecoration(hintText: "Add text..."),
-              onChanged: (value) {
-                setState(() => questionText = value);
-              },
+            Container(
+              decoration: lighterContainerDecoration,
+              padding: EdgeInsets.all(8.0),
+              child: TextFormField(
+                initialValue: _question.questionText,
+                decoration: InputDecoration(hintText: "Add text..."),
+                onChanged: (value) {
+                  setState(() => _question.questionText = value);
+                },
+              ),
             ),
-            Text('$questionText'),
             Text('Answer type'),
             CustomToggleButtons(
               children: [
@@ -73,7 +82,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
                     _answerTypes[i] = false;
                   }
                   _answerTypes[index] = !_answerTypes[index];
-                  _answerType = index;
+                  _question.answerType = _question.getAnswerType(index);
                 });
               },
               color: Colors.white,
@@ -89,7 +98,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
               child: TextField(
                 decoration: InputDecoration(hintText: "Add text..."),
                 onChanged: (value) {
-                  setState(() => _singleAnswer = value);
+                  setState(() => _question.singleAnswer = value);
                 },
               ),
               visible: _answerTypes[0],
@@ -108,31 +117,31 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
             // Prikaz checkbox odgovora
             multipleChoiceAnswer(type: 2),
 
-            TextButton(
-                child: Text('Add'),
-                onPressed: () {
-                  _controllers.forEach((element) {
-                    print(element.text);
-                  });
-                  TYPE type;
-                  // print(_answerType);
-                  if (_answerType == 0) {
-                    type = TYPE.Text;
-                    _createdQuestion = Question(questionText, type,
-                        singleAnswer: _singleAnswer);
-                  } else if (_answerType == 1) {
-                    type = TYPE.RadioButton;
-                    _createdQuestion = Question(questionText, type,
-                        multipleAnswers: _answerTextRC);
-                  } else if (_answerType == 2) {
-                    type = TYPE.Checkbox;
-                    _createdQuestion = Question(questionText, type,
-                        multipleAnswers: _answerTextRC);
-                  } else
-                    print('pogreska - nije odabran tip');
+            // TextButton(
+            //     child: Text('Add'),
+            //     onPressed: () {
+            //       _controllers.forEach((element) {
+            //         print(element.text);
+            //       });
+            //       TYPE type;
+            //       // print(_answerType);
+            //       if (_answerType == 0) {
+            //         type = TYPE.Text;
+            //         _createdQuestion = Question(questionText, type,
+            //             singleAnswer: _singleAnswer);
+            //       } else if (_answerType == 1) {
+            //         type = TYPE.RadioButton;
+            //         _createdQuestion = Question(questionText, type,
+            //             multipleAnswers: _answerTextRC);
+            //       } else if (_answerType == 2) {
+            //         type = TYPE.Checkbox;
+            //         _createdQuestion = Question(questionText, type,
+            //             multipleAnswers: _answerTextRC);
+            //       } else
+            //         print('pogreska - nije odabran tip');
 
-                  //  DESTROY pop-out ?
-                }),
+            //       //  DESTROY pop-out ?
+            //     }),
           ],
         ),
       ),
@@ -140,8 +149,8 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
   }
 
   Widget multipleChoiceAnswer({type: int}) {
-    print("ansType: $_answerType");
-    print(type);
+    // print("ansType: $_answerType");
+    // print(type);
     return Visibility(
       child: IconButton(
         icon: Icon(Icons.add_circle_outline),
@@ -187,6 +196,9 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
   }
 
   Question getQuestion() {
-    return _createdQuestion;
+    _controllers.forEach((element) {
+      _question.multipleAnswers.add(element.text);
+    });
+    return _question;
   }
 }
