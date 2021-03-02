@@ -27,7 +27,7 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
       margin: EdgeInsets.all(30),
       child: ListView(children: [
         Container(
-          decoration: decoration,
+          decoration: popOutDecoration,
           // color: Colors.blue[100],
           // margin: EdgeInsets.all(10.0),
           padding: EdgeInsets.all(10.0),
