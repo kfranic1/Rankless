@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:rankless/Company.dart';
 import 'package:rankless/QuestionUICreate.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
+import 'Question.dart';
 import 'Survey.dart';
 
 class SurveyUI extends StatefulWidget {
@@ -22,6 +23,7 @@ class _SurveyUIState extends State<SurveyUI> {
   DateTime selectedFrom = DateTime.now();
   DateTime selectedTo = DateTime.now();
   DateFormat formatted = DateFormat('dd-MM-yyyy');
+  List<int> selectedTags = [];
 
   //samo za provjeru
   List<DropdownMenuItem> tags = [];
@@ -39,6 +41,9 @@ class _SurveyUIState extends State<SurveyUI> {
       child: Text('teamThree'),
     ));
     // ovo između služi samo za provjeru
+    for (int i = 0; i < tags.length; i++) {
+      selectedTags.add(i);
+    }
     return Scaffold(
         body: Container(
       decoration: BoxDecoration(
@@ -90,19 +95,21 @@ class _SurveyUIState extends State<SurveyUI> {
                   width: 20,
                 ),
                 //from
-                FlatButton(
-                  child: Text(
-                    formatted.format(selectedFrom),
-                    style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Mulish',
-                        color: Colors.white),
-                  ),
-                  onPressed: () => _selectFrom(context),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(color: Colors.white),
+                Expanded(
+                  child: FlatButton(
+                    child: Text(
+                      formatted.format(selectedFrom),
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Mulish',
+                          color: Colors.white),
+                    ),
+                    onPressed: () => _selectFrom(context),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(color: Colors.white),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -115,25 +122,27 @@ class _SurveyUIState extends State<SurveyUI> {
                   width: 35,
                 ),
                 //to
-                FlatButton(
-                  child: Text(
-                    formatted.format(selectedTo),
-                    style: TextStyle(
-                        fontFamily: 'Mulish',
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onPressed: () => _selectTo(context),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(color: Colors.white),
+                Expanded(
+                  child: FlatButton(
+                    child: Text(
+                      formatted.format(selectedTo),
+                      style: TextStyle(
+                          fontFamily: 'Mulish',
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    onPressed: () => _selectTo(context),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(color: Colors.white),
+                    ),
                   ),
                 ),
               ],
             ),
-            alignment: Alignment.bottomLeft,
-            margin: EdgeInsets.only(left: 30),
+            alignment: Alignment.bottomCenter,
+            padding: EdgeInsets.only(left: 17, right: 17),
           ),
           //for
           Container(
@@ -151,6 +160,10 @@ class _SurveyUIState extends State<SurveyUI> {
                   child: SearchableDropdown.multiple(
                     items:
                         tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Mulish',
+                    ),
                     hint: Text(
                       'teams',
                       style: TextStyle(
@@ -162,27 +175,41 @@ class _SurveyUIState extends State<SurveyUI> {
                     onChanged: (items) {
                       setState(() {
                         widget.survey.tags = items;
+                        selectedTags = items;
                       });
                     },
+                    closeButton: Container(),
                     searchHint: 'Who should get the survey',
                     isExpanded: true,
                   ),
                 )
               ],
             ),
-            alignment: Alignment.bottomLeft,
-            margin: EdgeInsets.only(left: 30, top: 12),
+            alignment: Alignment.bottomCenter,
+            margin: EdgeInsets.only(left: 17, right: 17, top: 12),
           ),
-          //add answer
+          //add question
           FlatButton.icon(
             onPressed: () {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return Dialog(
-                      backgroundColor: Colors.blue,
-                      child: QuestionUICreate(),
-                    );
+                        insetPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                        backgroundColor: Colors.transparent,
+                        child: ListView(
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.cancel), onPressed: null),
+                            QuestionUICreate(),
+                            FlatButton(
+                                onPressed: null,
+                                child: Text(
+                                  'Add',
+                                  style: TextStyle(color: Colors.white),
+                                ))
+                          ],
+                        ));
                   });
             },
             icon: Container(
@@ -192,7 +219,7 @@ class _SurveyUIState extends State<SurveyUI> {
               ),
             ),
             label: Text(
-              "Add answer",
+              "Add question",
               style: TextStyle(
                   color: Colors.white, fontSize: 20, fontFamily: 'Mulish'),
             ),
@@ -268,4 +295,6 @@ class _SurveyUIState extends State<SurveyUI> {
       },
     );
   }
+
+  showQuestion(BuildContext context, Question question) {}
 }
