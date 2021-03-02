@@ -17,6 +17,10 @@ Decoration lighterContainerDecoration = BoxDecoration(
   color: Colors.blue[200],
 );
 
+InputDecoration textFieldDecoration = InputDecoration(
+  border: InputBorder.none,
+);
+
 class _QuestionUICreateState extends State<QuestionUICreate> {
   Question _question = new Question();
   // String questionText = ""; // question
@@ -39,113 +43,111 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
     multipleChoiceAnswerWork(
       _counter,
     );
-    return ListView(children: [
-      Container(
-        decoration: popOutDecoration,
-        padding: const EdgeInsets.all(20.0),
-        margin: const EdgeInsets.all(20.0),
-        // color: Colors.blue[300],
-        child: Column(
-          // shrinkWrap: true,
-          children: [
-            Text(
-              'Question',
-              style: TextStyle(
-                fontFamily: 'Mulish',
-                color: Colors.white,
-                fontSize: 15,
-              ),
-              textAlign: TextAlign.left,
-            ),
-            Container(
-              decoration: lighterContainerDecoration,
-              padding: EdgeInsets.all(8.0),
-              child: TextFormField(
-                initialValue: _question.questionText,
-                decoration: InputDecoration(hintText: "Add text..."),
-                onChanged: (value) {
-                  setState(() => _question.questionText = value);
-                },
-              ),
-            ),
-            Text('Answer type'),
-            CustomToggleButtons(
-              children: [
-                Icon(Icons.textsms),
-                Icon(Icons.radio_button_checked),
-                Icon(Icons.check_box),
-              ],
-              isSelected: _answerTypes,
-              onPressed: (int index) {
-                setState(() {
-                  for (int i = 0; i < 3; i++) {
-                    _answerTypes[i] = false;
-                  }
-                  _answerTypes[index] = !_answerTypes[index];
-                  _question.answerType = _question.getAnswerType(index);
-                });
-              },
+    return Container(
+      decoration: popOutDecoration,
+      padding: const EdgeInsets.all(20.0),
+      // margin: const EdgeInsets.all(20.0),
+      // color: Colors.blue[300],
+      child: Column(
+        // shrinkWrap: true,
+        children: [
+          Text(
+            'Question',
+            style: TextStyle(
+              fontFamily: 'Mulish',
               color: Colors.white,
-              selectedColor: Colors.deepPurple[900],
-              fillColor: Colors.blue[200],
-              unselectedFillColor: Colors.blue[200],
-              // borderWidth: 10,
-              // borderColor: Colors.white10,
-              renderBorder: true,
-              spacing: 30.0,
+              fontSize: 15,
             ),
-            Visibility(
-              child: TextField(
-                decoration: InputDecoration(hintText: "Add text..."),
-                onChanged: (value) {
-                  setState(() => _question.singleAnswer = value);
-                },
-              ),
-              visible: _answerTypes[0],
+            textAlign: TextAlign.left,
+          ),
+          Container(
+            decoration: lighterContainerDecoration,
+            padding: EdgeInsets.all(8.0),
+            child: TextFormField(
+              initialValue: _question.questionText,
+              decoration: InputDecoration(hintText: "Add text..."),
+              onChanged: (value) {
+                setState(() => _question.questionText = value);
+              },
             ),
-            Visibility(
-              child: _proba,
-              // Column(
-              //   children: _proba,
-              // ),
-              visible: _answerTypes[1] || _answerTypes[2],
+          ),
+          Text('Answer type'),
+          CustomToggleButtons(
+            children: [
+              Icon(Icons.textsms),
+              Icon(Icons.radio_button_checked),
+              Icon(Icons.check_box),
+            ],
+            isSelected: _answerTypes,
+            onPressed: (int index) {
+              setState(() {
+                for (int i = 0; i < 3; i++) {
+                  _answerTypes[i] = false;
+                }
+                _answerTypes[index] = !_answerTypes[index];
+                _question.answerType = _question.getAnswerType(index);
+              });
+            },
+            color: Colors.white,
+            selectedColor: Colors.deepPurple[900],
+            fillColor: Colors.blue[200],
+            unselectedFillColor: Colors.blue[200],
+            // borderWidth: 10,
+            // borderColor: Colors.white10,
+            renderBorder: true,
+            spacing: 30.0,
+          ),
+          Visibility(
+            child: TextField(
+              decoration: InputDecoration(hintText: "Add text..."),
+              onChanged: (value) {
+                setState(() => _question.singleAnswer = value);
+              },
             ),
+            visible: _answerTypes[0],
+          ),
+          Visibility(
+            child: _proba,
+            // Column(
+            //   children: _proba,
+            // ),
+            visible: _answerTypes[1] || _answerTypes[2],
+          ),
 
-            // Prikaz radio button odgovora
-            multipleChoiceAnswer(type: 1),
+          // Prikaz radio button odgovora
+          multipleChoiceAnswer(type: 1),
 
-            // Prikaz checkbox odgovora
-            multipleChoiceAnswer(type: 2),
+          // Prikaz checkbox odgovora
+          multipleChoiceAnswer(type: 2),
 
-            // TextButton(
-            //     child: Text('Add'),
-            //     onPressed: () {
-            //       _controllers.forEach((element) {
-            //         print(element.text);
-            //       });
-            //       TYPE type;
-            //       // print(_answerType);
-            //       if (_answerType == 0) {
-            //         type = TYPE.Text;
-            //         _createdQuestion = Question(questionText, type,
-            //             singleAnswer: _singleAnswer);
-            //       } else if (_answerType == 1) {
-            //         type = TYPE.RadioButton;
-            //         _createdQuestion = Question(questionText, type,
-            //             multipleAnswers: _answerTextRC);
-            //       } else if (_answerType == 2) {
-            //         type = TYPE.Checkbox;
-            //         _createdQuestion = Question(questionText, type,
-            //             multipleAnswers: _answerTextRC);
-            //       } else
-            //         print('pogreska - nije odabran tip');
+          // TextButton(
+          //     child: Text('Add'),
+          //     onPressed: () {
+          //       _controllers.forEach((element) {
+          //         print(element.text);
+          //       });
+          //       TYPE type;
+          //       // print(_answerType);
+          //       if (_answerType == 0) {
+          //         type = TYPE.Text;
+          //         _createdQuestion = Question(questionText, type,
+          //             singleAnswer: _singleAnswer);
+          //       } else if (_answerType == 1) {
+          //         type = TYPE.RadioButton;
+          //         _createdQuestion = Question(questionText, type,
+          //             multipleAnswers: _answerTextRC);
+          //       } else if (_answerType == 2) {
+          //         type = TYPE.Checkbox;
+          //         _createdQuestion = Question(questionText, type,
+          //             multipleAnswers: _answerTextRC);
+          //       } else
+          //         print('pogreska - nije odabran tip');
 
-            //       //  DESTROY pop-out ?
-            //     }),
-          ],
-        ),
+          //       //  DESTROY pop-out ?
+          //     }),
+        ],
       ),
-    ]);
+    );
   }
 
   Widget multipleChoiceAnswer({type: int}) {
