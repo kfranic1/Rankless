@@ -23,6 +23,7 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
   Widget build(BuildContext context) {
     print(widget.question.answerType);
     return Container(
+      color: Colors.transparent,
       // padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(30),
       child: ListView(children: [
@@ -31,14 +32,21 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
           // color: Colors.blue[100],
           // margin: EdgeInsets.all(10.0),
           padding: EdgeInsets.all(10.0),
-          child: Text(widget.question.questionText),
+          child: Text(
+            widget.question.questionText,
+            style: TextStyle(
+              fontFamily: font,
+              color: Colors.white,
+              fontSize: 15,
+            ),
+          ),
         ),
         Visibility(
           child: TextFormField(
             decoration: InputDecoration(
                 hintText: "Answer...",
                 fillColor: Colors.blue[700],
-                hintStyle: TextStyle(color: Colors.grey[300]),
+                hintStyle: TextStyle(color: Colors.white60),
                 border: InputBorder.none),
             initialValue: widget.question.singleAnswer,
             onChanged: (value) {
@@ -51,17 +59,19 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
         ),
         Visibility(
           child: ListView(
-            shrinkWrap: true,
+            // shrinkWrap: true,
             children: widget.question.multipleAnswers
-                .map((e) => RadioListTile(
-                      title: Text(e),
-                      value: e,
-                      groupValue: _chosen,
-                      onChanged: (String value) {
-                        setState(() {
-                          _chosen = value;
-                        });
-                      },
+                .map((e) => Expanded(
+                      child: RadioListTile(
+                        title: Text(e),
+                        value: e,
+                        groupValue: _chosen,
+                        onChanged: (String value) {
+                          setState(() {
+                            _chosen = value;
+                          });
+                        },
+                      ),
                     ))
                 .toList(),
           ),
