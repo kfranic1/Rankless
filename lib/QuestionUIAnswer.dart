@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rankless/shared/Interface.dart';
 
 import 'Question.dart';
 
@@ -11,11 +12,6 @@ class QuestionUIAnswer extends StatefulWidget {
   @override
   _QuestionUIAnswerState createState() => _QuestionUIAnswerState();
 }
-
-Decoration decoration = BoxDecoration(
-  borderRadius: BorderRadius.all(Radius.circular(10)),
-  color: Colors.blue[300], //Color(0xff42a5f5),
-);
 
 class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
   // TYPE answerType;

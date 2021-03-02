@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:customtogglebuttons/customtogglebuttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rankless/Question.dart';
+import 'package:rankless/shared/Interface.dart';
 
 class QuestionUICreate extends StatefulWidget {
   // final Question question;       NAPRAVITI KLIKOM NA FINISH
@@ -14,37 +13,42 @@ class QuestionUICreate extends StatefulWidget {
 }
 
 class _QuestionUICreateState extends State<QuestionUICreate> {
+  Question _createdQuestion;
   String questionText = "";
   int _answerType;
-  String singleAnswer;
+  String _singleAnswer;
   List<String> _answerTextRC = new List<String>();
   List<bool> _answerTypes = List.generate(3, (_) => false);
-  // List<ListView> proba = new List<ListView>();
-  Widget proba = Text('');
+  // List<ListView> _proba = new List<ListView>();
+  Widget _proba = Text('');
   List<TextEditingController> _controllers = new List<TextEditingController>();
   int _counter = 0;
-  Icon icon;
+  Icon _icon;
 
   @override
   Widget build(BuildContext context) {
     if (_answerType == 1)
-      icon = Icon(Icons.radio_button_unchecked);
+      _icon = Icon(Icons.radio_button_unchecked);
     else
-      icon = Icon(Icons.check_box_outline_blank);
+      _icon = Icon(Icons.check_box_outline_blank);
     multipleChoiceAnswerWork(
       _counter,
     );
     return ListView(children: [
       Container(
+        decoration: decoration,
         padding: const EdgeInsets.all(20.0),
         margin: const EdgeInsets.all(20.0),
-        color: Colors.blue[300],
+        // color: Colors.blue[300],
         child: Column(
           // shrinkWrap: true,
           children: [
             Text(
               'Question',
-              style: TextStyle(),
+              style: TextStyle(
+                fontFamily: 'Mulish',
+                color: Colors.white,
+              ),
               textAlign: TextAlign.left,
             ),
             TextFormField(
@@ -75,6 +79,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
               color: Colors.white,
               selectedColor: Colors.deepPurple[900],
               fillColor: Colors.blue[200],
+              unselectedFillColor: Colors.blue[200],
               // borderWidth: 10,
               // borderColor: Colors.white10,
               renderBorder: true,
@@ -84,15 +89,15 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
               child: TextField(
                 decoration: InputDecoration(hintText: "Add text..."),
                 onChanged: (value) {
-                  setState(() => singleAnswer = value);
+                  setState(() => _singleAnswer = value);
                 },
               ),
               visible: _answerTypes[0],
             ),
             Visibility(
-              child: proba,
+              child: _proba,
               // Column(
-              //   children: proba,
+              //   children: _proba,
               // ),
               visible: _answerTypes[1] || _answerTypes[2],
             ),
@@ -113,14 +118,15 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
                   // print(_answerType);
                   if (_answerType == 0) {
                     type = TYPE.Text;
-                    Question(questionText, type, singleAnswer: singleAnswer);
+                    _createdQuestion = Question(questionText, type,
+                        singleAnswer: _singleAnswer);
                   } else if (_answerType == 1) {
                     type = TYPE.RadioButton;
-                    Question(questionText, type,
+                    _createdQuestion = Question(questionText, type,
                         multipleAnswers: _answerTextRC);
                   } else if (_answerType == 2) {
                     type = TYPE.Checkbox;
-                    Question(questionText, type,
+                    _createdQuestion = Question(questionText, type,
                         multipleAnswers: _answerTextRC);
                   } else
                     print('pogreska - nije odabran tip');
@@ -155,13 +161,13 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
   }
 
   void multipleChoiceAnswerWork(int count) {
-    proba = (ListView.builder(
+    _proba = (ListView.builder(
       shrinkWrap: true,
       itemCount: count,
       itemBuilder: (context, index) {
         // print("index: $index, count: $count, controllers.len: ${_controllers.length}");
         return ListTile(
-          leading: icon,
+          leading: _icon,
           title: TextFormField(
             controller: _controllers[index],
             decoration: InputDecoration(hintText: "Add text..."),
@@ -178,5 +184,9 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
         );
       },
     ));
+  }
+
+  Question getQuestion() {
+    return _createdQuestion;
   }
 }
