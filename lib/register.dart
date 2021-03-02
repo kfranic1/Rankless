@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rankless/Employee.dart';
 import 'package:rankless/auth.dart';
-
-import 'custom_app_bar.dart';
 
 class Register extends StatefulWidget {
   final Function toogleView;

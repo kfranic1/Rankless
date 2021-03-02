@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rankless/createCompany.dart';
-import 'package:rankless/custom_app_bar.dart';
 
 import 'Company.dart';
-import 'Employee.dart';
 
 class CompanyHomeScreen extends StatefulWidget {
   final Company company;

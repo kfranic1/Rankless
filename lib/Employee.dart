@@ -1,4 +1,3 @@
-import 'package:rankless/Company.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Employee {
@@ -8,20 +7,21 @@ class Employee {
   String surname;
   String companyUid;
   String email;
-  List<String> roles;
+  List<String> roles = List<String>();
+  List<String> pendingSurveys = [];
   //List<Komentar> comments;
-  //List<Survey> surveys;
 
   CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
-  Employee(
-      {this.anonymus,
-      this.uid,
-      this.name,
-      this.surname,
-      this.email,
-      this.roles,});
+  Employee({
+    this.anonymus,
+    this.uid,
+    this.name,
+    this.surname,
+    this.email,
+    this.roles,
+  });
 
   Future createEmployee() async {
     return await userCollection.doc(this.uid).set({
@@ -29,7 +29,8 @@ class Employee {
       'surname': this.surname,
       'email': this.email,
       'companyUid': null,
-      'roles': null,
+      'roles': this.roles,
+      'surveys': this.pendingSurveys,
     });
   }
 
@@ -63,12 +64,13 @@ class Employee {
   }
 
   Employee updateData(DocumentSnapshot ref) {
+    print('called');
     this.name = ref.data()['name'];
     this.surname = ref.data()['surname'];
     this.email = ref.data()['email'];
     this.companyUid = ref.data()['companyUid'];
-    this.roles = (ref.data()['roles'] as List<dynamic>);
-    if (this.roles != null) this.roles.map((e) => e.toString()).toList();
+    this.roles = List<String>.from(ref.data()['roles']);
+    this.pendingSurveys = List<String>.from(ref.data()['surveys']);
     return this;
   }
 }

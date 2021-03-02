@@ -9,22 +9,25 @@ class Company {
   String industry;
   //SLIKA
   String description;
-  List<Employee> employees;
+  String country;
+  List<Employee> employees = List<Employee>();
   //List<Survey> surveys;
-  List<Post> posts;
-  List<String> roles;
+  List<Post> posts = List<Post>();
+  List<String> roles = List<String>();
   Employee me;
 
   CollectionReference companiesCollection =
       FirebaseFirestore.instance.collection('companies');
 
-  Company(
-      {this.uid,
-      this.name,
-      this.industry,
-      this.employees,
-      this.description,
-      this.me});
+  Company({
+    this.uid,
+    this.name,
+    this.industry,
+    this.employees,
+    this.description,
+    this.me,
+    this.country,
+  });
 
   Future createCompany() async {
     this.roles.add('admin');
@@ -36,6 +39,7 @@ class Company {
       'employees': employeeUids,
       'description': this.description,
       'roles': this.roles,
+      'country': this.country,
     }).then((value) => print('done'));
     this.uid = ref.id;
     return this;
@@ -61,12 +65,13 @@ class Company {
     this.description = ref['description'];
     this.industry = ref['industry'];
     this.employees = (ref['employees'] as List<dynamic>);
+    this.country = ref['country'];
     if (this.employees != null)
       this.employees.map((e) => Employee(uid: e as String)).toList();
     return this;
   }
 
   Future getEmployees() async {
-    for (Employee e in employees) if (e.uid != me.uid) await e.getEmployee();
+    for (Employee e in employees) await e.getEmployee();
   }
 }
