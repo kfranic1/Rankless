@@ -56,16 +56,19 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
             style: TextStyle(
               fontFamily: 'Mulish',
               color: Colors.white,
-              fontSize: 15,
+              fontSize: 20,
             ),
-            textAlign: TextAlign.left,
+            textAlign: TextAlign.right,
+          ),
+          SizedBox(
+            height: 10,
           ),
           Container(
             decoration: lighterContainerDecoration,
             padding: EdgeInsets.all(8.0),
             child: TextFormField(
               initialValue: _question.questionText,
-              decoration: InputDecoration(hintText: "Add text..."),
+              decoration: textFieldDecoration.copyWith(hintText: "Add text..."),
               onChanged: (value) {
                 setState(() => _question.questionText = value);
               },
