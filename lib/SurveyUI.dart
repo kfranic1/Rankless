@@ -28,24 +28,24 @@ class _SurveyUIState extends State<SurveyUI> {
   QuestionUICreate createdQ;
 
   //samo za provjeru
-  List<String> tags = [
-    'teamOne',
-    'teamTwo',
-    'teamThree',
-    'teamFour',
-    'teamFive',
-    'teamSix'
+  List<DropdownMenuItem> tags = [
+    DropdownMenuItem(
+      child: Text('one'),
+      value: 'one',
+    ),
+    DropdownMenuItem(
+      child: Text('two'),
+      value: 'two',
+    )
   ];
+  List<String> showTags = [];
 
   @override
   Widget build(BuildContext context) {
     //provjera za tagove
     final GlobalKey<TagsState> _tagStateKey = GlobalKey<TagsState>();
-    List<String> who = tags;
     // ovo između služi samo za provjeru
-    for (int i = 0; i < tags.length; i++) {
-      selectedTags.add(i);
-    }
+
     return Scaffold(
         body: Container(
       decoration: BoxDecoration(
@@ -79,7 +79,6 @@ class _SurveyUIState extends State<SurveyUI> {
               ),
               onChanged: (value) {
                 setState(() => this.survey.name = value);
-                print(this.survey.name);
               },
             ),
             alignment: Alignment.topCenter,
@@ -160,31 +159,42 @@ class _SurveyUIState extends State<SurveyUI> {
                   width: 20,
                 ),
                 Expanded(
+                  child: SearchableDropdown.multiple(
+                    items:
+                        tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
+                    selectedItems: selectedTags,
+                    selectedValueWidgetFn: (item) {
+                      return Container();
+                    },
+                    icon: Icon(Icons.add_circle_outline),
+                    underline: Container(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedTags = value;
+                        this.showTags = showTagsUpdate(selectedTags);
+                      });
+                    },
+                    closeButton: (selectedItems) {
+                      return (selectedItems.isNotEmpty
+                          ? "Save ${selectedItems.length == 1 ? '"' + tags[selectedItems.first].value.toString() + '"' : '(' + selectedItems.length.toString() + ')'}"
+                          : "Save without selection");
+                    },
+
+                    searchHint: 'Who should get the survey',
+                    isExpanded: false,
+                    displayClearIcon: false,
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
                   child: Tags(
                     key: _tagStateKey,
                     symmetry: false,
                     columns: 0,
-                    horizontalScroll: false,
-                    textField: TagsTextField(
-                      helperTextStyle: TextStyle(color: Colors.white),
-                      textStyle: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Mulish',
-                      ),
-                      inputDecoration:
-                          InputDecoration(alignLabelWithHint: true),
-                      suggestions: tags,
-                      suggestionTextColor: Colors.blue,
-                      constraintSuggestion: true,
-                      onSubmitted: (string) {
-                        setState(() {
-                          if (tags.contains(string)) who.add(string);
-                        });
-                      },
-                    ),
-                    itemCount: who.length,
+                    horizontalScroll: true,
+                    itemCount: showTags.length,
                     itemBuilder: (index) {
-                      final item = tags[index];
+                      final item = showTags[index];
                       return ItemTags(
                         key: Key(index.toString()),
                         index: index,
@@ -193,6 +203,7 @@ class _SurveyUIState extends State<SurveyUI> {
                         singleItem: false,
                         activeColor: Colors.blue,
                         color: Colors.grey,
+                        onPressed: (i) {},
                         //combine: ItemTagsCombine.withTextBefore,
                       );
                     },
@@ -203,6 +214,7 @@ class _SurveyUIState extends State<SurveyUI> {
             alignment: Alignment.bottomCenter,
             padding: EdgeInsets.only(left: 15, right: 15, top: 12),
           ),
+
           //add question
           FlatButton.icon(
             onPressed: () {
@@ -314,5 +326,11 @@ class _SurveyUIState extends State<SurveyUI> {
     );
   }
 
-  showQuestion(BuildContext context, Question question) {}
+  List<String> showTagsUpdate(List<int> selectedTags) {
+    List<String> showTags = [];
+    selectedTags.forEach((element) {
+      showTags.add(tags.elementAt(element).value);
+    });
+    return showTags;
+  }
 }
