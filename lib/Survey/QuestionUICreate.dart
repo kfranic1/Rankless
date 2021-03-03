@@ -1,7 +1,7 @@
 import 'package:customtogglebuttons/customtogglebuttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rankless/Question.dart';
+import 'Question.dart';
 import 'package:rankless/shared/Interface.dart';
 
 class QuestionUICreate extends StatefulWidget {

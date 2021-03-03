@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rankless/Company.dart';
-import 'package:rankless/Employee.dart';
-import 'package:rankless/EmployeeHome.dart';
-import 'package:rankless/authenticate.dart';
-import 'package:rankless/custom_app_bar.dart';
+import 'package:rankless/User/Company.dart';
+import 'package:rankless/User/Employee.dart';
+import 'package:rankless/User/EmployeeHome.dart';
+import 'package:rankless/Launch/authenticate.dart';
+import 'package:rankless/shared/custom_app_bar.dart';
 
 class Wrapper extends StatelessWidget {
   @override

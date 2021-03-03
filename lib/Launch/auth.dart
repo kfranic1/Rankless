@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rankless/Employee.dart';
+import 'package:rankless/User/Employee.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

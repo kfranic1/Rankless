@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rankless/auth.dart';
-import 'package:rankless/custom_app_bar.dart';
+import 'package:rankless/Launch/auth.dart';
+import 'package:rankless/shared/custom_app_bar.dart';
 
 class LogIn extends StatefulWidget {
   final Function toogleView;

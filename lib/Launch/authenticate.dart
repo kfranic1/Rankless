@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rankless/custom_app_bar.dart';
-import 'package:rankless/log_in.dart';
-import 'package:rankless/register.dart';
+import 'package:rankless/shared/custom_app_bar.dart';
+import 'package:rankless/Launch/log_in.dart';
+import 'package:rankless/Launch/register.dart';
 
 class Authenticate extends StatefulWidget {
   @override

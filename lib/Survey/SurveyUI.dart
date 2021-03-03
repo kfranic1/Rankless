@@ -1,14 +1,11 @@
 import 'dart:ui';
 
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:intl/intl.dart';
-import 'package:rankless/Company.dart';
-import 'package:rankless/QuestionUICreate.dart';
+import 'QuestionUICreate.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
-import 'Question.dart';
 import 'Survey.dart';
 
 class SurveyUI extends StatefulWidget {

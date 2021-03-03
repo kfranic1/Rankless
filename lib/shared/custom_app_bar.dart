@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rankless/auth.dart';
+import 'package:rankless/Launch/auth.dart';
 
-import 'Employee.dart';
+import 'package:rankless/User/Employee.dart';
 
 class CustomAppBar {
   final AuthService _auth = AuthService();

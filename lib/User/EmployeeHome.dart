@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rankless/Company.dart';
-import 'package:rankless/CompanyHomeScreen.dart';
-import 'package:rankless/custom_app_bar.dart';
+import 'Company.dart';
+import 'CompanyHomeScreen.dart';
 import 'EmployeeHomeScreen.dart';
 
 import 'Employee.dart';

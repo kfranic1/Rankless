@@ -1,4 +1,4 @@
-import 'package:rankless/Employee.dart';
+import 'package:rankless/User/Employee.dart';
 
 enum TYPE { Text, RadioButton, Checkbox }
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:rankless/Employee.dart';
-import 'package:rankless/SurveyUI.dart';
-import 'package:rankless/auth.dart';
-import 'package:rankless/wrapper.dart';
+import 'package:rankless/User/Employee.dart';
+import 'package:rankless/Survey/SurveyUI.dart';
+import 'package:rankless/Launch/auth.dart';
+import 'package:rankless/Launch/wrapper.dart';
 
-import 'Survey.dart';
-import 'testing.dart';
+import '../Survey/Survey.dart';
+import '../testing.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

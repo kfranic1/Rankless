@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rankless/createCompany.dart';
-import 'package:rankless/JoinCompany.dart';
-import 'package:rankless/custom_app_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'createCompany.dart';
+import 'JoinCompany.dart';
 
 import 'Employee.dart';
 

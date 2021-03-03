@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rankless/auth.dart';
+import 'package:rankless/Launch/auth.dart';
 
 class Register extends StatefulWidget {
   final Function toogleView;

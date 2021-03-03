@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:dropdown_search/dropdown_search.dart';
-import 'package:rankless/Company.dart';
-import 'package:rankless/Employee.dart';
+import 'Employee.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class JoinCompany extends StatefulWidget {

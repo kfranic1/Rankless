@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rankless/Company.dart';
-import 'package:rankless/Employee.dart';
+import 'package:rankless/User/Company.dart';
+import 'package:rankless/user/Employee.dart';
 
 import 'Question.dart';
 
