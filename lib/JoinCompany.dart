@@ -7,7 +7,7 @@ import 'package:rankless/Employee.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class JoinCompany extends StatefulWidget {
-  Employee employee;
+  final Employee employee;
   JoinCompany(this.employee);
   @override
   _JoinCompanyState createState() => _JoinCompanyState();
@@ -18,6 +18,7 @@ class _JoinCompanyState extends State<JoinCompany> {
       FirebaseFirestore.instance.collection('companies');
   List<SimpleCompany> companies;
   String selectedUid;
+  String selectedCompany;
   bool loading = false;
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class _JoinCompanyState extends State<JoinCompany> {
               child: ListView(
                 children: [
                   FutureBuilder(
-                    initialData: companies,
+                    initialData: null,
                     future: companies == null
                         ? companiesCollection.get().then((value) => {
                               companies = value.docs
@@ -47,15 +48,21 @@ class _JoinCompanyState extends State<JoinCompany> {
                       return (!snapshot.hasData)
                           ? Center(child: CircularProgressIndicator())
                           : SearchableDropdown.single(
+                              displayClearIcon: false,
                               items: companies
-                                  .map((e) => DropdownMenuItem(
-                                        value: e.uid + '%' + e.name + e.country,
-                                        child: ListTile(
-                                          title: Text(e.name),
-                                          subtitle: Text(e.country),
-                                        ),
-                                        onTap: () => selectedUid = e.uid,
-                                      ))
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      value: e.uid +
+                                          '%' +
+                                          e.name +
+                                          '%' +
+                                          e.country,
+                                      child: ListTile(
+                                        title: Text(e.name),
+                                        subtitle: Text(e.country),
+                                      ),
+                                    ),
+                                  )
                                   .toList(),
                               hint: Text(
                                 'Company',
@@ -67,21 +74,28 @@ class _JoinCompanyState extends State<JoinCompany> {
                               searchHint: 'What is your company',
                               isExpanded: true,
                               onChanged: (item) {
-                                selectedUid = item
-                                    .toString()
-                                    .substring(0, item.toString().indexOf('%'));
-                                print(selectedUid);
+                                String temp = item as String;
+                                setState(() {
+                                  selectedCompany = temp.substring(
+                                      temp.indexOf('%') + 1,
+                                      temp.lastIndexOf('%'));
+                                  selectedUid =
+                                      temp.substring(0, temp.indexOf('%'));
+                                });
                               },
                             );
                     },
                   ),
+                  SizedBox(height: 20),
                   FlatButton(
                     color: Colors.green[300],
                     child: Text("Send request"),
                     onPressed: () {
                       setState(() {
                         loading = true;
-                        finish();
+                        widget.employee
+                            .sendRequestToCompany(selectedCompany, selectedUid);
+                        Navigator.pop(context);
                       });
                     },
                   ),
@@ -89,18 +103,6 @@ class _JoinCompanyState extends State<JoinCompany> {
               ),
             ),
     );
-  }
-
-  void finish() async {
-    print('finishing');
-    List<String> req =
-        ((await companiesCollection.doc(selectedUid).get())['requests'] as List)
-            .map((e) => e.toString())
-            .toList();
-    print(req);
-    req.add(widget.employee.uid);
-    await companiesCollection.doc(selectedUid).update({'requests': req});
-    Navigator.pop(context);
   }
 }
 
