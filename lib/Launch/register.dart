@@ -92,7 +92,7 @@ class _RegisterState extends State<Register> {
                       SizedBox(
                         height: 10,
                       ),
-                      RaisedButton(
+                      ElevatedButton(
                         child: Text("Register"),
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
@@ -116,14 +116,14 @@ class _RegisterState extends State<Register> {
                 SizedBox(
                   height: 20,
                 ),
-                FlatButton(
+                TextButton(
                   child: Text("Already have an acount? Log in here."),
                   onPressed: widget.toogleView,
                 ),
                 SizedBox(
                   height: 20,
                 ),
-                FlatButton(
+                TextButton(
                   child: Text("Continue as guest"),
                   onPressed: () async {
                     setState(() => loading = true);

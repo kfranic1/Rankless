@@ -61,7 +61,7 @@ class _LogInState extends State<LogIn> {
                       SizedBox(
                         height: 20,
                       ),
-                      RaisedButton(
+                      ElevatedButton(
                         child: Text("Log In"),
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
@@ -82,7 +82,7 @@ class _LogInState extends State<LogIn> {
                       SizedBox(
                         height: 20,
                       ),
-                      FlatButton(
+                      TextButton(
                           onPressed: widget.toogleView,
                           child: Text("Don't have an account? Register here."))
                     ],

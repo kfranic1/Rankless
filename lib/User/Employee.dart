@@ -7,7 +7,7 @@ class Employee {
   String surname;
   String companyUid;
   String email;
-  List<String> roles = List<String>();
+  List<String> roles = [];
   List<String> pendingSurveys = [];
   String request = '';
   //List<Komentar> comments;

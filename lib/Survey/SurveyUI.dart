@@ -44,217 +44,213 @@ class _SurveyUIState extends State<SurveyUI> {
     // ovo između služi samo za provjeru
 
     return Scaffold(
-        body: Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-            Colors.black,
-            const Color(0xff3f51b5)
-          ])), //ovdje su boje za gradient pozadine
-      child: Column(
-        children: <Widget>[
-          Container(
-            //survey name
-            child: TextField(
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: this.survey.name,
-                  hintStyle: TextStyle(
-                    fontFamily: 'Mulish',
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  )),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Mulish',
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
+      body: Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+              Colors.black,
+              const Color(0xff3f51b5)
+            ])), //ovdje su boje za gradient pozadine
+        child: Column(
+          children: <Widget>[
+            Container(
+              //survey name
+              child: TextField(
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: this.survey.name,
+                    hintStyle: TextStyle(
+                      fontFamily: 'Mulish',
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    )),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Mulish',
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+                onChanged: (value) {
+                  setState(() => this.survey.name = value);
+                },
               ),
-              onChanged: (value) {
-                setState(() => this.survey.name = value);
-              },
+              alignment: Alignment.topCenter,
+              padding: EdgeInsets.all(20),
             ),
-            alignment: Alignment.topCenter,
-            padding: EdgeInsets.all(20),
-          ),
-          Container(
-            child: Row(
-              children: <Widget>[
-                //date
-                Text('Date',
+            Container(
+              child: Row(
+                children: <Widget>[
+                  //date
+                  Text('Date',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontFamily: 'Mulish')),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  //from
+                  Expanded(
+                    child: TextButton(
+                      child: Text(
+                        formatted.format(selectedFrom),
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Mulish',
+                            color: Colors.white),
+                      ),
+                      onPressed: () => _selectFrom(context),
+                    ),
+                  ),
+                  SizedBox(
+                    child: Divider(
+                      color: Colors.white,
+                      indent: 8,
+                      endIndent: 8,
+                      thickness: 4,
+                    ),
+                    width: 35,
+                  ),
+                  //to
+                  Expanded(
+                    child: TextButton(
+                      child: Text(
+                        formatted.format(selectedTo),
+                        style: TextStyle(
+                            fontFamily: 'Mulish',
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                      onPressed: () => _selectTo(context),
+                    ),
+                  ),
+                ],
+              ),
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.only(left: 15, right: 15),
+            ),
+            //for
+            Container(
+              child: Row(
+                children: [
+                  Text(
+                    'For',
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
-                        fontFamily: 'Mulish')),
-                SizedBox(
-                  width: 20,
-                ),
-                //from
-                Expanded(
-                  child: FlatButton(
-                    child: Text(
-                      formatted.format(selectedFrom),
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Mulish',
-                          color: Colors.white),
-                    ),
-                    onPressed: () => _selectFrom(context),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(color: Colors.white),
-                    ),
+                        fontFamily: 'Mulish'),
                   ),
-                ),
-                SizedBox(
-                  child: Divider(
-                    color: Colors.white,
-                    indent: 8,
-                    endIndent: 8,
-                    thickness: 4,
+                  SizedBox(
+                    width: 20,
                   ),
-                  width: 35,
-                ),
-                //to
-                Expanded(
-                  child: FlatButton(
-                    child: Text(
-                      formatted.format(selectedTo),
-                      style: TextStyle(
-                          fontFamily: 'Mulish',
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    onPressed: () => _selectTo(context),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.only(left: 15, right: 15),
-          ),
-          //for
-          Container(
-            child: Row(
-              children: [
-                Text(
-                  'For',
-                  style: TextStyle(
-                      fontSize: 20, color: Colors.white, fontFamily: 'Mulish'),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  child: SearchableDropdown.multiple(
-                    items:
-                        tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
-                    selectedItems: selectedTags,
-                    selectedValueWidgetFn: (item) {
-                      return Container();
-                    },
-                    icon: Icon(Icons.add_circle_outline),
-                    underline: Container(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedTags = value;
-                        this.showTags = showTagsUpdate(selectedTags);
-                      });
-                    },
-                    closeButton: (selectedItems) {
-                      return (selectedItems.isNotEmpty
-                          ? "Save ${selectedItems.length == 1 ? '"' + tags[selectedItems.first].value.toString() + '"' : '(' + selectedItems.length.toString() + ')'}"
-                          : "Save without selection");
-                    },
+                  Expanded(
+                    child: SearchableDropdown.multiple(
+                      items:
+                          tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
+                      selectedItems: selectedTags,
+                      selectedValueWidgetFn: (item) {
+                        return Container();
+                      },
+                      icon: Icon(Icons.add_circle_outline),
+                      underline: Container(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedTags = value;
+                          this.showTags = showTagsUpdate(selectedTags);
+                        });
+                      },
+                      closeButton: (selectedItems) {
+                        return (selectedItems.isNotEmpty
+                            ? "Save ${selectedItems.length == 1 ? '"' + tags[selectedItems.first].value.toString() + '"' : '(' + selectedItems.length.toString() + ')'}"
+                            : "Save without selection");
+                      },
 
-                    searchHint: 'Who should get the survey',
-                    isExpanded: false,
-                    displayClearIcon: false,
+                      searchHint: 'Who should get the survey',
+                      isExpanded: false,
+                      displayClearIcon: false,
+                    ),
                   ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Tags(
-                    key: _tagStateKey,
-                    symmetry: false,
-                    columns: 0,
-                    horizontalScroll: true,
-                    itemCount: showTags.length,
-                    itemBuilder: (index) {
-                      final item = showTags[index];
-                      return ItemTags(
-                        key: Key(index.toString()),
-                        index: index,
-                        title: item,
-                        pressEnabled: true,
-                        singleItem: false,
-                        activeColor: Colors.blue,
-                        color: Colors.grey,
-                        onPressed: (i) {},
-                        //combine: ItemTagsCombine.withTextBefore,
-                      );
-                    },
+                  Expanded(
+                    flex: 3,
+                    child: Tags(
+                      key: _tagStateKey,
+                      symmetry: false,
+                      columns: 0,
+                      horizontalScroll: true,
+                      itemCount: showTags.length,
+                      itemBuilder: (index) {
+                        final item = showTags[index];
+                        return ItemTags(
+                          key: Key(index.toString()),
+                          index: index,
+                          title: item,
+                          pressEnabled: true,
+                          singleItem: false,
+                          activeColor: Colors.blue,
+                          color: Colors.grey,
+                          onPressed: (i) {},
+                          //combine: ItemTagsCombine.withTextBefore,
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.only(left: 15, right: 15, top: 12),
             ),
-            alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.only(left: 15, right: 15, top: 12),
-          ),
 
-          //add question
-          FlatButton.icon(
-            onPressed: () {
-              showDialog(
+            //add question
+            TextButton.icon(
+              onPressed: () {
+                showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return Dialog(
-                        insetPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                        backgroundColor: Colors.transparent,
-                        child: ListView(
-                          children: [
-                            IconButton(
-                                icon: Icon(Icons.cancel), onPressed: null),
-                            createdQ = QuestionUICreate(),
-                            FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  //showQuestion(context, )
-                                },
-                                child: Text(
-                                  'Add',
-                                  style: TextStyle(color: Colors.white),
-                                ))
-                          ],
-                        ));
-                  });
-            },
-            icon: Container(
-              child: Icon(
-                Icons.add_circle_outline,
-                color: Colors.white,
+                      insetPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                      backgroundColor: Colors.transparent,
+                      child: ListView(
+                        children: [
+                          IconButton(icon: Icon(Icons.cancel), onPressed: null),
+                          createdQ = QuestionUICreate(),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              //showQuestion(context, )
+                            },
+                            child: Text(
+                              'Add',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              icon: Container(
+                child: Icon(
+                  Icons.add_circle_outline,
+                  color: Colors.white,
+                ),
+              ),
+              label: Text(
+                "Add question",
+                style: TextStyle(
+                    color: Colors.white, fontSize: 20, fontFamily: 'Mulish'),
               ),
             ),
-            label: Text(
-              "Add question",
-              style: TextStyle(
-                  color: Colors.white, fontSize: 20, fontFamily: 'Mulish'),
-            ),
-            padding: EdgeInsets.only(top: 35),
-          ),
-        ],
+          ],
+        ),
       ),
-    ));
+    );
   }
 
   _selectFrom(BuildContext context) async {

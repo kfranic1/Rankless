@@ -16,7 +16,7 @@ class QuestionUIAnswer extends StatefulWidget {
 class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
   // TYPE answerType;
   // String singleAnswer;
-  List<String> answerText = new List<String>();
+  List<String> answerText = [];
   String _chosen;
   int mask = 0;
   @override

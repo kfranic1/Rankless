@@ -84,8 +84,7 @@ class _JoinCompanyState extends State<JoinCompany> {
                     },
                   ),
                   SizedBox(height: 20),
-                  FlatButton(
-                    color: Colors.green[300],
+                  TextButton(
                     child: Text("Send request"),
                     onPressed: () {
                       setState(() {

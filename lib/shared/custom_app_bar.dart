@@ -13,19 +13,31 @@ class CustomAppBar {
         employee == null
             ? Container()
             : employee.anonymus
-                ? FlatButton.icon(
+                ? TextButton.icon(
                     onPressed: () async {
                       await _auth.signOut();
                     },
-                    icon: Icon(Icons.login),
-                    label: Text("login"),
+                    icon: Icon(
+                      Icons.login,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      "login",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   )
-                : FlatButton.icon(
+                : TextButton.icon(
                     onPressed: () async {
                       await _auth.signOut();
                     },
-                    icon: Icon(Icons.logout),
-                    label: Text("logut"),
+                    icon: Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      "logut",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
       ],
     );

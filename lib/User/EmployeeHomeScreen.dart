@@ -33,7 +33,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                 widget.employee.request.indexOf('%') + 1)),
                         isCancelDisabled
                             ? Container()
-                            : FlatButton(
+                            : TextButton(
                                 onPressed: () async {
                                   setState(() => isCancelDisabled = true);
                                   await widget.employee
@@ -49,9 +49,8 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: FlatButton(
+                              child: TextButton(
                                   child: Text("Create Company"),
-                                  color: Colors.grey,
                                   onPressed: () => Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -65,9 +64,8 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: FlatButton(
+                              child: TextButton(
                                 child: Text("Join Company"),
-                                color: Colors.grey,
                                 onPressed: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(

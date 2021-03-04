@@ -6,8 +6,8 @@ import 'package:rankless/Survey/SurveyUI.dart';
 import 'package:rankless/Launch/auth.dart';
 import 'package:rankless/Launch/wrapper.dart';
 
-import '../Survey/Survey.dart';
-import '../testing.dart';
+import 'Survey/Survey.dart';
+import 'testing.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +22,7 @@ class AppStarter extends StatelessWidget {
 //#region testiranje
   //ako zelite testirat nesto samo u test stavite true i u testing ime widgeta kojeg testirate
 
-  final bool test = false;
+  final bool test = true;
   final Widget testing = SurveyUI(survey);
 //#endregion
   @override

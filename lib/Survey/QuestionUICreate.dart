@@ -6,7 +6,7 @@ import 'package:rankless/shared/Interface.dart';
 
 class QuestionUICreate extends StatefulWidget {
   Question _question = new Question();
-  List<TextEditingController> _controllers = new List<TextEditingController>();
+  List<TextEditingController> _controllers = [];
 
   @override
   _QuestionUICreateState createState() =>
@@ -41,7 +41,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
   _QuestionUICreateState(this._question, this._controllers);
 
   Question _question;
-  List<TextEditingController> _controllers = new List<TextEditingController>();
+  List<TextEditingController> _controllers = [];
 
   List<bool> _answerTypes = List.generate(3, (_) => false);
   Widget _proba = Text('');

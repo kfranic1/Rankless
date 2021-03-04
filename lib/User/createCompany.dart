@@ -6,7 +6,7 @@ import 'Company.dart';
 import 'Employee.dart';
 
 class CreateCompany extends StatefulWidget {
-  Employee employee;
+  final Employee employee;
   CreateCompany(this.employee);
   @override
   _CreateCompanyState createState() => _CreateCompanyState();
@@ -125,7 +125,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                           SizedBox(
                             height: 10,
                           ),
-                          RaisedButton(
+                          ElevatedButton(
                             child: Text("Register Company with this data"),
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {

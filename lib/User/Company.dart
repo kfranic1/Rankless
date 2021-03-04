@@ -10,10 +10,10 @@ class Company {
   //SLIKA
   String description;
   String country;
-  List<Employee> employees = List<Employee>();
+  List<Employee> employees = [];
   //List<Survey> surveys;
-  List<Post> posts = List<Post>();
-  List<String> roles = List<String>();
+  List<Post> posts = [];
+  List<String> roles = [];
   Employee me;
 
   CollectionReference companiesCollection =

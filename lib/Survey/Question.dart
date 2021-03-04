@@ -1,5 +1,3 @@
-import 'package:rankless/User/Employee.dart';
-
 enum TYPE { Text, RadioButton, Checkbox }
 
 class Question {
