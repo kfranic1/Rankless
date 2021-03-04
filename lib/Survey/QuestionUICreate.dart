@@ -15,15 +15,23 @@ class QuestionUICreate extends StatefulWidget {
   Question getQuestion() {
     _controllers.forEach((element) {
       _question.multipleAnswers.add(element.text);
-      print(element.text);
     });
     return _question;
   }
 }
 
+// constants, decorations, style...
+
+const shadedWhite = Colors.white70; // used for icons in multiple answers types
+Color lighterBlue = Colors.blue[200]; // used as background for containers
+Color opacityWhite = Colors.white
+    .withOpacity(0.4); // optional: used as background for containers
+Color containerBackgroundColor = opacityWhite;
+// uredit cu jos ove boje
+
 Decoration lighterContainerDecoration = BoxDecoration(
   borderRadius: borderRadius,
-  color: Colors.white.withOpacity(0.4),
+  color: containerBackgroundColor,
 );
 
 InputDecoration textFieldDecoration = InputDecoration(
@@ -52,9 +60,9 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
   Widget build(BuildContext context) {
     widget.getQuestion();
     if (_question.answerType == TYPE.RadioButton)
-      _icon = Icon(Icons.radio_button_unchecked);
+      _icon = Icon(Icons.radio_button_unchecked, color: shadedWhite);
     else
-      _icon = Icon(Icons.check_box_outline_blank, color: Colors.white70);
+      _icon = Icon(Icons.check_box_outline_blank, color: shadedWhite);
     multipleChoiceAnswerWork(
       _counter,
     );
@@ -65,7 +73,6 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
       // margin: const EdgeInsets.all(20.0),
       // color: Colors.blue[300],
       child: Column(
-        // shrinkWrap: true,
         children: [
           Text(
             'Question',
@@ -85,15 +92,17 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
               },
             ),
           ),
-          SizedBox(height: 15),
+          SizedBox(height: 20),
           Text(
             'Answer type',
             style: header,
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 15),
           CustomToggleButtons(
             children: [
-              Icon(Icons.textsms),
+              Icon(
+                Icons.textsms, /*color: Colors.white70*/
+              ),
               Icon(Icons.radio_button_checked),
               Icon(Icons.check_box),
             ],
@@ -107,31 +116,30 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
                 _question.answerType = _question.getAnswerType(index);
               });
             },
+
             color: Colors.white,
             selectedColor: Colors.deepPurple[900],
-            fillColor: Colors.blue[200],
-            unselectedFillColor: Colors.blue[200],
+            fillColor: containerBackgroundColor, // lighterBlue / opacityWhite
+            unselectedFillColor: containerBackgroundColor,
             // borderWidth: 10,
             // borderColor: Colors.white10,
             renderBorder: true,
             spacing: 30.0,
+          ),
+          SizedBox(
+            height: 10,
           ),
           Visibility(
             child: TextField(
               decoration: textFieldDecoration.copyWith(
                 // focusedBorder: UnderlineInputBorder(
                 //     borderSide: BorderSide(color: Colors.red)),
-                hintText: "Add text...",
-                enabledBorder: UnderlineInputBorder(
+                hintText: "Answer",
+                disabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                   color: Colors.blue[200],
                 )),
-
-                // hintStyle: TextStyle(
-                //   fontFamily: font,
-                //   fontSize: 15,
-                //   color: Colors.white60,
-                // ),
+                enabled: false,
               ),
               onChanged: (value) {
                 setState(() => _question.singleAnswer = value);
@@ -154,10 +162,11 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
     );
   }
 
+// adding an answer for multiple answers types (RadioButton and Checkbox)
   Widget multipleChoiceAnswer({type: int}) {
     return Visibility(
       child: IconButton(
-        icon: Icon(Icons.add_circle_outline, color: Colors.white70),
+        icon: Icon(Icons.add_circle_outline, color: shadedWhite),
         onPressed: () {
           setState(() {
             _controllers.add(new TextEditingController());
@@ -173,6 +182,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
     );
   }
 
+// creating an answer in multiple answers types
   void multipleChoiceAnswerWork(int count) {
     _proba = (ListView.builder(
       shrinkWrap: true,
@@ -182,26 +192,25 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
           leading: _icon,
           title: TextFormField(
             controller: _controllers[index],
+            style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
               hintText: "Add text...",
               hintStyle: TextStyle(
                 fontFamily: font,
                 fontSize: 16,
-                // color: Colors.blue[200]
+                // color: Colors.blue[200],
+                decorationColor: Colors.white,
               ),
               enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
-                      // color: Colors.blue[200],
-                      )),
+                color: Colors.blue[200],
+              )),
             ),
-
-            // expands: true,
-            // minLines: null,
-            // maxLines: null,
-            // maxLength: 100,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
           ),
           trailing: IconButton(
-            icon: Icon(Icons.delete, color: Colors.white70),
+            icon: Icon(Icons.delete, color: shadedWhite),
             onPressed: () {
               setState(() {
                 _counter--;
