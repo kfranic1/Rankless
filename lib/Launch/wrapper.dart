@@ -21,24 +21,20 @@ class Wrapper extends StatelessWidget {
             )
           : FutureBuilder(
               future: employee.getEmployee(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (employee.companyUid == null)
-                    return EmployeeHome(employee, null);
-                  Company company = Company(uid: employee.companyUid);
-                  return FutureBuilder(
-                    future: company.getData(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        return EmployeeHome(employee, company);
-                      }
-                      return Center(child: CircularProgressIndicator());
-                    },
-                  );
-                }
-                return Center(child: CircularProgressIndicator());
-              },
-            ),
+              builder: (context, snapshot) =>
+                  snapshot.connectionState == ConnectionState.done
+                      ? StreamProvider<Employee>.value(
+                          value: employee.self,
+                          updateShouldNotify: (previous, current) => true,
+                          child: StreamProvider<Company>.value(
+                            updateShouldNotify: (previous, current) => true,
+                            value: employee.companyUid == null
+                                ? null
+                                : Company(uid: employee.companyUid).self,
+                            child: EmployeeHome(),
+                          ),
+                        )
+                      : Center(child: CircularProgressIndicator())),
     );
   }
 }

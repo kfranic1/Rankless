@@ -27,24 +27,24 @@ class _JoinCompanyState extends State<JoinCompany> {
           ? Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ListView(
-                children: [
-                  FutureBuilder(
-                    initialData: null,
-                    future: companies == null
-                        ? companiesCollection.get().then((value) => {
-                              companies = value.docs
-                                  .map((e) => SimpleCompany(
-                                      name: e.data()['name'],
-                                      uid: e.id,
-                                      country: e.data()['country']))
-                                  .toList()
-                            })
-                        : null,
-                    builder: (context, snapshot) {
-                      return (!snapshot.hasData)
-                          ? Center(child: CircularProgressIndicator())
-                          : SearchableDropdown.single(
+              child: FutureBuilder(
+                initialData: null,
+                future: companies == null
+                    ? companiesCollection.get().then((value) => {
+                          companies = value.docs
+                              .map((e) => SimpleCompany(
+                                  name: e.data()['name'],
+                                  uid: e.id,
+                                  country: e.data()['country']))
+                              .toList()
+                        })
+                    : null,
+                builder: (context, snapshot) {
+                  return (!snapshot.hasData)
+                      ? Center(child: CircularProgressIndicator())
+                      : ListView(
+                          children: [
+                            SearchableDropdown.single(
                               displayClearIcon: false,
                               items: companies
                                   .map(
@@ -80,22 +80,26 @@ class _JoinCompanyState extends State<JoinCompany> {
                                       temp.substring(0, temp.indexOf('%'));
                                 });
                               },
-                            );
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  TextButton(
-                    child: Text("Send request"),
-                    onPressed: () {
-                      setState(() {
-                        loading = true;
-                        widget.employee
-                            .sendRequestToCompany(selectedCompany, selectedUid);
-                        Navigator.pop(context);
-                      });
-                    },
-                  ),
-                ],
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                              color: Colors.grey[300],
+                              child: TextButton(
+                                child: Text("Send request"),
+                                onPressed: () {
+                                  if (selectedCompany == null) return;
+                                  setState(() {
+                                    loading = true;
+                                    widget.employee.sendRequestToCompany(
+                                        selectedCompany, selectedUid);
+                                    Navigator.pop(context);
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                },
               ),
             ),
     );

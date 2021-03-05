@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'Company.dart';
 import 'CompanyHomeScreen.dart';
 import 'EmployeeHomeScreen.dart';
@@ -6,9 +7,6 @@ import 'EmployeeHomeScreen.dart';
 import 'Employee.dart';
 
 class EmployeeHome extends StatefulWidget {
-  final Employee employee;
-  final Company company;
-  EmployeeHome(this.employee, this.company);
   //Pazi employee moze biti guest to provjeravas sa employee.anonymus TODO
   @override
   _EmployeeHomeState createState() => _EmployeeHomeState();
@@ -33,6 +31,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
 
   @override
   Widget build(BuildContext context) {
+    final Company company = Provider.of<Company>(context);
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -67,10 +66,10 @@ class _EmployeeHomeState extends State<EmployeeHome> {
         }),
         controller: _controller,
         children: [
-          widget.company == null
+          company == null
               ? Text("You are not in any company")
-              : CompanyHomeScreen(widget.company),
-          EmployeeHomeScreen(widget.employee),
+              : CompanyHomeScreen(),
+          EmployeeHomeScreen(),
           Center(
             child: Text("This is company list screen"),
           ),

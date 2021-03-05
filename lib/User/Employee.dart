@@ -32,7 +32,7 @@ class Employee {
       'companyUid': null,
       'roles': this.roles,
       'surveys': this.pendingSurveys,
-      'request': '',
+      'request': this.request,
     });
   }
 
@@ -66,11 +66,6 @@ class Employee {
     updateData(await userCollection.doc(this.uid).get());
   }
 
-  //will be used for updating users
-  Stream<QuerySnapshot> get users {
-    return userCollection.snapshots();
-  }
-
   Stream<Employee> get self {
     return userCollection
         .doc(this.uid)
@@ -79,14 +74,14 @@ class Employee {
   }
 
   Employee updateData(DocumentSnapshot ref) {
-    print('called');
-    this.name = ref.data()['name'];
-    this.surname = ref.data()['surname'];
-    this.email = ref.data()['email'];
-    this.companyUid = ref.data()['companyUid'];
-    this.roles = List<String>.from(ref.data()['roles']);
-    this.pendingSurveys = List<String>.from(ref.data()['surveys']);
-    this.request = ref.data()['request'];
+    //print('called');
+    this.name = ref['name'];
+    this.surname = ref['surname'];
+    this.email = ref['email'];
+    this.companyUid = ref['companyUid'];
+    this.roles = List<String>.from(ref['roles'] as List<dynamic>);
+    this.pendingSurveys = List<String>.from(ref['surveys'] as List<dynamic>);
+    this.request = ref['request'];
     return this;
   }
 
@@ -100,7 +95,7 @@ class Employee {
       List<String> req = ((await ref.get())['requests'] as List)
           .map((e) => e.toString())
           .toList();
-      req.add(this.uid);
+      req.add(this.uid + '%' + this.name + '%' + this.surname);
       transaction.update(ref, {
         'requests': req,
       });
