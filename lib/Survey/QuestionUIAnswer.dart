@@ -54,6 +54,7 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
                 widget.question.singleAnswer = value;
               });
             },
+            keyboardType: TextInputType.multiline,
           ),
           visible: widget.question.answerType == TYPE.Text,
         ),
