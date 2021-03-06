@@ -43,8 +43,9 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Container(
                                         color: Colors.green,
-                                        child: TextButton(
-                                            child: Text('Allow'),
+                                        child: TextButton.icon(
+                                            icon: Icon(Icons.check),
+                                            label: Text('Allow'),
                                             onPressed: () async {
                                               setState(() => handling = true);
                                               company.handleRequest(true);
@@ -58,8 +59,9 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Container(
                                         color: Colors.red,
-                                        child: TextButton(
-                                            child: Text('Deny'),
+                                        child: TextButton.icon(
+                                            icon: Icon(Icons.cancel),
+                                            label: Text('Deny'),
                                             onPressed: () async {
                                               setState(() {});
                                               company.handleRequest(false);

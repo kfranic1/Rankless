@@ -107,7 +107,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                             initialValue: info,
                             validator: (value) {
                               return value.isEmpty
-                                  ? "Adress can't be empty"
+                                  ? "Info can't be empty"
                                   : null;
                             },
                             decoration: InputDecoration(hintText: 'info'),
