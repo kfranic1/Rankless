@@ -151,6 +151,7 @@ class _CreateCompanyState extends State<CreateCompany> {
       employees: [widget.employee],
       description: this.info,
       country: this.country,
+      me: widget.employee,
     );
     dynamic result = await company.createCompany();
     if (result is String) {

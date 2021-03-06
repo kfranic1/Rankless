@@ -18,7 +18,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     final Employee me = Provider.of<Employee>(context);
     return company == null
         ? Center(
-            child: Text('You are '),
+            child: Text('You are not in any company'),
           )
         : ListView(
             children: [

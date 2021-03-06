@@ -17,7 +17,7 @@ class Company {
   //List<Survey> surveys;
   List<Post> posts = [];
   List<String> roles = [];
-  List<String> requests;
+  List<String> requests = [];
   Employee me;
 
   CollectionReference companiesCollection =
@@ -59,6 +59,7 @@ class Company {
   Future<void> changeData() async {}
 
   Stream<Company> get self {
+    if (uid == null) return null;
     return companiesCollection
         .doc(this.uid)
         .snapshots()
