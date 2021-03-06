@@ -25,6 +25,7 @@ class Wrapper extends StatelessWidget {
                   snapshot.connectionState == ConnectionState.done
                       ? StreamProvider<Employee>.value(
                           value: employee.self,
+                          updateShouldNotify: (previous, current) => true,
                           child: EmployeeHome(),
                         )
                       : Center(
