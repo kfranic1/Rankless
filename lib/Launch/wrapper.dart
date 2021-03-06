@@ -25,9 +25,7 @@ class Wrapper extends StatelessWidget {
                   snapshot.connectionState == ConnectionState.done
                       ? StreamProvider<Employee>.value(
                           value: employee.self,
-                          updateShouldNotify: (previous, current) => true,
                           child: StreamProvider<Company>.value(
-                            updateShouldNotify: (previous, current) => true,
                             value: employee.companyUid == null
                                 ? null
                                 : Company(uid: employee.companyUid).self,

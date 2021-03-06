@@ -13,6 +13,7 @@ class AuthService {
             email: user.email,
             name: name,
             surname: surname,
+            roles: [],
           )
         : null;
   }
