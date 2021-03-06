@@ -70,6 +70,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
               children: [
                 StreamProvider.value(
                   value: Company(uid: employee.companyUid ?? null).self,
+                  updateShouldNotify: (previous, current) => true,
                   child: CompanyHomeScreen(),
                 ),
                 EmployeeHomeScreen(),
