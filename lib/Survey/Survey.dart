@@ -7,7 +7,7 @@ import 'Question.dart';
 class Survey {
   String name;
   Company company;
-  List<Question> qNa;
+  List<Question> qNa = [];
   List<Employee> filled;
   List<Employee> notFilled;
   List<DropdownMenuItem> tags;
