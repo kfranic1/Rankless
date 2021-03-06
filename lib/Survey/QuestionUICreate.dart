@@ -53,25 +53,48 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
 
   List<bool> _answerTypes = List.generate(3, (_) => false);
   Widget _proba = Text('');
-  int _counter = 0;
+  int _counter;
   Icon _icon;
+  @override
+  void initState() {
+    _question.multipleAnswers = [];
+    // if (_question.controllers != null) {
+    //   _counter = _question.controllers.length;
+    // } else
+    //   _counter = 0;
+    // if (_question.multipleAnswers != null) {
+    //   _counter = _question.multipleAnswers.length;
+    //   print('if2');
+    // }
+    // if (_question.answersListView != null) _proba = _question.answersListView;
+    if (_question.answerType != null) {
+      toggleButtonsFunc(_question.getIndexForType(_question.answerType));
+      super.initState();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     widget.getQuestion();
+
+    if (_question.controllers != null) {
+      _counter = _question.controllers.length;
+    }
+
+    // print(_question.answerType);
+    // _controllers.forEach((element) {
+    //   print(element.text);
+    // });
+    // _question.answersListView = _proba;
+    _question.controllers = _controllers;
     if (_question.answerType == TYPE.RadioButton)
       _icon = Icon(Icons.radio_button_unchecked, color: shadedWhite);
     else
       _icon = Icon(Icons.check_box_outline_blank, color: shadedWhite);
-    multipleChoiceAnswerWork(
-      _counter,
-    );
+    multipleChoiceAnswerWork(_counter);
     return Container(
       decoration: popOutDecoration,
-
       padding: const EdgeInsets.all(20.0),
-      // margin: const EdgeInsets.all(20.0),
-      // color: Colors.blue[300],
       child: Column(
         children: [
           Text(
@@ -100,21 +123,17 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
           SizedBox(height: 15),
           CustomToggleButtons(
             children: [
+              // TODO labels
               Icon(
                 Icons.textsms, /*color: Colors.white70*/
               ),
               Icon(Icons.radio_button_checked),
               Icon(Icons.check_box),
             ],
+            // odredjivanje da toggle buttoni rade kak spada (kad se jedan upali da se drugi ugase)
             isSelected: _answerTypes,
             onPressed: (int index) {
-              setState(() {
-                for (int i = 0; i < 3; i++) {
-                  _answerTypes[i] = false;
-                }
-                _answerTypes[index] = !_answerTypes[index];
-                _question.answerType = _question.getAnswerType(index);
-              });
+              toggleButtonsFunc(index);
             },
 
             color: Colors.white,
@@ -142,7 +161,8 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
                 enabled: false,
               ),
               onChanged: (value) {
-                setState(() => _question.singleAnswer = value);
+                setState(() => _question.singleAnswer =
+                    value); // ovo se nikad nece dogadjat
               },
             ),
             visible: _answerTypes[0],
@@ -221,5 +241,15 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
         );
       },
     ));
+  }
+
+  void toggleButtonsFunc(int index) {
+    setState(() {
+      for (int i = 0; i < 3; i++) {
+        _answerTypes[i] = false;
+      }
+      _answerTypes[index] = !_answerTypes[index];
+      _question.answerType = _question.getAnswerType(index);
+    });
   }
 }

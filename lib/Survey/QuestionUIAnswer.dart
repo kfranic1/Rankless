@@ -28,9 +28,10 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
       margin: EdgeInsets.all(30),
       child: ListView(children: [
         Container(
-          decoration: popOutDecoration,
-          // color: Colors.blue[100],
-          // margin: EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            color: Colors.blue[200],
+            borderRadius: borderRadius,
+          ),
           padding: EdgeInsets.all(10.0),
           child: Text(
             widget.question.questionText,
@@ -43,11 +44,6 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
         ),
         Visibility(
           child: TextFormField(
-            decoration: InputDecoration(
-                hintText: "Answer...",
-                fillColor: Colors.blue[700],
-                hintStyle: TextStyle(color: Colors.white60),
-                border: InputBorder.none),
             initialValue: widget.question.singleAnswer,
             onChanged: (value) {
               setState(() {
@@ -55,6 +51,14 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
               });
             },
             keyboardType: TextInputType.multiline,
+            maxLines: null,
+            decoration: InputDecoration(
+              hintText: "Answer...",
+              fillColor: Colors.blue[700],
+              hintStyle: TextStyle(color: Colors.grey),
+              border: InputBorder.none,
+            ),
+            style: TextStyle(color: Colors.grey), // white70?
           ),
           visible: widget.question.answerType == TYPE.Text,
         ),
