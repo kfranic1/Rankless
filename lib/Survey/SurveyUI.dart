@@ -25,11 +25,10 @@ class _SurveyUIState extends State<SurveyUI> {
   List<int> selectedTags = [];
   QuestionUICreate createdQ;
   Widget proba = Text('');
-  int counter = -1;
   ListView questionLV = ListView(
     shrinkWrap: true,
   );
-  List<ListTile> questionButtons = [];
+  List<Dismissible> questionButtons = [];
   List<QuestionUICreate> questions = [];
   List<ListTile> suggestedQ = [];
 
@@ -278,17 +277,19 @@ class _SurveyUIState extends State<SurveyUI> {
                       child: ListView(
                         children: [
                           IconButton(
-                            icon: Icon(Icons.cancel),
+                            icon: Icon(
+                              Icons.cancel,
+                              color: Colors.white,
+                            ),
                             onPressed: () => Navigator.pop(context),
                           ),
                           createdQ = QuestionUICreate(),
                           TextButton(
                             onPressed: () {
-                              counter++;
-                              questions.add(createdQ);
                               Navigator.pop(context);
                               setState(() {
-                                questionButtons.add(buildQTile(counter));
+                                questions.add(createdQ);
+                                widget.survey.qNa.add(createdQ.getQuestion());
                               });
                             },
                             child: Text(
@@ -319,7 +320,7 @@ class _SurveyUIState extends State<SurveyUI> {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: suggestedQ.length,
-                itemBuilder: (BuildContext context, int index) {
+                itemBuilder: (context, index) {
                   return suggestedQ[index];
                 },
                 separatorBuilder: (BuildContext context, int index) {
@@ -339,9 +340,9 @@ class _SurveyUIState extends State<SurveyUI> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  return questionButtons[index];
+                  return buildQTile(widget.survey.qNa[index], index);
                 },
-                itemCount: questionButtons.length,
+                itemCount: widget.survey.qNa.length,
                 separatorBuilder: (context, index) {
                   return SizedBox(
                     height: 15,
@@ -356,18 +357,25 @@ class _SurveyUIState extends State<SurveyUI> {
     );
   }
 
-  Widget buildQTile(int index) {
-    int rowNum = index + 1;
-    return (ListTile(
+  Widget buildQTile(Question question, int index) {
+    return Dismissible(
+      key: UniqueKey(),
+      onDismissed: (direction) {
+        setState(() {
+          questions.removeAt(index);
+          widget.survey.qNa.removeAt(index);
+        });
+      },
+      child: (ListTile(
         leading: Text(
-          rowNum.toString(),
+          (index + 1).toString(),
           style: TextStyle(
               color: Colors.white, fontFamily: 'Mulish', fontSize: 22),
         ),
         title: Container(
           alignment: Alignment.center,
           child: Text(
-            createdQ.getQuestion().questionText,
+            question.questionText,
             style: TextStyle(
                 color: Colors.white, fontFamily: 'Mulish', fontSize: 22),
             textAlign: TextAlign.center,
@@ -389,17 +397,8 @@ class _SurveyUIState extends State<SurveyUI> {
                 );
               });
         },
-        trailing: IconButton(
-          //bug popraviti da se broj red promijeni kada se izbriše pitanje
-          icon: Icon(Icons.delete, color: Colors.white70),
-          onPressed: () {
-            setState(() {
-              counter--;
-              rowNum--;
-              questionButtons.removeAt(index);
-            });
-          },
-        )));
+      )),
+    );
   }
 
   _selectFrom(BuildContext context) async {
