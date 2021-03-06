@@ -32,6 +32,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
   @override
   Widget build(BuildContext context) {
     final Company company = Provider.of<Company>(context);
+    final Employee employee = Provider.of<Employee>(context);
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -69,7 +70,9 @@ class _EmployeeHomeState extends State<EmployeeHome> {
           company == null
               ? Text("You are not in any company")
               : CompanyHomeScreen(),
-          EmployeeHomeScreen(),
+          employee == null
+              ? Center(child: CircularProgressIndicator())
+              : EmployeeHomeScreen(),
           Center(
             child: Text("This is company list screen"),
           ),
