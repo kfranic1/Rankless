@@ -22,7 +22,7 @@ class CustomAppBar {
                       color: Colors.white,
                     ),
                     label: Text(
-                      "login",
+                      "register",
                       style: TextStyle(color: Colors.white),
                     ),
                   )

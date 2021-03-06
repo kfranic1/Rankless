@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 const borderRadius = BorderRadius.all(Radius.circular(10));
 const font = 'Mulish';
+// const whiteColor = Colors.white70;
 
 Decoration popOutDecoration = BoxDecoration(
     borderRadius: borderRadius,

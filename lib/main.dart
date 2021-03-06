@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:rankless/User/Employee.dart';
-import 'package:rankless/Survey/SurveyUI.dart';
 import 'package:rankless/Launch/auth.dart';
 import 'package:rankless/Launch/wrapper.dart';
 
-import 'Survey/Survey.dart';
 import 'testing.dart';
 
 void main() {
@@ -14,16 +12,14 @@ void main() {
   runApp(AppStarter());
 }
 
-Survey survey = Survey("Survey");
-
 class AppStarter extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
 //#region testiranje
   //ako zelite testirat nesto samo u test stavite true i u testing ime widgeta kojeg testirate
 
-  final bool test = true;
-  final Widget testing = SurveyUI(survey);
+  final bool test = false;
+  final Widget testing = null;
 //#endregion
   @override
   Widget build(BuildContext context) {
