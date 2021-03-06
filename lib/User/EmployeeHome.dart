@@ -31,7 +31,6 @@ class _EmployeeHomeState extends State<EmployeeHome> {
 
   @override
   Widget build(BuildContext context) {
-    final Company company = Provider.of<Company>(context);
     final Employee employee = Provider.of<Employee>(context);
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
@@ -61,23 +60,24 @@ class _EmployeeHomeState extends State<EmployeeHome> {
               duration: Duration(milliseconds: 200), curve: Curves.ease);
         }),
       ),
-      body: PageView(
-        onPageChanged: (index) => setState(() {
-          _currentIndex = index;
-        }),
-        controller: _controller,
-        children: [
-          company == null
-              ? Text("You are not in any company")
-              : CompanyHomeScreen(),
-          employee == null
-              ? Center(child: CircularProgressIndicator())
-              : EmployeeHomeScreen(),
-          Center(
-            child: Text("This is company list screen"),
-          ),
-        ],
-      ),
+      body: employee == null
+          ? Center(child: CircularProgressIndicator())
+          : PageView(
+              onPageChanged: (index) => setState(() {
+                _currentIndex = index;
+              }),
+              controller: _controller,
+              children: [
+                StreamProvider.value(
+                  value: Company(uid: employee.companyUid ?? null).self,
+                  child: CompanyHomeScreen(),
+                ),
+                EmployeeHomeScreen(),
+                Center(
+                  child: Text("This is company list screen"),
+                ),
+              ],
+            ),
     );
   }
 }
