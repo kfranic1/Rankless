@@ -62,6 +62,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                             height: 20,
                           ),
                           CountryCodePicker(
+                            initialSelection: country,
                             showCountryOnly: true,
                             showOnlyCountryWhenClosed: true,
                             onChanged: (value) {
@@ -107,7 +108,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                             initialValue: info,
                             validator: (value) {
                               return value.isEmpty
-                                  ? "Adress can't be empty"
+                                  ? "Info can't be empty"
                                   : null;
                             },
                             decoration: InputDecoration(hintText: 'info'),
@@ -120,7 +121,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                           ),
                           Text(
                             error,
-                            style: TextStyle(color: Colors.red[350]),
+                            style: TextStyle(color: Colors.red[400]),
                           ),
                           SizedBox(
                             height: 10,
@@ -130,7 +131,15 @@ class _CreateCompanyState extends State<CreateCompany> {
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
                                 setState(() => creating = true);
-                                finish();
+                                String ret = await finish();
+                                if (ret == 'OK')
+                                  Navigator.pop(context);
+                                else {
+                                  setState(() {
+                                    creating = false;
+                                    error = ret;
+                                  });
+                                }
                               }
                             },
                           ),
@@ -144,7 +153,18 @@ class _CreateCompanyState extends State<CreateCompany> {
     );
   }
 
-  void finish() async {
+  Future<String> finish() async {
+    String ret = '';
+    await FirebaseFirestore.instance
+        .collection('companies')
+        .where('name', isEqualTo: this.name)
+        .where('country', isEqualTo: this.country)
+        .get()
+        .then((value) {
+      if (value.size > 0)
+        ret = 'Company with same name and country already exists.';
+    });
+    if (ret != '') return ret;
     Company company = Company(
       name: this.name,
       industry: this.category,
@@ -154,17 +174,10 @@ class _CreateCompanyState extends State<CreateCompany> {
       me: widget.employee,
     );
     dynamic result = await company.createCompany();
-    if (result is String) {
-      setState(() => error = result);
-    } else {
-      result = await widget.employee
-          .updateEmployee(newRoles: ['admin'], newCompanyUid: company.uid);
-      if (result is String) {
-        setState(() {
-          error = result;
-        });
-      }
-      Navigator.pop(context);
-    }
+    if (result is String) return result;
+    result = await widget.employee
+        .updateEmployee(newRoles: ['admin'], newCompanyUid: company.uid);
+    if (result is String) return result;
+    return 'OK';
   }
 }

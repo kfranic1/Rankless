@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'createCompany.dart';
+import 'CreateCompany.dart';
 import 'JoinCompany.dart';
 
 import 'Employee.dart';

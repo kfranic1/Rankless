@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 import 'Employee.dart';
 import 'Post.dart';
@@ -84,14 +81,6 @@ class Company {
     for (Employee e in employees) await e.getEmployee();
   }
 
-  Text getRequestAsText() {
-    String e = requests[0];
-    String nameTemp = e.substring(e.indexOf('%') + 1, e.lastIndexOf('%'));
-    String surnameTemp = e.substring(e.lastIndexOf('%') + 1);
-    return Text(
-        nameTemp + ' ' + surnameTemp + ' has requested to join your company');
-  }
-
   void handleRequest(bool accpeted) async {
     String e = requests[0];
     String uidTemp = e.substring(0, e.indexOf('%'));
@@ -109,77 +98,5 @@ class Company {
         'employees': employeesTemp,
       });
     });
-  }
-
-  Widget getRequestsAsWidget() {
-    print('here' + this.requests.toString());
-    if (this.requests == null || this.requests.length == 0)
-      return Text("There are no requests");
-    List<Employee> req = this
-        .requests
-        .map((e) => Employee(
-              uid: e.substring(
-                0,
-                e.indexOf('%'),
-              ),
-              name: e.substring(e.indexOf('%') + 1, e.lastIndexOf('%')),
-              surname: e.substring(e.lastIndexOf('%') + 1),
-            ))
-        .toList();
-    return SizedBox(
-      height: 500,
-      child: ListView(
-        children: req
-            .map(
-              (e) => SizedBox(
-                height: 100,
-                child: Card(
-                  color: Colors.blue[100],
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Text(e.name +
-                            ' ' +
-                            e.surname +
-                            ' has requested to join your company.'),
-                      ),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  color: Colors.green,
-                                  child: TextButton(
-                                    child: Text('Allow'),
-                                    onPressed: () {},
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  color: Colors.red,
-                                  child: TextButton(
-                                    child: Text('Deny'),
-                                    onPressed: () {},
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            )
-            .toList(),
-      ),
-    );
   }
 }
