@@ -132,11 +132,14 @@ class _CreateCompanyState extends State<CreateCompany> {
                               if (_formKey.currentState.validate()) {
                                 setState(() => creating = true);
                                 String ret = await finish();
-                                if (ret == 'OK') Navigator.pop(context);
-                                setState(() {
-                                  creating = false;
-                                  error = ret;
-                                });
+                                if (ret == 'OK')
+                                  Navigator.pop(context);
+                                else {
+                                  setState(() {
+                                    creating = false;
+                                    error = ret;
+                                  });
+                                }
                               }
                             },
                           ),
@@ -158,7 +161,7 @@ class _CreateCompanyState extends State<CreateCompany> {
         .where('country', isEqualTo: this.country)
         .get()
         .then((value) {
-      if (value.size > 0) 
+      if (value.size > 0)
         ret = 'Company with same name and country already exists.';
     });
     if (ret != '') return ret;
