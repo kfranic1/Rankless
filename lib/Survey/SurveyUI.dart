@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:intl/intl.dart';
+import 'package:rankless/shared/Interface.dart';
 import 'Question.dart';
 import 'QuestionUICreate.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
@@ -275,6 +276,7 @@ class _SurveyUIState extends State<SurveyUI> {
                       insetPadding: EdgeInsets.only(left: 0.0, right: 0.0),
                       backgroundColor: Colors.transparent,
                       child: ListView(
+                        addAutomaticKeepAlives: true,
                         children: [
                           IconButton(
                             icon: Icon(
@@ -288,13 +290,19 @@ class _SurveyUIState extends State<SurveyUI> {
                             onPressed: () {
                               Navigator.pop(context);
                               setState(() {
-                                questions.add(createdQ);
-                                widget.survey.qNa.add(createdQ.getQuestion());
+                                if (createdQ.getQuestion().questionText !=
+                                    null) {
+                                  questions.add(createdQ);
+                                  widget.survey.qNa.add(createdQ.getQuestion());
+                                }
                               });
                             },
                             child: Text(
                               'Add',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Mulish',
+                                  fontSize: 20),
                             ),
                           ),
                         ],
@@ -382,7 +390,7 @@ class _SurveyUIState extends State<SurveyUI> {
           ),
           decoration: BoxDecoration(
             color: Colors.lightBlue,
-            border: Border.all(),
+            border: Border.all(style: BorderStyle.none),
             borderRadius: BorderRadius.circular(10),
           ),
           height: 70,
@@ -393,7 +401,20 @@ class _SurveyUIState extends State<SurveyUI> {
               context: context,
               builder: (BuildContext context) {
                 return Dialog(
-                  child: questions[index],
+                  insetPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                  backgroundColor: Colors.transparent,
+                  child: ListView(
+                    children: [
+                      questions[index],
+                      IconButton(
+                          icon: Icon(
+                            Icons.done,
+                            color: Colors.white,
+                            size: 40,
+                          ),
+                          onPressed: () => Navigator.pop(context)),
+                    ],
+                  ),
                 );
               });
         },
