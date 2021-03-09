@@ -20,18 +20,15 @@ class SurveyUI extends StatefulWidget {
 class _SurveyUIState extends State<SurveyUI> {
   Survey survey;
   _SurveyUIState(this.survey);
-  DateTime selectedFrom = DateTime.now();
-  DateTime selectedTo = DateTime.now();
-  DateFormat formatted = DateFormat('dd-MM-yyyy');
-  List<int> selectedTags = [];
-  QuestionUICreate createdQ;
-  Widget proba = Text('');
-  ListView questionLV = ListView(
-    shrinkWrap: true,
-  );
-  List<Dismissible> questionButtons = [];
-  List<QuestionUICreate> questions = [];
-  List<ListTile> suggestedQ = [];
+  DateTime _selectedFrom = DateTime.now();
+  DateTime _selectedTo = DateTime.now();
+  DateFormat _formatted = DateFormat('dd-MM-yyyy');
+  List<int> _selectedTags = [];
+  QuestionUICreate _createdQ;
+  List<Dismissible> _questionButtons = [];
+  List<QuestionUICreate> _questions = [];
+  List<ListTile> _suggestedQ = [];
+  bool _confirm;
 
   //samo za provjeru
   List<DropdownMenuItem> tags = [
@@ -56,14 +53,7 @@ class _SurveyUIState extends State<SurveyUI> {
     return Scaffold(
       key: _scaffoldKey,
       body: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-              Colors.black,
-              const Color(0xff3f51b5)
-            ])), //ovdje su boje za gradient pozadine
+        decoration: backgroundDecoration, //ovdje su boje za gradient pozadine
         child: Column(
           children: <Widget>[
             Container(
@@ -113,7 +103,7 @@ class _SurveyUIState extends State<SurveyUI> {
                       ),
                       child: TextButton(
                         child: Text(
-                          formatted.format(selectedFrom),
+                          _formatted.format(_selectedFrom),
                           style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -142,7 +132,7 @@ class _SurveyUIState extends State<SurveyUI> {
                       ),
                       child: TextButton(
                         child: Text(
-                          formatted.format(selectedTo),
+                          _formatted.format(_selectedTo),
                           style: TextStyle(
                               fontFamily: 'Mulish',
                               fontSize: 15,
@@ -176,7 +166,7 @@ class _SurveyUIState extends State<SurveyUI> {
                     child: SearchableDropdown.multiple(
                       items:
                           tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
-                      selectedItems: selectedTags,
+                      selectedItems: _selectedTags,
                       selectedValueWidgetFn: (item) {
                         return Container();
                       },
@@ -184,8 +174,8 @@ class _SurveyUIState extends State<SurveyUI> {
                       underline: Container(),
                       onChanged: (value) {
                         setState(() {
-                          selectedTags = value;
-                          this.showTags = showTagsUpdate(selectedTags);
+                          _selectedTags = value;
+                          this.showTags = showTagsUpdate(_selectedTags);
                         });
                       },
                       menuBackgroundColor: Colors.lightBlue[50],
@@ -285,15 +275,16 @@ class _SurveyUIState extends State<SurveyUI> {
                             ),
                             onPressed: () => Navigator.pop(context),
                           ),
-                          createdQ = QuestionUICreate(),
+                          _createdQ = QuestionUICreate(),
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
                               setState(() {
-                                if (createdQ.getQuestion().questionText !=
+                                if (_createdQ.getQuestion().questionText !=
                                     null) {
-                                  questions.add(createdQ);
-                                  widget.survey.qNa.add(createdQ.getQuestion());
+                                  _questions.add(_createdQ);
+                                  widget.survey.qNa
+                                      .add(_createdQ.getQuestion());
                                 }
                               });
                             },
@@ -327,9 +318,9 @@ class _SurveyUIState extends State<SurveyUI> {
               //bilo bi dobro kada bi ta predlozena pitanja bila neki gumbi pa bi se otvarao dijalog za potvrdu unosa pitanja
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: suggestedQ.length,
+                itemCount: _suggestedQ.length,
                 itemBuilder: (context, index) {
-                  return suggestedQ[index];
+                  return _suggestedQ[index];
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(
@@ -343,6 +334,8 @@ class _SurveyUIState extends State<SurveyUI> {
               thickness: 2.0,
               height: 50,
             ),
+
+            //questions
             Expanded(
               flex: 5,
               child: ListView.separated(
@@ -353,47 +346,109 @@ class _SurveyUIState extends State<SurveyUI> {
                 itemCount: widget.survey.qNa.length,
                 separatorBuilder: (context, index) {
                   return SizedBox(
+                    child: Divider(
+                      color: Colors.white,
+                    ),
                     height: 15,
                   );
                 },
                 padding: EdgeInsets.only(left: 15, right: 15),
               ),
             ),
+
+            //finish creating survey
+            TextButton(
+              onPressed: () {},
+              child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: Colors.blue, borderRadius: borderRadius),
+                  height: 60,
+                  width: 200,
+                  child: Text(
+                    'Finish',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: 'Mulish',
+                        fontSize: 20),
+                  )),
+            )
           ],
         ),
       ),
     );
   }
 
+//--------------------------------------------------
+//methods
   Widget buildQTile(Question question, int index) {
     return Dismissible(
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 20),
+        child: Icon(Icons.delete),
+        color: Colors.red,
+      ),
       key: UniqueKey(),
       onDismissed: (direction) {
         setState(() {
-          questions.removeAt(index);
+          _questions.removeAt(index);
           widget.survey.qNa.removeAt(index);
         });
+      },
+      confirmDismiss: (DismissDirection direction) async {
+        return await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text(
+                "Confirm",
+                style: TextStyle(
+                    fontFamily: 'Mulish', fontWeight: FontWeight.bold),
+              ),
+              content:
+                  const Text("Are you sure you wish to delete this question?"),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text("DELETE",
+                        style: TextStyle(fontFamily: 'Mulish'))),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("CANCEL",
+                      style: TextStyle(fontFamily: 'Mulish')),
+                ),
+              ],
+            );
+          },
+        );
       },
       child: (ListTile(
         leading: Text(
           (index + 1).toString(),
           style: TextStyle(
-              color: Colors.white, fontFamily: 'Mulish', fontSize: 22),
+              color: Colors.white, fontFamily: 'Mulish', fontSize: 20),
         ),
         title: Container(
-          alignment: Alignment.center,
+          constraints: BoxConstraints(
+            maxHeight: double.infinity,
+          ),
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 10, right: 10),
           child: Text(
             question.questionText,
             style: TextStyle(
-                color: Colors.white, fontFamily: 'Mulish', fontSize: 22),
-            textAlign: TextAlign.center,
+                color: Colors.white, fontFamily: 'Mulish', fontSize: 20),
+            textAlign: TextAlign.left,
           ),
           decoration: BoxDecoration(
-            color: Colors.lightBlue,
+            color: Colors.transparent,
             border: Border.all(style: BorderStyle.none),
             borderRadius: BorderRadius.circular(10),
           ),
-          height: 70,
+          //height: 70,
           width: 80,
         ),
         onTap: () {
@@ -405,7 +460,7 @@ class _SurveyUIState extends State<SurveyUI> {
                   backgroundColor: Colors.transparent,
                   child: ListView(
                     children: [
-                      questions[index],
+                      _questions[index],
                       IconButton(
                           icon: Icon(
                             Icons.done,
@@ -422,12 +477,16 @@ class _SurveyUIState extends State<SurveyUI> {
     );
   }
 
+  Survey getSurvey() {
+    return widget.survey;
+  }
+
   _selectFrom(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: selectedFrom,
-      firstDate: DateTime(selectedFrom.year),
-      lastDate: DateTime(selectedFrom.year + 10),
+      initialDate: _selectedFrom,
+      firstDate: DateTime(_selectedFrom.year),
+      lastDate: DateTime(_selectedFrom.year + 10),
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark(),
@@ -435,22 +494,22 @@ class _SurveyUIState extends State<SurveyUI> {
         );
       },
     );
-    if (picked.isBefore(selectedFrom)) {
+    if (picked.isBefore(_selectedFrom) || picked.isAfter(_selectedTo)) {
       return showAlertDialog(context);
     }
-    if (picked != null && picked != selectedFrom)
+    if (picked != null && picked != _selectedFrom)
       setState(() {
-        selectedFrom = picked;
-        this.survey.from = selectedFrom;
+        _selectedFrom = picked;
+        this.survey.from = _selectedFrom;
       });
   }
 
   _selectTo(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: selectedTo,
-      firstDate: DateTime(selectedTo.year),
-      lastDate: DateTime(selectedTo.year + 10),
+      initialDate: _selectedTo,
+      firstDate: DateTime(_selectedTo.year),
+      lastDate: DateTime(_selectedTo.year + 10),
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark(),
@@ -458,13 +517,13 @@ class _SurveyUIState extends State<SurveyUI> {
         );
       },
     );
-    if (picked.isBefore(selectedFrom)) {
+    if (picked.isBefore(_selectedFrom)) {
       return showAlertDialog(context);
     }
     if (picked != null && picked != this.survey.from)
       setState(() {
-        selectedTo = picked;
-        this.survey.to = selectedTo;
+        _selectedTo = picked;
+        this.survey.to = _selectedTo;
       });
   }
 

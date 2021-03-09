@@ -16,3 +16,9 @@ const gradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [Colors.black, const Color(0xff3f51b5)]);
+
+Decoration backgroundDecoration = BoxDecoration(
+    gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Colors.black, const Color(0xff3f51b5)]));
