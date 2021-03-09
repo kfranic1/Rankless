@@ -17,6 +17,14 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
     return Scaffold(
       body: Container(
         decoration: backgroundDecoration,
+        child: Column(
+          children: [
+            Text(
+              widget.survey.name,
+              style: TextStyle(color: Colors.white),
+            )
+          ],
+        ),
       ),
     );
   }

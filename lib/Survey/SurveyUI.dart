@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:intl/intl.dart';
+import 'package:rankless/Survey/SurveyUIFill.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'Question.dart';
 import 'QuestionUICreate.dart';
@@ -25,10 +26,8 @@ class _SurveyUIState extends State<SurveyUI> {
   DateFormat _formatted = DateFormat('dd-MM-yyyy');
   List<int> _selectedTags = [];
   QuestionUICreate _createdQ;
-  List<Dismissible> _questionButtons = [];
   List<QuestionUICreate> _questions = [];
   List<ListTile> _suggestedQ = [];
-  bool _confirm;
 
   //samo za provjeru
   List<DropdownMenuItem> tags = [
@@ -53,7 +52,7 @@ class _SurveyUIState extends State<SurveyUI> {
     return Scaffold(
       key: _scaffoldKey,
       body: Container(
-        decoration: backgroundDecoration, //ovdje su boje za gradient pozadine
+        decoration: backgroundDecoration,
         child: Column(
           children: <Widget>[
             Container(
@@ -61,7 +60,7 @@ class _SurveyUIState extends State<SurveyUI> {
               child: TextField(
                 decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: this.survey.name,
+                    hintText: widget.survey.name,
                     hintStyle: TextStyle(
                       fontFamily: 'Mulish',
                       color: Colors.white,
@@ -75,8 +74,8 @@ class _SurveyUIState extends State<SurveyUI> {
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
-                onChanged: (value) {
-                  setState(() => this.survey.name = value);
+                onSubmitted: (value) {
+                  setState(() => widget.survey.name = value);
                 },
               ),
               alignment: Alignment.topCenter,
@@ -358,7 +357,11 @@ class _SurveyUIState extends State<SurveyUI> {
 
             //finish creating survey
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                //ovo je samo demonstraciju funkcionalnosti
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => SurveyUIFill(widget.survey)));
+              },
               child: Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
@@ -467,7 +470,12 @@ class _SurveyUIState extends State<SurveyUI> {
                             color: Colors.white,
                             size: 40,
                           ),
-                          onPressed: () => Navigator.pop(context)),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            setState(() {
+                              question = _questions[index].getQuestion();
+                            });
+                          }),
                     ],
                   ),
                 );
