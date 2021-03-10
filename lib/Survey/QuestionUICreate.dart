@@ -110,6 +110,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
               initialValue: _question.questionText,
               decoration: textFieldDecoration.copyWith(
                   hintText: "Add text...", border: InputBorder.none),
+              style: TextStyle(fontFamily: font),
               onChanged: (value) {
                 setState(() => _question.questionText = value);
               },

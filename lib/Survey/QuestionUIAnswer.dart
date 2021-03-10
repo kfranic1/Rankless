@@ -28,10 +28,10 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
       margin: EdgeInsets.all(30),
       child: ListView(children: [
         Container(
-          decoration: BoxDecoration(
-            color: Colors.blue[200],
-            borderRadius: borderRadius,
-          ),
+          // decoration: BoxDecoration(
+          //   color: Colors.blue[200],
+          //   borderRadius: borderRadius,
+          // ),
           padding: EdgeInsets.all(10.0),
           child: Text(
             widget.question.questionText,
