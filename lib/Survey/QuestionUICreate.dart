@@ -13,9 +13,7 @@ class QuestionUICreate extends StatefulWidget {
       _QuestionUICreateState(_question, _controllers);
 
   Question getQuestion() {
-    _controllers.forEach((element) {
-      _question.multipleAnswers.add(element.text);
-    });
+    _question.multipleAnswers = _controllers.map((e) => e.text).toList();
     return _question;
   }
 }
@@ -51,7 +49,8 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
   Question _question;
   List<TextEditingController> _controllers = [];
 
-  List<bool> _answerTypes = List.generate(3, (_) => false);
+  List<bool> _answerTypes = List.generate(
+      3, (_) => false); //_ == 0 tak da prvi bude true na pocetku a ostali false
   Widget _proba = Text('');
   int _counter;
   Icon _icon;

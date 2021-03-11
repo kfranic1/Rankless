@@ -11,10 +11,12 @@ class Company {
   String description;
   String country;
   List<Employee> employees = [];
-  //List<Survey> surveys;
+  //List<Survey> surveys;5
   List<Post> posts = [];
   List<String> roles = [];
   List<String> requests = [];
+  List<String> surveys =
+      []; //Mozda bi bilo korisno imat odvojeno zavrsene i tekuce ankete
   Employee me;
 
   CollectionReference companiesCollection =
@@ -42,6 +44,7 @@ class Company {
       'roles': this.roles,
       'country': this.country,
       'requests': this.requests,
+      'surveys': this.surveys,
     }).then((value) => print('done'));
     this.uid = ref.id;
     return this;
@@ -74,6 +77,7 @@ class Company {
     this.employees = (employeesFromFirebase as List<dynamic>)
         .map((e) => Employee(uid: e as String))
         .toList();
+    this.surveys = List<String>.from(ref['surveys'] as List<dynamic>);
     return this;
   }
 

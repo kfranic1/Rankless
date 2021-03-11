@@ -37,7 +37,12 @@ class Employee {
   }
 
   Future updateEmployee(
-      {newName, newSurname, newRoles, newCompanyUid, newRequest}) async {
+      {newName,
+      newSurname,
+      newRoles,
+      newCompanyUid,
+      newRequest,
+      newSurveys}) async {
     if (newName != null) {
       this.name = newName;
       await userCollection.doc(this.uid).update({'name': this.name});
@@ -59,6 +64,12 @@ class Employee {
     if (newRequest != null) {
       this.request = newRequest;
       await userCollection.doc(this.uid).update({'request': this.request});
+    }
+    if (newSurveys != null) {
+      this.pendingSurveys = newSurveys;
+      await userCollection
+          .doc(this.uid)
+          .update({'surveys': this.pendingSurveys});
     }
   }
 

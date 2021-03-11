@@ -22,11 +22,12 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
   @override
   Widget build(BuildContext context) {
     print(widget.question.answerType);
+    print(widget.question.multipleAnswers);
     return Container(
       color: Colors.transparent,
       // padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(30),
-      child: ListView(children: [
+      child: ListView(shrinkWrap: true, children: [
         Container(
           // decoration: BoxDecoration(
           //   color: Colors.blue[200],
@@ -64,19 +65,19 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
         ),
         Visibility(
           child: ListView(
-            // shrinkWrap: true,
+            shrinkWrap: true,
             children: widget.question.multipleAnswers
-                .map((e) => Expanded(
-                      child: RadioListTile(
-                        title: Text(e),
-                        value: e,
-                        groupValue: _chosen,
-                        onChanged: (String value) {
-                          setState(() {
-                            _chosen = value;
-                          });
-                        },
-                      ),
+                .map((e) => RadioListTile(
+                      title: Text(e),
+                      value: e,
+                      groupValue: _chosen,
+                      onChanged: (String value) {
+                        setState(() {
+                          _chosen = value;
+                          widget.question.mask = (1 <<
+                              widget.question.multipleAnswers.indexOf(value));
+                        });
+                      },
                     ))
                 .toList(),
           ),
@@ -93,6 +94,7 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
                 onChanged: (value) {
                   setState(() {
                     mask ^= 1 << index;
+                    widget.question.mask = mask;
                   });
                   print(mask);
                 },
