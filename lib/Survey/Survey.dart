@@ -10,7 +10,7 @@ class Survey {
   List<Question> qNa = [];
   List<Employee> filled;
   List<Employee> notFilled;
-  List<DropdownMenuItem> tags;
+  List<String> tags = [];
   List<String> results; //to je lista odgovora preko kojih biljezimo rezultate
   DateTime from;
   DateTime to;

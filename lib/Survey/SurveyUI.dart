@@ -21,8 +21,8 @@ class SurveyUI extends StatefulWidget {
 class _SurveyUIState extends State<SurveyUI> {
   Survey survey;
   _SurveyUIState(this.survey);
-  DateTime _selectedFrom = DateTime.now();
-  DateTime _selectedTo = DateTime.now();
+  DateTime _initaialFrom = DateTime.now();
+  DateTime _initialTo;
   DateFormat _formatted = DateFormat('dd-MM-yyyy');
   List<int> _selectedTags = [];
   QuestionUICreate _createdQ;
@@ -40,7 +40,16 @@ class _SurveyUIState extends State<SurveyUI> {
       value: 'two',
     )
   ];
-  List<String> showTags = [];
+
+  @override
+  void initState() {
+    widget.survey.from = _initaialFrom;
+
+    widget.survey.to = _initialTo = DateTime(
+        _initaialFrom.year + 1, _initaialFrom.month, _initaialFrom.day);
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +111,7 @@ class _SurveyUIState extends State<SurveyUI> {
                       ),
                       child: TextButton(
                         child: Text(
-                          _formatted.format(_selectedFrom),
+                          _formatted.format(widget.survey.from),
                           style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -131,7 +140,7 @@ class _SurveyUIState extends State<SurveyUI> {
                       ),
                       child: TextButton(
                         child: Text(
-                          _formatted.format(_selectedTo),
+                          _formatted.format(widget.survey.to),
                           style: TextStyle(
                               fontFamily: 'Mulish',
                               fontSize: 15,
@@ -174,7 +183,7 @@ class _SurveyUIState extends State<SurveyUI> {
                       onChanged: (value) {
                         setState(() {
                           _selectedTags = value;
-                          this.showTags = showTagsUpdate(_selectedTags);
+                          widget.survey.tags = showTagsUpdate(_selectedTags);
                         });
                       },
                       menuBackgroundColor: Colors.lightBlue[50],
@@ -229,9 +238,9 @@ class _SurveyUIState extends State<SurveyUI> {
                       symmetry: false,
                       columns: 0,
                       horizontalScroll: true,
-                      itemCount: showTags.length,
+                      itemCount: widget.survey.tags.length,
                       itemBuilder: (index) {
-                        final item = showTags[index];
+                        final item = widget.survey.tags[index];
                         return ItemTags(
                           active: true,
                           key: Key(index.toString()),
@@ -243,8 +252,6 @@ class _SurveyUIState extends State<SurveyUI> {
                           singleItem: false,
                           activeColor: Colors.blue,
                           color: Colors.grey,
-                          onPressed: (i) {},
-                          //combine: ItemTagsCombine.withTextBefore,
                         );
                       },
                     ),
@@ -359,8 +366,10 @@ class _SurveyUIState extends State<SurveyUI> {
             TextButton(
               onPressed: () {
                 //ovo je samo demonstraciju funkcionalnosti
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => SurveyUIFill(widget.survey)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SurveyUIFill(widget.survey)));
               },
               child: Container(
                   alignment: Alignment.center,
@@ -383,7 +392,8 @@ class _SurveyUIState extends State<SurveyUI> {
     );
   }
 
-//--------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------
 //methods
   Widget buildQTile(Question question, int index) {
     return Dismissible(
@@ -492,9 +502,9 @@ class _SurveyUIState extends State<SurveyUI> {
   _selectFrom(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: _selectedFrom,
-      firstDate: DateTime(_selectedFrom.year),
-      lastDate: DateTime(_selectedFrom.year + 10),
+      initialDate: widget.survey.from,
+      firstDate: DateTime(widget.survey.from.year),
+      lastDate: DateTime(widget.survey.from.year + 10),
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark(),
@@ -502,22 +512,22 @@ class _SurveyUIState extends State<SurveyUI> {
         );
       },
     );
-    if (picked.isBefore(_selectedFrom) || picked.isAfter(_selectedTo)) {
+    if (picked.isBefore(DateTime(_initaialFrom.day - 1)) ||
+        picked.isAfter(widget.survey.to)) {
       return showAlertDialog(context);
     }
-    if (picked != null && picked != _selectedFrom)
+    if (picked != null)
       setState(() {
-        _selectedFrom = picked;
-        this.survey.from = _selectedFrom;
+        widget.survey.from = picked;
       });
   }
 
   _selectTo(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: _selectedTo,
-      firstDate: DateTime(_selectedTo.year),
-      lastDate: DateTime(_selectedTo.year + 10),
+      initialDate: widget.survey.to,
+      firstDate: DateTime(widget.survey.from.year),
+      lastDate: DateTime(widget.survey.to.year + 10),
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark(),
@@ -525,13 +535,12 @@ class _SurveyUIState extends State<SurveyUI> {
         );
       },
     );
-    if (picked.isBefore(_selectedFrom)) {
+    if (picked.isBefore(widget.survey.from)) {
       return showAlertDialog(context);
     }
-    if (picked != null && picked != this.survey.from)
+    if (picked != null && picked.isAfter(widget.survey.from))
       setState(() {
-        _selectedTo = picked;
-        this.survey.to = _selectedTo;
+        widget.survey.to = picked;
       });
   }
 
