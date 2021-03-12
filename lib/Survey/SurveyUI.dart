@@ -22,7 +22,6 @@ class _SurveyUIState extends State<SurveyUI> {
   Survey survey;
   _SurveyUIState(this.survey);
   DateTime _initaialFrom = DateTime.now();
-  DateTime _initialTo;
   DateFormat _formatted = DateFormat('dd-MM-yyyy');
   List<int> _selectedTags = [];
   QuestionUICreate _createdQ;
@@ -43,9 +42,10 @@ class _SurveyUIState extends State<SurveyUI> {
 
   @override
   void initState() {
-    widget.survey.from = _initaialFrom;
+    widget.survey.from =
+        DateTime(_initaialFrom.year, _initaialFrom.month, _initaialFrom.day);
 
-    widget.survey.to = _initialTo = DateTime(
+    widget.survey.to = DateTime(
         _initaialFrom.year + 1, _initaialFrom.month, _initaialFrom.day);
 
     super.initState();
@@ -374,16 +374,16 @@ class _SurveyUIState extends State<SurveyUI> {
               child: Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                      color: Colors.blue, borderRadius: borderRadius),
+                      color: Colors.transparent, borderRadius: borderRadius),
                   height: 60,
                   width: 200,
                   child: Text(
                     'Finish',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                        //fontWeight: FontWeight.bold,
                         color: Colors.white,
                         fontFamily: 'Mulish',
-                        fontSize: 20),
+                        fontSize: 22),
                   )),
             )
           ],

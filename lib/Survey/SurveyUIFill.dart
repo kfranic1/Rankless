@@ -8,10 +8,13 @@ import 'Survey.dart';
 class SurveyUIFill extends StatefulWidget {
   final Survey survey;
   List<QuestionUIAnswer> qNa = [];
+
   SurveyUIFill(this.survey);
   @override
   _SurveyUIFillState createState() => _SurveyUIFillState();
 }
+
+bool allAnswered = true;
 
 class _SurveyUIFillState extends State<SurveyUIFill> {
   @override
@@ -47,7 +50,23 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                 shrinkWrap: true,
                 itemCount: widget.qNa.length,
                 itemBuilder: (context, index) {
-                  return widget.qNa[index];
+                  return (ListTile(
+                    leading: Text(
+                      (index + 1).toString(),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Mulish',
+                          fontSize: 18),
+                    ),
+                    title: Container(
+                      child: Transform.translate(
+                          offset: Offset(-15, -22), child: widget.qNa[index]),
+                    ),
+                    minVerticalPadding: 0,
+                    minLeadingWidth: 0,
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: -10),
+                  ));
                 },
                 separatorBuilder: (context, index) {
                   return SizedBox(
@@ -58,10 +77,64 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                   );
                 },
               )),
+              TextButton(
+                onPressed: () {
+                  //ovo je samo demonstraciju funkcionalnosti
+                  setState(() {
+                    widget.qNa = checkAnswered(widget.qNa);
+                  });
+                  if (!allAnswered) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return (AlertDialog(
+                              title: Text(
+                                "You haven't answered on all questions",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.red[600]),
+                              ),
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                side: BorderSide(color: Colors.white),
+                              )));
+                        });
+                  }
+                  //Navigator.pop(context);
+                },
+                child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: Colors.transparent, borderRadius: borderRadius),
+                    height: 60,
+                    width: 200,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(
+                          //fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: 'Mulish',
+                          fontSize: 22),
+                    )),
+              )
             ],
           ),
         ),
       ),
     );
   }
+}
+
+List<QuestionUIAnswer> checkAnswered(List<QuestionUIAnswer> list) {
+  List<QuestionUIAnswer> result = [];
+  list.forEach((element) {
+    if (element.question.singleAnswer.isEmpty && element.question.mask == 0) {
+      print(true);
+      element.notAnsweredD =
+          BoxDecoration(border: Border.all(color: Colors.red));
+      allAnswered = false;
+    }
+    result.add(element);
+  });
+  return result;
 }
