@@ -22,3 +22,8 @@ Decoration backgroundDecoration = BoxDecoration(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [Colors.black, const Color(0xff3f51b5)]));
+
+InputDecoration textFieldDecoration = InputDecoration(
+  // border: InputBorder.none,
+  hintStyle: TextStyle(fontFamily: font, color: Colors.white60, fontSize: 15),
+);

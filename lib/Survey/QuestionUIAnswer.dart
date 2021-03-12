@@ -72,20 +72,26 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
           child: ListView(
             shrinkWrap: true,
             children: widget.question.multipleAnswers
-                .map((e) => RadioListTile(
-                      title: Text(
-                        e,
-                        style: TextStyle(color: Colors.white, fontFamily: font),
+                .map((e) => Theme(
+                      data: ThemeData(unselectedWidgetColor: Colors.white),
+                      child: RadioListTile(
+                        title: Text(
+                          e,
+                          style:
+                              TextStyle(color: Colors.white, fontFamily: font),
+                        ),
+                        value: e,
+                        groupValue: _chosen,
+                        onChanged: (String value) {
+                          setState(() {
+                            _chosen = value;
+                            widget.question.mask = (1 <<
+                                widget.question.multipleAnswers.indexOf(value));
+                          });
+                        },
+                        activeColor: Colors.white,
+                        // selectedTileColor: Colors.white,
                       ),
-                      value: e,
-                      groupValue: _chosen,
-                      onChanged: (String value) {
-                        setState(() {
-                          _chosen = value;
-                          widget.question.mask = (1 <<
-                              widget.question.multipleAnswers.indexOf(value));
-                        });
-                      },
                     ))
                 .toList(),
           ),
@@ -96,20 +102,25 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
             shrinkWrap: true,
             itemCount: widget.question.multipleAnswers.length,
             itemBuilder: (context, index) {
-              return CheckboxListTile(
-                title: Text(
-                  widget.question.multipleAnswers[index],
-                  style: TextStyle(color: Colors.white, fontFamily: 'Mulish'),
+              return Theme(
+                data: ThemeData(unselectedWidgetColor: Colors.white),
+                child: CheckboxListTile(
+                  title: Text(
+                    widget.question.multipleAnswers[index],
+                    style: TextStyle(color: Colors.white, fontFamily: 'Mulish'),
+                  ),
+                  value: mask & (1 << index) != 0,
+                  onChanged: (value) {
+                    setState(() {
+                      mask ^= 1 << index;
+                      widget.question.mask = mask;
+                    });
+                    print(mask);
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                  checkColor: Colors.white,
+                  activeColor: Colors.transparent,
                 ),
-                value: mask & (1 << index) != 0,
-                onChanged: (value) {
-                  setState(() {
-                    mask ^= 1 << index;
-                    widget.question.mask = mask;
-                  });
-                  print(mask);
-                },
-                controlAffinity: ListTileControlAffinity.leading,
               );
             },
           ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rankless/Launch/auth.dart';
+import 'package:rankless/Launch/register.dart';
+import 'package:rankless/shared/Interface.dart';
 import 'package:rankless/shared/custom_app_bar.dart';
 
 class LogIn extends StatefulWidget {
@@ -18,6 +20,7 @@ class _LogInState extends State<LogIn> {
   String password = '';
   String error = '';
   bool loading = false;
+  bool obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -27,68 +30,90 @@ class _LogInState extends State<LogIn> {
             child: CircularProgressIndicator(),
           )
         : Center(
-            child: ListView(
-              children: [
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TextFormField(
-                        initialValue: email,
-                        decoration: InputDecoration(hintText: "email"),
-                        onChanged: (value) {
-                          setState(() => email = value);
-                        },
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TextFormField(
-                        initialValue: password,
-                        decoration: InputDecoration(hintText: "password"),
-                        obscureText: true,
-                        onChanged: (value) {
-                          setState(() => password = value);
-                        },
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(error),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      ElevatedButton(
-                        child: Text("Log In"),
-                        onPressed: () async {
-                          if (_formKey.currentState.validate()) {
-                            _formKey.currentState.
-                            setState(() => loading = true);
-                            dynamic result = await _auth
-                                .logInWithEmailAndPassword(email, password);
-                            if (result is String) {
+            child: Container(
+              decoration: backgroundDecoration,
+              padding: EdgeInsets.all(20),
+              child: ListView(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          initialValue: email,
+                          decoration: registerInputDecoration.copyWith(
+                              labelText: "email"),
+                          style: inputTextStyle,
+                          onChanged: (value) {
+                            setState(() => email = value);
+                          },
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.all(0),
+                          title: TextFormField(
+                            initialValue: password,
+                            decoration: registerInputDecoration.copyWith(
+                                labelText: "password"),
+                            style: inputTextStyle,
+                            obscureText: obscureText,
+                            onChanged: (value) {
+                              setState(() => password = value);
+                            },
+                          ),
+                          trailing: IconButton(
+                            icon:
+                                Icon(Icons.remove_red_eye, color: Colors.white),
+                            onPressed: () {
                               setState(() {
-                                error = result;
-                                loading = false;
+                                obscureText = !obscureText;
                               });
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(error),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          child: Text("Log In", style: inputTextStyle),
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              _formKey.currentState
+                                  .setState(() => loading = true);
+                              dynamic result = await _auth
+                                  .logInWithEmailAndPassword(email, password);
+                              if (result is String) {
+                                setState(() {
+                                  error = result;
+                                  loading = false;
+                                });
+                              }
+                              //automatic homescreen from stream
                             }
-                            //automatic homescreen from stream
-                          }
-                        },
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TextButton(
+                          },
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        TextButton(
                           onPressed: widget.toogleView,
-                          child: Text("Don't have an account? Register here."))
-                    ],
+                          child: Text("Don't have an account? Register here.",
+                              style: inputTextStyle),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
   }

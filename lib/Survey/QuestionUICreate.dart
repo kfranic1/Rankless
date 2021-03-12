@@ -1,6 +1,7 @@
 import 'package:customtogglebuttons/customtogglebuttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rankless/Launch/register.dart';
 import 'Question.dart';
 import 'package:rankless/shared/Interface.dart';
 
@@ -212,7 +213,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
           leading: _icon,
           title: TextFormField(
             controller: _controllers[index],
-            style: TextStyle(color: Colors.white),
+            style: inputTextStyle,
             decoration: InputDecoration(
               hintText: "Add text...",
               hintStyle: TextStyle(
