@@ -3,8 +3,11 @@ import 'package:rankless/shared/Interface.dart';
 
 import 'Question.dart';
 
+// ignore: must_be_immutable
 class QuestionUIAnswer extends StatefulWidget {
   final Question question;
+  BoxDecoration notAnsweredD =
+      BoxDecoration(border: Border.all(color: Colors.transparent));
   // QuestionUICreate(this.question);
   // List<bool> _selections = List.generate(3, (_) => false);
   // final Function toogleView;
@@ -19,12 +22,14 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
   List<String> answerText = [];
   String _chosen;
   int mask = 0;
+
   @override
   Widget build(BuildContext context) {
     print(widget.question.answerType);
     print(widget.question.multipleAnswers);
     return Container(
-      color: Colors.transparent,
+      decoration: widget.notAnsweredD,
+      //color: Colors.transparent,
       // padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(30),
       child: ListView(shrinkWrap: true, children: [
@@ -37,10 +42,10 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
           child: Text(
             widget.question.questionText,
             style: TextStyle(
-              fontFamily: font,
-              color: Colors.white,
-              fontSize: 15,
-            ),
+                fontFamily: font,
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold),
           ),
         ),
         Visibility(
@@ -68,7 +73,10 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
             shrinkWrap: true,
             children: widget.question.multipleAnswers
                 .map((e) => RadioListTile(
-                      title: Text(e),
+                      title: Text(
+                        e,
+                        style: TextStyle(color: Colors.white, fontFamily: font),
+                      ),
                       value: e,
                       groupValue: _chosen,
                       onChanged: (String value) {
@@ -89,7 +97,10 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
             itemCount: widget.question.multipleAnswers.length,
             itemBuilder: (context, index) {
               return CheckboxListTile(
-                title: Text(widget.question.multipleAnswers[index]),
+                title: Text(
+                  widget.question.multipleAnswers[index],
+                  style: TextStyle(color: Colors.white, fontFamily: 'Mulish'),
+                ),
                 value: mask & (1 << index) != 0,
                 onChanged: (value) {
                   setState(() {
