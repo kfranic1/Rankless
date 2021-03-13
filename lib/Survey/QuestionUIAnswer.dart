@@ -19,7 +19,7 @@ class QuestionUIAnswer extends StatefulWidget {
 class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
   // TYPE answerType;
   // String singleAnswer;
-  List<String> answerText = [];
+  // List<String> answerText = [];
   String _chosen;
   int mask = 0;
 
@@ -64,7 +64,7 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
               hintStyle: TextStyle(color: Colors.grey),
               border: InputBorder.none,
             ),
-            style: TextStyle(color: Colors.grey), // white70?
+            style: inputTextStyle, // white70?
           ),
           visible: widget.question.answerType == TYPE.Text,
         ),
