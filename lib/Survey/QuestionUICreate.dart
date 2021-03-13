@@ -206,6 +206,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
 // creating an answer in multiple answers types
   void multipleChoiceAnswerWork(int count) {
     _proba = (ListView.builder(
+      physics: ClampingScrollPhysics(),
       shrinkWrap: true,
       itemCount: count,
       itemBuilder: (context, index) {

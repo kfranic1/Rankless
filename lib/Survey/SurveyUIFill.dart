@@ -28,7 +28,8 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
       body: Container(
         decoration: backgroundDecoration,
         child: Center(
-          child: Column(
+          child: ListView(
+            shrinkWrap: true,
             children: <Widget>[
               Container(
                 child: Text(widget.survey.name,
@@ -41,40 +42,40 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                 alignment: Alignment.topCenter,
                 padding: EdgeInsets.all(20), //ovo bi moglop biti drugacije
               ),
-              Expanded(
-                  child: ListView.separated(
+              ListView.separated(
+                physics: ClampingScrollPhysics(),
                 key: UniqueKey(),
                 shrinkWrap: true,
                 itemCount: widget.qNa.length,
                 itemBuilder: (context, index) {
-                  return (ListTile(
-                    leading: Text(
-                      (index + 1).toString(),
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Mulish',
-                          fontSize: 18),
-                    ),
-                    title: Container(
-                      decoration: decorate,
-                      child: Transform.translate(
-                          offset: Offset(-15, -22), child: widget.qNa[index]),
-                    ),
-                    minVerticalPadding: 0,
-                    minLeadingWidth: 0,
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 16, vertical: -10),
-                  ));
+              return (ListTile(
+                leading: Text(
+                  (index + 1).toString(),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Mulish',
+                      fontSize: 18),
+                ),
+                title: Container(
+                  decoration: decorate,
+                  child: Transform.translate(
+                      offset: Offset(-15, -22), child: widget.qNa[index]),
+                ),
+                minVerticalPadding: 0,
+                minLeadingWidth: 0,
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: -10),
+              ));
                 },
                 separatorBuilder: (context, index) {
-                  return SizedBox(
-                    child: Divider(
-                      color: Colors.white,
-                    ),
-                    height: 15,
-                  );
+              return SizedBox(
+                child: Divider(
+                  color: Colors.white,
+                ),
+                height: 15,
+              );
                 },
-              )),
+              ),
               TextButton(
                 onPressed: () {
                   //ovo je samo demonstraciju funkcionalnosti

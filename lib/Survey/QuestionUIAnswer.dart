@@ -33,7 +33,9 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
       //color: Colors.transparent,
       // padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(30),
-      child: ListView(shrinkWrap: true, children: [
+      child: ListView(
+        physics: ClampingScrollPhysics(),
+        shrinkWrap: true, children: [
         Container(
           // decoration: BoxDecoration(
           //   color: Colors.blue[200],
@@ -71,6 +73,7 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
         ),
         Visibility(
           child: ListView(
+            physics: ClampingScrollPhysics(),
             shrinkWrap: true,
             children: widget.question.multipleAnswers
                 .map((e) => Theme(
@@ -103,6 +106,7 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
         ),
         Visibility(
           child: ListView.builder(
+            physics: ClampingScrollPhysics(),
             shrinkWrap: true,
             itemCount: widget.question.multipleAnswers.length,
             itemBuilder: (context, index) {
