@@ -16,6 +16,8 @@ class SurveyUIFill extends StatefulWidget {
 }
 
 bool allAnswered;
+BoxDecoration decorate =
+    BoxDecoration(border: Border.all(color: Colors.transparent));
 
 class _SurveyUIFillState extends State<SurveyUIFill> {
   @override
@@ -61,8 +63,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                           fontSize: 18),
                     ),
                     title: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.transparent)),
+                      decoration: decorate,
                       child: Transform.translate(
                           offset: Offset(-15, -22), child: widget.qNa[index]),
                     ),
@@ -85,7 +86,10 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                 onPressed: () {
                   //ovo je samo demonstraciju funkcionalnosti
                   allAnswered = true;
-                  checkAnswered(widget.qNa);
+                  setState(() {
+                    widget.qNa = checkAnswered(widget.qNa);
+                  });
+
                   if (!allAnswered) {
                     var snackBar = showWarning();
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -117,7 +121,18 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
     );
   }
 
-  void checkAnswered(List<QuestionUIAnswer> list) {
+  bool isAnswered(QuestionUIAnswer element) {
+    if ((element.question.mask == null || element.question.mask == 0) &&
+        (element.question.singleAnswer.isEmpty ||
+            !singleAnswerCheck(element.question.singleAnswer))) {
+      allAnswered = false;
+      return false;
+    }
+    return true;
+  }
+
+  List<QuestionUIAnswer> checkAnswered(List<QuestionUIAnswer> list) {
+    List<QuestionUIAnswer> result = [];
     list.forEach((element) {
       print(element.question.questionText +
           ' ' +
@@ -136,7 +151,9 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
               BoxDecoration(border: Border.all(color: Colors.transparent));
         });
       }
+      result.add(element);
     });
+    return result;
   }
 }
 
