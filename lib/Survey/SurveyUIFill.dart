@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rankless/Survey/QuestionUIAnswer.dart';
+import 'package:rankless/Survey/SurveyUI.dart';
 import 'package:rankless/shared/Interface.dart';
 
 import 'Survey.dart';
@@ -14,7 +15,7 @@ class SurveyUIFill extends StatefulWidget {
   _SurveyUIFillState createState() => _SurveyUIFillState();
 }
 
-bool allAnswered = true;
+bool allAnswered;
 
 class _SurveyUIFillState extends State<SurveyUIFill> {
   @override
@@ -47,6 +48,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
               ),
               Expanded(
                   child: ListView.separated(
+                key: UniqueKey(),
                 shrinkWrap: true,
                 itemCount: widget.qNa.length,
                 itemBuilder: (context, index) {
@@ -59,6 +61,8 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                           fontSize: 18),
                     ),
                     title: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.transparent)),
                       child: Transform.translate(
                           offset: Offset(-15, -22), child: widget.qNa[index]),
                     ),
@@ -80,26 +84,15 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
               TextButton(
                 onPressed: () {
                   //ovo je samo demonstraciju funkcionalnosti
-                  setState(() {
-                    widget.qNa = checkAnswered(widget.qNa);
-                  });
+                  allAnswered = true;
+                  checkAnswered(widget.qNa);
                   if (!allAnswered) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return (AlertDialog(
-                              title: Text(
-                                "You haven't answered on all questions",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.red[600]),
-                              ),
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                side: BorderSide(color: Colors.white),
-                              )));
-                        });
+                    var snackBar = showWarning();
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } else {
+                    showConformationDialog(context);
                   }
+
                   //Navigator.pop(context);
                 },
                 child: Container(
@@ -123,18 +116,82 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
       ),
     );
   }
+
+  void checkAnswered(List<QuestionUIAnswer> list) {
+    list.forEach((element) {
+      print(element.question.questionText +
+          ' ' +
+          element.question.mask.toString());
+      if ((element.question.mask == null || element.question.mask == 0) &&
+          (element.question.singleAnswer.isEmpty ||
+              !singleAnswerCheck(element.question.singleAnswer))) {
+        setState(() {
+          allAnswered = false;
+          element.notAnsweredD =
+              BoxDecoration(border: Border.all(color: Colors.red));
+        });
+      } else {
+        setState(() {
+          element.notAnsweredD =
+              BoxDecoration(border: Border.all(color: Colors.transparent));
+        });
+      }
+    });
+  }
 }
 
-List<QuestionUIAnswer> checkAnswered(List<QuestionUIAnswer> list) {
-  List<QuestionUIAnswer> result = [];
-  list.forEach((element) {
-    if (element.question.singleAnswer.isEmpty && element.question.mask == 0) {
-      print(true);
-      element.notAnsweredD =
-          BoxDecoration(border: Border.all(color: Colors.red));
-      allAnswered = false;
-    }
-    result.add(element);
-  });
-  return result;
+bool singleAnswerCheck(String singleAns) {
+  if (singleAns.contains(RegExp(r'[A-Z]')) ||
+      singleAns.contains(RegExp(r'[a-z]')) ||
+      singleAns.contains(RegExp(r'[0-9]'))) return true;
+  return false;
+}
+
+SnackBar showWarning() {
+  return (SnackBar(
+    content: Text(
+      'You must answer on all of the questions',
+      style: TextStyle(fontFamily: font, fontSize: 20),
+    ),
+  ));
+}
+
+showConformationDialog(BuildContext context) {
+  // set up the buttons
+  Widget cancelButton = TextButton(
+    child: Text(
+      "No",
+      style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+  Widget continueButton = TextButton(
+    child: Text(
+      "Yes",
+      style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
+    ),
+    onPressed: () {
+      //ovdje bi trebala ići neka radnja da se izlazi iz surveya i ulazi u izbornik anketa
+    },
+  );
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    content: Text(
+      "Are you sure you want to submit survey?",
+      style: TextStyle(fontFamily: font, fontSize: 20),
+    ),
+    actions: [
+      continueButton,
+      cancelButton,
+    ],
+  );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

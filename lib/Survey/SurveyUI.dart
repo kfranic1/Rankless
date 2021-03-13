@@ -418,20 +418,21 @@ class _SurveyUIState extends State<SurveyUI> {
             return AlertDialog(
               title: const Text(
                 "Confirm",
-                style: TextStyle(
-                    fontFamily: 'Mulish', fontWeight: FontWeight.bold),
+                style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
               ),
-              content:
-                  const Text("Are you sure you wish to delete this question?"),
+              content: const Text(
+                "Are you sure you wish to delete this question?",
+                style: TextStyle(fontFamily: font),
+              ),
               actions: <Widget>[
                 TextButton(
                     onPressed: () => Navigator.of(context).pop(true),
                     child: const Text("DELETE",
-                        style: TextStyle(fontFamily: 'Mulish'))),
+                        style: TextStyle(fontFamily: font))),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text("CANCEL",
-                      style: TextStyle(fontFamily: 'Mulish')),
+                  child:
+                      const Text("CANCEL", style: TextStyle(fontFamily: font)),
                 ),
               ],
             );
