@@ -21,7 +21,6 @@ class SurveyUI extends StatefulWidget {
 class _SurveyUIState extends State<SurveyUI> {
   Survey survey;
   _SurveyUIState(this.survey);
-  DateTime _initaialFrom = DateTime.now();
   DateFormat _formatted = DateFormat('dd-MM-yyyy');
   List<int> _selectedTags = [];
   QuestionUICreate _createdQ;
@@ -39,18 +38,6 @@ class _SurveyUIState extends State<SurveyUI> {
       value: 'two',
     )
   ];
-
-  @override
-  void initState() {
-    widget.survey.from =
-        DateTime(_initaialFrom.year, _initaialFrom.month, _initaialFrom.day);
-
-    widget.survey.to = DateTime(
-        _initaialFrom.year + 1, _initaialFrom.month, _initaialFrom.day);
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     //provjera za tagove
@@ -504,8 +491,8 @@ class _SurveyUIState extends State<SurveyUI> {
     final DateTime picked = await showDatePicker(
       context: context,
       initialDate: widget.survey.from,
-      firstDate: DateTime(widget.survey.from.year),
-      lastDate: DateTime(widget.survey.from.year + 10),
+      firstDate: widget.survey.from,
+      lastDate: widget.survey.from.add(Duration(days: 365)),
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark(),
@@ -513,22 +500,16 @@ class _SurveyUIState extends State<SurveyUI> {
         );
       },
     );
-    if (picked.isBefore(DateTime(_initaialFrom.day - 1)) ||
-        picked.isAfter(widget.survey.to)) {
-      return showAlertDialog(context);
-    }
-    if (picked != null)
-      setState(() {
-        widget.survey.from = picked;
-      });
+    if (picked.isAfter(widget.survey.to)) return showAlertDialog(context);
+    if (picked != null) setState(() => widget.survey.from = picked);
   }
 
   _selectTo(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
       initialDate: widget.survey.to,
-      firstDate: DateTime(widget.survey.from.year),
-      lastDate: DateTime(widget.survey.to.year + 10),
+      firstDate: widget.survey.from,
+      lastDate: widget.survey.to.add(Duration(days: 365)),
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark(),
@@ -539,10 +520,7 @@ class _SurveyUIState extends State<SurveyUI> {
     if (picked.isBefore(widget.survey.from)) {
       return showAlertDialog(context);
     }
-    if (picked != null && picked.isAfter(widget.survey.from))
-      setState(() {
-        widget.survey.to = picked;
-      });
+    if (picked != null && picked.isAfter(widget.survey.from)) setState(() => widget.survey.to = picked);
   }
 
   showAlertDialog(BuildContext context) {

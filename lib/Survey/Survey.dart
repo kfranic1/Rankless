@@ -12,8 +12,12 @@ class Survey {
   List<String> filled;
   List<String> notFilled;
   List<String> tags = [];
-  DateTime from;
-  DateTime to;
+  DateTime from =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  DateTime to = DateTime(
+      DateTime.now().year,
+      DateTime.now().add(Duration(days: 7)).month,
+      DateTime.now().add(Duration(days: 7)).day);
   STATUS status;
   Survey({this.uid, this.name, this.company}) {
     if (company != null)
