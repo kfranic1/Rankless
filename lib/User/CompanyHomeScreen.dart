@@ -24,14 +24,14 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
             child: Text('You are not in any company'),
           )
         : Scaffold(
-            floatingActionButton: me.roles.contains('admin')
+            floatingActionButton: me.admin
                 ? FloatingActionButton(
                     child: Icon(Icons.add),
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => SurveyUI(
-                          new Survey('Survey', company),
+                          new Survey(name: 'Survey', company: company),
                         ),
                       ),
                     ),
@@ -46,8 +46,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   ),
                 ),
                 Visibility(
-                  visible: (me.roles.contains('admin') &&
-                      company.requests.length != 0),
+                  visible: (me.admin && company.requests.length != 0),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Align(

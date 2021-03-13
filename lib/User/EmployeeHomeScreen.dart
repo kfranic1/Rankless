@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'CreateCompany.dart';
+import 'package:rankless/Survey/Survey.dart';
 import 'JoinCompany.dart';
 
 import 'Employee.dart';
@@ -28,8 +29,8 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                         ((employee.request.contains('accepted')
                                 ? 'accepted to '
                                 : 'denied from ') +
-                            employee.request.substring(
-                                employee.request.indexOf('%') + 1)),
+                            employee.request
+                                .substring(employee.request.indexOf('%') + 1)),
                   ),
                   actions: [
                     TextButton(
@@ -49,6 +50,9 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final employee = Provider.of<Employee>(context);
+    employee.surveys.forEach((element) {
+      print(element.uid);
+    });
     return ListView(
       children: [
         Text(
@@ -106,6 +110,41 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
         employee.roles.length != 0
             ? Text(employee.roles[0])
             : Text('Roles loading'),
+        employee.surveys.length > 0
+            ? FutureBuilder(
+                future: employee.handleSurveys(),
+                builder: (context, snapshot) =>
+                    snapshot.connectionState == ConnectionState.active
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Center(
+                            child: TextButton(
+                              onPressed: () async {
+                                for (Survey s in employee.surveys)
+                                  print(s.status);
+                              },
+                              child: Text('You have ' +
+                                  employee.surveys
+                                      .where((element) {
+                                        print(element.name);
+                                        return element.status == STATUS.Active;
+                                      })
+                                      .length
+                                      .toString() +
+                                  ' active and ' +
+                                  employee.surveys
+                                      .where((element) =>
+                                          element.status == STATUS.Upcoming)
+                                      .length
+                                      .toString() +
+                                  ' surveys'),
+                            ),
+                          ),
+              )
+            : Center(
+                child: Text('There are no new surveys'),
+              )
       ],
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:rankless/shared/Interface.dart';
 
@@ -20,13 +22,12 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
   // TYPE answerType;
   // String singleAnswer;
   // List<String> answerText = [];
-  String _chosen;
-  int mask = 0;
 
   @override
   Widget build(BuildContext context) {
     print(widget.question.answerType);
     print(widget.question.multipleAnswers);
+    print(widget.question.mask);
     return Container(
       decoration: widget.notAnsweredD,
       //color: Colors.transparent,
@@ -81,12 +82,15 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
                               TextStyle(color: Colors.white, fontFamily: font),
                         ),
                         value: e,
-                        groupValue: _chosen,
+                        groupValue: widget.question.mask == 0
+                            ? null
+                            : widget.question.multipleAnswers[
+                                (log(widget.question.mask) / log(2)).round()],
                         onChanged: (String value) {
                           setState(() {
-                            _chosen = value;
                             widget.question.mask = (1 <<
                                 widget.question.multipleAnswers.indexOf(value));
+                            print(widget.question.mask);
                           });
                         },
                         activeColor: Colors.white,
@@ -109,13 +113,12 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
                     widget.question.multipleAnswers[index],
                     style: TextStyle(color: Colors.white, fontFamily: 'Mulish'),
                   ),
-                  value: mask & (1 << index) != 0,
+                  value: widget.question.mask & (1 << index) != 0,
                   onChanged: (value) {
                     setState(() {
-                      mask ^= 1 << index;
-                      widget.question.mask = mask;
+                      widget.question.mask ^= 1 << index;
                     });
-                    print(mask);
+                    print(widget.question.mask);
                   },
                   controlAffinity: ListTileControlAffinity.leading,
                   checkColor: Colors.white,

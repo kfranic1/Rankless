@@ -6,7 +6,7 @@ class Question {
   String questionText;
   TYPE answerType;
   String singleAnswer; //Teksutalni odgovor
-  int mask; //Odabrani odgovor(ili vise njih ako je moguce)
+  int mask = 0; //Odabrani odgovor(ili vise njih ako je moguce)
   List<String> multipleAnswers = [];
   List<TextEditingController> controllers = [];
 
@@ -40,9 +40,9 @@ class Question {
 
   Question fromMap(Map<String, dynamic> map) {
     this.questionText = map['text'];
-    this.answerType = map['type'] == 'Text'
+    this.answerType = map['type'] == 'TYPE.Text'
         ? TYPE.Text
-        : map['type'] == 'RadioButton'
+        : map['type'] == 'TYPE.RadioButton'
             ? TYPE.RadioButton
             : TYPE.Checkbox;
     this.multipleAnswers = List<String>.from(map['multiple'] as List<dynamic>);

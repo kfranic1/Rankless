@@ -260,7 +260,7 @@ class _CreateCompanyState extends State<CreateCompany> {
     dynamic result = await company.createCompany();
     if (result is String) return result;
     result = await widget.employee
-        .updateEmployee(newRoles: ['admin'], newCompanyUid: company.uid);
+        .updateEmployee(newAdmin: true, newCompanyUid: company.uid);
     if (result is String) return result;
     return 'OK';
   }

@@ -11,12 +11,12 @@ class Company {
   String description;
   String country;
   List<Employee> employees = [];
-  //List<Survey> surveys;5
+  //List<Survey> surveys;
   List<Post> posts = [];
-  List<String> roles = [];
+  List<String> tags = [];
+  List<String> positions = [];
   List<String> requests = [];
-  List<String> surveys =
-      []; //Mozda bi bilo korisno imat odvojeno zavrsene i tekuce ankete
+  List<String> surveys = [];
   Employee me;
 
   CollectionReference companiesCollection =
@@ -33,7 +33,6 @@ class Company {
   });
 
   Future createCompany() async {
-    this.roles.add('admin');
     List<String> employeeUids = employees.map((e) => e.uid).toList();
     DocumentReference ref = companiesCollection.doc();
     await ref.set({
@@ -41,22 +40,31 @@ class Company {
       'industry': this.industry,
       'employees': employeeUids,
       'description': this.description,
-      'roles': this.roles,
+      'tags': this.tags,
       'country': this.country,
       'requests': this.requests,
       'surveys': this.surveys,
-    }).then((value) => print('done'));
+      'positions': this.positions,
+    });
     this.uid = ref.id;
     return this;
   }
 
-  Future<Company> getData() async {
-    updateData(await companiesCollection.doc(this.uid).get());
-    await getEmployees();
-    return this;
+  Future updateCompany({
+    newDescription,
+    newSurvey,
+  }) async {
+    if (newDescription != null) {
+      this.description = newDescription;
+      await companiesCollection
+          .doc(this.uid)
+          .update({'description': this.description});
+    }
+    if (newSurvey != null) {
+      this.surveys.add(newSurvey);
+      await companiesCollection.doc(this.uid).update({'surveys': this.surveys});
+    }
   }
-
-  Future<void> changeData() async {}
 
   Stream<Company> get self {
     if (uid == null) return null;
@@ -71,9 +79,10 @@ class Company {
     this.description = ref['description'];
     this.industry = ref['industry'];
     dynamic employeesFromFirebase = ref['employees'];
-    this.roles = List<String>.from(ref['roles'] as List<dynamic>) ?? [];
+    this.tags = List<String>.from(ref['tags'] as List<dynamic>) ?? [];
     this.country = ref['country'];
     this.requests = List<String>.from(ref['requests'] as List<dynamic>) ?? [];
+    this.positions = List<String>.from(ref['positions'] as List<dynamic>);
     this.employees = (employeesFromFirebase as List<dynamic>)
         .map((e) => Employee(uid: e as String))
         .toList();
@@ -84,6 +93,8 @@ class Company {
   Future getEmployees() async {
     for (Employee e in employees) await e.getEmployee();
   }
+
+  Future surveyDone() async {}
 
   void handleRequest(bool accpeted) async {
     String e = requests[0];

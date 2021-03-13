@@ -8,9 +8,11 @@ import 'Survey.dart';
 
 class SurveyUIFill extends StatefulWidget {
   final Survey survey;
-  List<QuestionUIAnswer> qNa = [];
+  List<QuestionUIAnswer> qNa;
 
-  SurveyUIFill(this.survey);
+  SurveyUIFill(this.survey) {
+    qNa = survey.qNa.map((e) => QuestionUIAnswer(e)).toList();
+  }
   @override
   _SurveyUIFillState createState() => _SurveyUIFillState();
 }
@@ -20,15 +22,6 @@ BoxDecoration decorate =
     BoxDecoration(border: Border.all(color: Colors.transparent));
 
 class _SurveyUIFillState extends State<SurveyUIFill> {
-  @override
-  void initState() {
-    for (int i = 0; i < widget.survey.qNa.length; i++) {
-      QuestionUIAnswer qWa = QuestionUIAnswer(widget.survey.qNa[i]);
-      widget.qNa.add(qWa);
-    }
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,6 +159,7 @@ bool singleAnswerCheck(String singleAns) {
 
 SnackBar showWarning() {
   return (SnackBar(
+    duration: Duration(seconds: 2),
     content: Text(
       'You must answer on all of the questions',
       style: TextStyle(fontFamily: font, fontSize: 20),

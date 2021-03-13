@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rankless/Survey/Survey.dart';
 
 class Employee {
   bool anonymus;
@@ -7,10 +8,13 @@ class Employee {
   String surname;
   String companyUid;
   String email;
-  List<String> roles = [];
-  List<String> pendingSurveys = [];
+  String position = '';
   String request = '';
+  bool admin = false;
+  List<String> roles = [];
+  List<Survey> surveys = [];
   //List<Komentar> comments;
+  //TODO: Add error support
 
   CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
@@ -21,7 +25,6 @@ class Employee {
     this.name,
     this.surname,
     this.email,
-    this.roles,
   });
 
   Future createEmployee() async {
@@ -30,9 +33,11 @@ class Employee {
       'surname': this.surname,
       'email': this.email,
       'companyUid': null,
-      'roles': this.roles,
-      'surveys': this.pendingSurveys,
+      'roles': <String>[],
+      'surveys': <String>[],
       'request': this.request,
+      'admin': this.admin,
+      'position': this.position,
     });
   }
 
@@ -42,7 +47,9 @@ class Employee {
       newRoles,
       newCompanyUid,
       newRequest,
-      newSurveys}) async {
+      newSurveys,
+      newAdmin,
+      newPosition}) async {
     if (newName != null) {
       this.name = newName;
       await userCollection.doc(this.uid).update({'name': this.name});
@@ -66,15 +73,24 @@ class Employee {
       await userCollection.doc(this.uid).update({'request': this.request});
     }
     if (newSurveys != null) {
-      this.pendingSurveys = newSurveys;
+      this.surveys = newSurveys;
       await userCollection
           .doc(this.uid)
-          .update({'surveys': this.pendingSurveys});
+          .update({'surveys': this.surveys.map((e) => e.uid).toList()});
+    }
+    if (newAdmin != null) {
+      this.admin = newAdmin;
+      await userCollection.doc(this.uid).update({'admin': this.admin});
+    }
+    if (newPosition != null) {
+      this.position = newPosition;
+      await userCollection.doc(this.uid).update({'surveys': this.position});
     }
   }
 
   Future getEmployee() async {
     updateData(await userCollection.doc(this.uid).get());
+    await handleSurveys();
   }
 
   Stream<Employee> get self {
@@ -85,14 +101,16 @@ class Employee {
   }
 
   Employee updateData(DocumentSnapshot ref) {
-    //print('called');
     this.name = ref['name'];
     this.surname = ref['surname'];
     this.email = ref['email'];
     this.companyUid = ref['companyUid'];
     this.roles = List<String>.from(ref['roles'] as List<dynamic>);
-    this.pendingSurveys = List<String>.from(ref['surveys'] as List<dynamic>);
+    this.surveys = List<String>.from(ref['surveys'] as List<dynamic>)
+          .map((e) => Survey(uid: e))
+          .toList();
     this.request = ref['request'];
+    this.admin = ref['admin'];
     return this;
   }
 
@@ -129,5 +147,20 @@ class Employee {
       });
     });
     await updateEmployee(newRequest: '');
+  }
+
+  Future handleSurveys() async {
+    await Future.wait(
+        this.surveys.map((e) async => await e.getSurvey()).toList());
+    print(surveys[0].name);
+    List<String> past = [];
+    for (Survey s in surveys) {
+      if (s.status == STATUS.Past) {
+        past.add(s.uid);
+      }
+    }
+    if (past.length == 0) return;
+    this.surveys.removeWhere((element) => past.contains(element));
+    await updateEmployee(newSurveys: this.surveys);
   }
 }
