@@ -24,15 +24,15 @@ class _LogInState extends State<LogIn> {
 
   @override
   Widget build(BuildContext context) {
-    return loading
-        //TODO swap with custom loader
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Center(
-            child: Container(
-              decoration: backgroundDecoration,
-              padding: EdgeInsets.all(20),
+    return Container(
+      decoration: backgroundDecoration,
+      padding: EdgeInsets.all(20),
+      child: loading
+          //TODO swap with custom loader
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Center(
               child: ListView(
                 children: [
                   Form(
@@ -79,7 +79,9 @@ class _LogInState extends State<LogIn> {
                         SizedBox(
                           height: 20,
                         ),
-                        Text(error),
+                        Text(error,
+                            style: inputTextStyle.copyWith(
+                                fontSize: 12, color: Colors.blue)),
                         SizedBox(
                           height: 20,
                         ),
@@ -115,6 +117,6 @@ class _LogInState extends State<LogIn> {
                 ],
               ),
             ),
-          );
+    );
   }
 }

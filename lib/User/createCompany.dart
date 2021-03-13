@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:rankless/shared/Interface.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'Company.dart';
 import 'Employee.dart';
 
@@ -31,125 +33,207 @@ class _CreateCompanyState extends State<CreateCompany> {
       appBar: AppBar(
         title: Text("Rankless"),
       ),
-      body: creating
-          ? Center(child: CircularProgressIndicator())
-          : Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView(
-                  children: [
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
-                            initialValue: name,
-                            validator: (value) {
-                              return value.isEmpty
-                                  ? "Name can't be empty"
-                                  : null;
-                            },
-                            decoration:
-                                InputDecoration(hintText: 'Company name'),
-                            onChanged: (value) {
-                              setState(() => name = value);
-                            },
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          CountryCodePicker(
-                            initialSelection: country,
-                            showCountryOnly: true,
-                            showOnlyCountryWhenClosed: true,
-                            onChanged: (value) {
-                              setState(() {
-                                country = value.toCountryStringOnly();
-                              });
-                            },
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          FutureBuilder(
-                            future: categoriesReference
-                                .doc('GSM53sSt5zOWQbndHZH6')
-                                .get()
-                                .then((value) {
-                              categories =
-                                  (value.data()['categories'] as List<dynamic>)
-                                      .map((e) => e as String)
-                                      .toList();
-                            }),
-                            builder: (context, snapshot) {
-                              categories.sort();
-                              categories.add('Other');
-                              return DropdownSearch(
-                                hint: 'Category',
-                                dropdownSearchDecoration: InputDecoration(
-                                    border: OutlineInputBorder()),
-                                searchDelay: Duration.zero,
-                                mode: Mode.MENU,
-                                showSearchBox: true,
-                                items: categories,
-                                onChanged: (index) =>
-                                    setState(() => category = index),
-                              );
-                            },
-                            initialData: categories = ["loading"],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
-                            initialValue: info,
-                            validator: (value) {
-                              return value.isEmpty
-                                  ? "Info can't be empty"
-                                  : null;
-                            },
-                            decoration: InputDecoration(hintText: 'info'),
-                            onChanged: (value) {
-                              setState(() => info = value);
-                            },
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            error,
-                            style: TextStyle(color: Colors.red[400]),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          ElevatedButton(
-                            child: Text("Register Company with this data"),
-                            onPressed: () async {
-                              if (_formKey.currentState.validate()) {
-                                setState(() => creating = true);
-                                String ret = await finish();
-                                if (ret == 'OK')
-                                  Navigator.pop(context);
-                                else {
+      body: Container(
+        decoration: backgroundDecoration,
+        padding: EdgeInsets.all(20),
+        child: creating
+            ? Center(child: CircularProgressIndicator())
+            : Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView(
+                    children: [
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TextFormField(
+                              initialValue: name,
+                              validator: (value) {
+                                return value.isEmpty
+                                    ? "Name can't be empty"
+                                    : null;
+                              },
+                              decoration: registerInputDecoration.copyWith(
+                                  labelText: 'Company name'),
+                              onChanged: (value) {
+                                setState(() => name = value);
+                              },
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Theme(
+                              data: ThemeData(
+                                  textSelectionTheme: TextSelectionThemeData(
+                                    cursorColor: Colors.white,
+                                    selectionColor: Colors.white,
+                                    /*selectionHandleColor: Colors.white*/
+                                  ),
+                                  primaryColor: Colors.white,
+                                  selectedRowColor: Colors.white,
+                                  canvasColor: Colors.white
+                                  // splashColor: Colors.white,
+
+                                  // colorScheme: ColorScheme(
+                                  //     primary: Colors.white,
+                                  //     primaryVariant: Colors.white,
+                                  //     secondary: Colors.white,
+                                  //     secondaryVariant: Colors.white,
+                                  //     surface: Colors.white,
+                                  //     background: Colors.transparent,
+                                  //     error: Colors.red,
+                                  //     onPrimary: Colors.white,
+                                  //     onSecondary: Colors.white,
+                                  //     onSurface: Colors.white,
+                                  //     onBackground: Colors.transparent,
+                                  //     onError: Colors.red,
+                                  //     brightness: Brightness.light)
+
+                                  // cardColor: Colors.white,
+                                  // hintColor: Colors.white,
+                                  // indicatorColor: Colors.white,
+                                  // backgroundColor: Colors.white,
+                                  // buttonColor: Colors.white
+                                  // accentColor: Colors.white,
+                                  // unselectedWidgetColor: Colors.white,
+                                  // focusColor: Colors.white,
+                                  ),
+                              child: CountryCodePicker(
+                                initialSelection: country,
+                                showCountryOnly: true,
+                                showOnlyCountryWhenClosed: true,
+                                onChanged: (value) {
                                   setState(() {
-                                    creating = false;
-                                    error = ret;
+                                    country = value.toCountryStringOnly();
                                   });
+                                },
+                                backgroundColor: Colors.black.withOpacity(0.7),
+                                dialogBackgroundColor: Colors.teal[200],
+                                barrierColor: Colors.transparent, //blue[900],
+                                dialogTextStyle: inputTextStyle,
+                                textStyle: inputTextStyle,
+                                searchStyle: inputTextStyle.copyWith(
+                                    color: Colors.white),
+                                searchDecoration:
+                                    registerInputDecoration.copyWith(
+                                        // icon: Icon(Icons.ac_unit),
+                                        // counterStyle: inputTextStyle,
+                                        // suffixStyle: inputTextStyle,
+                                        // focusColor: Colors.yellow,
+                                        // prefixStyle: inputTextStyle,
+                                        // helperStyle: inputTextStyle,
+                                        // labelStyle: inputTextStyle,
+
+                                        hintStyle:
+                                            TextStyle(color: Colors.white)),
+                                // za popout
+                                boxDecoration: popOutDecoration,
+                                //  BoxDecoration(
+                                //     border: Border(
+                                //         bottom: BorderSide(color: Colors.white))),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            FutureBuilder(
+                              future: categoriesReference
+                                  .doc('GSM53sSt5zOWQbndHZH6')
+                                  .get()
+                                  .then((value) {
+                                categories = (value.data()['categories']
+                                        as List<dynamic>)
+                                    .map((e) => e as String)
+                                    .toList();
+                              }),
+                              builder: (context, snapshot) {
+                                categories.sort();
+                                categories.add('Other');
+                                return SearchableDropdown(
+                                  hint: 'Category',
+                                  // searchBoxDecoration:
+                                  //     registerInputDecoration.copyWith(
+                                  //         focusColor: Colors.white,
+                                  //         icon: Icon(Icons.search,
+                                  //             color: Colors.white)),
+                                  // dropdownSearchDecoration:
+                                  //     // InputDecoration(
+                                  //     //     border: OutlineInputBorder()),
+                                  //     registerInputDecoration,
+                                  // popupBarrierColor: Colors.white,
+                                  style: inputTextStyle.copyWith(
+                                      color: Colors.white),
+                                  menuBackgroundColor: Colors.blue[200],
+
+                                  // mode: Mode.MENU,
+                                  // showSearchBox: true,
+                                  isExpanded: true,
+                                  items: categories
+                                      .map((e) => DropdownMenuItem(
+                                          child:
+                                              Text(e, style: inputTextStyle)))
+                                      .toList(),
+                                  onChanged: (index) =>
+                                      setState(() => category = index),
+                                );
+                              },
+                              initialData: categories = ["loading"],
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TextFormField(
+                              initialValue: info,
+                              validator: (value) {
+                                return value.isEmpty
+                                    ? "Info can't be empty"
+                                    : null;
+                              },
+                              decoration: registerInputDecoration.copyWith(
+                                  labelText: 'Info'),
+                              onChanged: (value) {
+                                setState(() => info = value);
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              error,
+                              style: TextStyle(color: Colors.red[400]),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            ElevatedButton(
+                              child: Text("Register Company with this data"),
+                              onPressed: () async {
+                                if (_formKey.currentState.validate()) {
+                                  setState(() => creating = true);
+                                  String ret = await finish();
+                                  if (ret == 'OK')
+                                    Navigator.pop(context);
+                                  else {
+                                    setState(() {
+                                      creating = false;
+                                      error = ret;
+                                    });
+                                  }
                                 }
-                              }
-                            },
-                          ),
-                        ],
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
+      ),
     );
   }
 

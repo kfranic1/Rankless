@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:rankless/Launch/auth.dart';
 import 'package:rankless/shared/Interface.dart';
 
-TextStyle inputTextStyle =
-    TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);
+// TextStyle inputTextStyle =
+//     TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);
 
-InputDecoration registerInputDecoration = textFieldDecoration.copyWith(
-  enabledBorder:
-      UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-  focusedBorder:
-      UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-  errorStyle: TextStyle(fontFamily: font, color: Colors.blue, fontSize: 13),
-  errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
-  focusedErrorBorder:
-      UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
-  labelStyle: TextStyle(fontSize: 18, fontFamily: font, color: Colors.white),
-);
+// InputDecoration registerInputDecoration = textFieldDecoration.copyWith(
+//   enabledBorder:
+//       UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+//   focusedBorder:
+//       UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+//   errorStyle: TextStyle(fontFamily: font, color: Colors.blue, fontSize: 13),
+//   errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+//   focusedErrorBorder:
+//       UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+//   labelStyle: TextStyle(fontSize: 18, fontFamily: font, color: Colors.white),
+// );
 
 class Register extends StatefulWidget {
   final Function toogleView;
@@ -40,15 +40,15 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return loading
-        //TODO swap with custom loader
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Container(
-            decoration: backgroundDecoration,
-            padding: EdgeInsets.all(30),
-            child: Center(
+    return Container(
+      decoration: backgroundDecoration,
+      padding: EdgeInsets.all(15),
+      child: loading
+          //TODO swap with custom loader
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Center(
               child: ListView(
                 shrinkWrap: true,
                 children: [
@@ -102,8 +102,9 @@ class _RegisterState extends State<Register> {
                           onChanged: (value) {
                             setState(() => email = value);
                           },
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
-                            return (value.contains('%'))
+                            return (!value.contains('@'))
                                 ? 'Not a valid email address'
                                 : null;
                           },
@@ -231,6 +232,6 @@ class _RegisterState extends State<Register> {
                 ],
               ),
             ),
-          );
+    );
   }
 }
