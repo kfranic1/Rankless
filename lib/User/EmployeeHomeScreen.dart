@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+import 'package:rankless/Survey/SurveyUIFill.dart';
 import 'CreateCompany.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'JoinCompany.dart';
@@ -113,34 +114,39 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
         employee.surveys.length > 0
             ? FutureBuilder(
                 future: employee.handleSurveys(),
-                builder: (context, snapshot) =>
-                    snapshot.connectionState == ConnectionState.active
-                        ? Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : Center(
-                            child: TextButton(
-                              onPressed: () async {
-                                for (Survey s in employee.surveys)
-                                  print(s.status);
-                              },
-                              child: Text('You have ' +
-                                  employee.surveys
-                                      .where((element) {
-                                        print(element.name);
-                                        return element.status == STATUS.Active;
-                                      })
-                                      .length
-                                      .toString() +
-                                  ' active and ' +
-                                  employee.surveys
-                                      .where((element) =>
-                                          element.status == STATUS.Upcoming)
-                                      .length
-                                      .toString() +
-                                  ' surveys'),
-                            ),
-                          ),
+                builder: (context, snapshot) => snapshot.connectionState ==
+                        ConnectionState.active
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Center(
+                        child: TextButton(
+                          onPressed: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SurveyUIFill(employee.surveys[0], employee),
+                              ),
+                            );
+                          },
+                          child: Text('You have ' +
+                              employee.surveys
+                                  .where((element) {
+                                    print(element.name);
+                                    return element.status == STATUS.Active;
+                                  })
+                                  .length
+                                  .toString() +
+                              ' active and ' +
+                              employee.surveys
+                                  .where((element) =>
+                                      element.status == STATUS.Upcoming)
+                                  .length
+                                  .toString() +
+                              ' upcoming surveys'),
+                        ),
+                      ),
               )
             : Center(
                 child: Text('There are no new surveys'),

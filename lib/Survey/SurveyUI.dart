@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:rankless/Survey/SurveyUIFill.dart';
+import 'package:rankless/User/Employee.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'Question.dart';
 import 'QuestionUICreate.dart';
@@ -26,18 +28,22 @@ class _SurveyUIState extends State<SurveyUI> {
   QuestionUICreate _createdQ;
   List<QuestionUICreate> _questions = [];
   List<ListTile> _suggestedQ = [];
+  List<DropdownMenuItem> tags = [];
+  bool loading = false;
 
-  //samo za provjeru
-  List<DropdownMenuItem> tags = [
-    DropdownMenuItem(
-      child: Text('one'),
-      value: 'one',
-    ),
-    DropdownMenuItem(
-      child: Text('two'),
-      value: 'two',
-    )
-  ];
+  bool sendToDB = true; //! ako nezelite slat survey u bazu ovo u false stavit
+
+  @override
+  initState() {
+    widget.survey.company.tags.forEach((element) {
+      this.tags.add(DropdownMenuItem(child: Text(element), value: element));
+    });
+    widget.survey.company.positions.forEach((element) {
+      this.tags.add(DropdownMenuItem(child: Text(element), value: element));
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     //provjera za tagove
@@ -47,335 +53,358 @@ class _SurveyUIState extends State<SurveyUI> {
 
     return Scaffold(
       key: _scaffoldKey,
-      body: Container(
-        decoration: backgroundDecoration,
-        child: Column(
-          children: <Widget>[
-            Container(
-              //survey name
-              child: TextField(
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: widget.survey.name,
-                    hintStyle: TextStyle(
-                      fontFamily: 'Mulish',
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    )),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Mulish',
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-                onSubmitted: (value) {
-                  setState(() => widget.survey.name = value);
-                },
-              ),
-              alignment: Alignment.topCenter,
-              padding: EdgeInsets.all(20),
-            ),
-            Container(
-              child: Row(
+      body: loading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              decoration: backgroundDecoration,
+              child: Column(
                 children: <Widget>[
-                  //date
-                  Text('Date',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontFamily: 'Mulish')),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  //from
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: TextButton(
-                        child: Text(
-                          _formatted.format(widget.survey.from),
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Mulish',
-                              color: Colors.white),
-                        ),
-                        onPressed: () => _selectFrom(context),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    child: Divider(
-                      color: Colors.white,
-                      indent: 8,
-                      endIndent: 8,
-                      thickness: 4,
-                    ),
-                    width: 35,
-                  ),
-                  //to
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: TextButton(
-                        child: Text(
-                          _formatted.format(widget.survey.to),
-                          style: TextStyle(
-                              fontFamily: 'Mulish',
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        onPressed: () => _selectTo(context),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              alignment: Alignment.bottomCenter,
-              padding: EdgeInsets.only(left: 15, right: 15),
-            ),
-            //for
-            Container(
-              child: Row(
-                children: [
-                  Text(
-                    'For',
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontFamily: 'Mulish'),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: SearchableDropdown.multiple(
-                      items:
-                          tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
-                      selectedItems: _selectedTags,
-                      selectedValueWidgetFn: (item) {
-                        return Container();
-                      },
-                      icon: Icon(Icons.add_circle_outline),
-                      underline: Container(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedTags = value;
-                          widget.survey.tags = showTagsUpdate(_selectedTags);
-                        });
-                      },
-                      menuBackgroundColor: Colors.lightBlue[50],
-                      displayItem: (item, selected) {
-                        return Column(children: [
-                          SizedBox(
-                            height: 20,
-                          ),
-                          (Row(children: [
-                            selected
-                                ? Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                  )
-                                : Icon(
-                                    Icons.check_box_outline_blank,
-                                    color: Colors.grey,
-                                  ),
-                            SizedBox(width: 7),
-                            Expanded(
-                              child: Text(
-                                item.value,
-                                style: TextStyle(
-                                    fontFamily: 'Mulish', fontSize: 17),
-                              ),
-                            ),
-                          ])),
-                        ]);
-                      },
-                      doneButton: Container(),
-                      closeButton: (selectedItems) {
-                        return (selectedItems.isNotEmpty
-                            ? "Save ${selectedItems.length == 1 ? '"' + tags[selectedItems.first].value.toString() + '"' : '(' + selectedItems.length.toString() + ')'}"
-                            : "Save without selection");
-                      },
-
-                      searchHint: Text(
-                        'Who should get the survey',
-                        style: TextStyle(
+                  Container(
+                    //survey name
+                    child: TextField(
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: widget.survey.name,
+                          hintStyle: TextStyle(
                             fontFamily: 'Mulish',
+                            color: Colors.white,
+                            fontSize: 25,
                             fontWeight: FontWeight.bold,
-                            fontSize: 18),
+                          )),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Mulish',
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
                       ),
-                      isExpanded: false,
-                      displayClearIcon: false,
+                      onSubmitted: (value) {
+                        setState(() => widget.survey.name = value);
+                      },
+                    ),
+                    alignment: Alignment.topCenter,
+                    padding: EdgeInsets.all(20),
+                  ),
+                  Container(
+                    child: Row(
+                      children: <Widget>[
+                        //date
+                        Text('Date',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontFamily: 'Mulish')),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        //from
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: TextButton(
+                              child: Text(
+                                _formatted.format(widget.survey.from),
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Mulish',
+                                    color: Colors.white),
+                              ),
+                              onPressed: () => _selectFrom(context),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          child: Divider(
+                            color: Colors.white,
+                            indent: 8,
+                            endIndent: 8,
+                            thickness: 4,
+                          ),
+                          width: 35,
+                        ),
+                        //to
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: TextButton(
+                              child: Text(
+                                _formatted.format(widget.survey.to),
+                                style: TextStyle(
+                                    fontFamily: 'Mulish',
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                              onPressed: () => _selectTo(context),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.bottomCenter,
+                    padding: EdgeInsets.only(left: 15, right: 15),
+                  ),
+                  //for
+                  Container(
+                    child: Row(
+                      children: [
+                        Text(
+                          'For',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontFamily: 'Mulish'),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: SearchableDropdown.multiple(
+                            items:
+                                tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
+                            selectedItems: _selectedTags,
+                            selectedValueWidgetFn: (item) {
+                              return Container();
+                            },
+                            icon: Icon(Icons.add_circle_outline),
+                            underline: Container(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedTags = value;
+                                widget.survey.tags =
+                                    showTagsUpdate(_selectedTags);
+                              });
+                            },
+                            menuBackgroundColor: Colors.lightBlue[50],
+                            displayItem: (item, selected) {
+                              return Column(children: [
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                (Row(children: [
+                                  selected
+                                      ? Icon(
+                                          Icons.check,
+                                          color: Colors.green,
+                                        )
+                                      : Icon(
+                                          Icons.check_box_outline_blank,
+                                          color: Colors.grey,
+                                        ),
+                                  SizedBox(width: 7),
+                                  Expanded(
+                                    child: Text(
+                                      item.value,
+                                      style: TextStyle(
+                                          fontFamily: 'Mulish', fontSize: 17),
+                                    ),
+                                  ),
+                                ])),
+                              ]);
+                            },
+                            doneButton: Container(),
+                            closeButton: (selectedItems) {
+                              return (selectedItems.isNotEmpty
+                                  ? "Save ${selectedItems.length == 1 ? '"' + tags[selectedItems.first].value.toString() + '"' : '(' + selectedItems.length.toString() + ')'}"
+                                  : "Save without selection");
+                            },
+
+                            searchHint: Text(
+                              'Who should get the survey',
+                              style: TextStyle(
+                                  fontFamily: 'Mulish',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                            ),
+                            isExpanded: false,
+                            displayClearIcon: false,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Tags(
+                            key: _tagStateKey,
+                            symmetry: false,
+                            columns: 0,
+                            horizontalScroll: true,
+                            itemCount: widget.survey.tags.length,
+                            itemBuilder: (index) {
+                              final item = widget.survey.tags[index];
+                              return ItemTags(
+                                active: true,
+                                key: Key(index.toString()),
+                                index: index,
+                                title: item,
+                                textStyle: const TextStyle(
+                                    fontFamily: 'Mulish', fontSize: 17),
+                                pressEnabled: false,
+                                singleItem: false,
+                                activeColor: Colors.blue,
+                                color: Colors.grey,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.bottomCenter,
+                    padding: EdgeInsets.only(left: 15, right: 15, top: 12),
+                  ),
+
+                  //add question
+                  TextButton.icon(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            insetPadding:
+                                EdgeInsets.only(left: 0.0, right: 0.0),
+                            backgroundColor: Colors.transparent,
+                            child: ListView(
+                              addAutomaticKeepAlives: true,
+                              children: [
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.cancel,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                                _createdQ = QuestionUICreate(),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    setState(() {
+                                      if (_createdQ
+                                              .getQuestion()
+                                              .questionText !=
+                                          null) {
+                                        _questions.add(_createdQ);
+                                        widget.survey.qNa
+                                            .add(_createdQ.getQuestion());
+                                      }
+                                    });
+                                  },
+                                  child: Text(
+                                    'Add',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Mulish',
+                                        fontSize: 20),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    icon: Container(
+                      child: Icon(
+                        Icons.add_circle_outline,
+                        color: Colors.white,
+                      ),
+                    ),
+                    label: Text(
+                      "Add question",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: 'Mulish'),
                     ),
                   ),
                   Expanded(
-                    flex: 3,
-                    child: Tags(
-                      key: _tagStateKey,
-                      symmetry: false,
-                      columns: 0,
-                      horizontalScroll: true,
-                      itemCount: widget.survey.tags.length,
-                      itemBuilder: (index) {
-                        final item = widget.survey.tags[index];
-                        return ItemTags(
-                          active: true,
-                          key: Key(index.toString()),
-                          index: index,
-                          title: item,
-                          textStyle: const TextStyle(
-                              fontFamily: 'Mulish', fontSize: 17),
-                          pressEnabled: false,
-                          singleItem: false,
-                          activeColor: Colors.blue,
-                          color: Colors.grey,
+                    //bilo bi dobro kada bi ta predlozena pitanja bila neki gumbi pa bi se otvarao dijalog za potvrdu unosa pitanja
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _suggestedQ.length,
+                      itemBuilder: (context, index) {
+                        return _suggestedQ[index];
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return SizedBox(
+                          width: 10,
                         );
                       },
                     ),
                   ),
+                  Divider(
+                    color: Colors.grey[700],
+                    thickness: 2.0,
+                    height: 50,
+                  ),
+
+                  //questions
+                  Expanded(
+                    flex: 5,
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return buildQTile(widget.survey.qNa[index], index);
+                      },
+                      itemCount: widget.survey.qNa.length,
+                      separatorBuilder: (context, index) {
+                        return SizedBox(
+                          child: Divider(
+                            color: Colors.white,
+                          ),
+                          height: 15,
+                        );
+                      },
+                      padding: EdgeInsets.only(left: 15, right: 15),
+                    ),
+                  ),
+
+                  //finish creating survey
+                  TextButton(
+                    onPressed: () async {
+                      if (sendToDB) {
+                        setState(() {
+                          loading = true;
+                        });
+                        await widget.survey.createSurvey();
+                      }
+                        Navigator.pop(context);
+                      //ovo je samo demonstraciju funkcionalnosti
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => SurveyUIFill(
+                      //       widget.survey,
+                      //       Provider.of<Employee>(context),//ovo bi trebalo vratit vlasnika profila
+                      //     ),
+                      //   ),
+                      // );
+                    },
+                    child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: borderRadius),
+                        height: 60,
+                        width: 200,
+                        child: Text(
+                          'Finish',
+                          style: TextStyle(
+                              //fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontFamily: 'Mulish',
+                              fontSize: 22),
+                        )),
+                  )
                 ],
               ),
-              alignment: Alignment.bottomCenter,
-              padding: EdgeInsets.only(left: 15, right: 15, top: 12),
             ),
-
-            //add question
-            TextButton.icon(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Dialog(
-                      insetPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                      backgroundColor: Colors.transparent,
-                      child: ListView(
-                        addAutomaticKeepAlives: true,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.cancel,
-                              color: Colors.white,
-                            ),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                          _createdQ = QuestionUICreate(),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              setState(() {
-                                if (_createdQ.getQuestion().questionText !=
-                                    null) {
-                                  _questions.add(_createdQ);
-                                  widget.survey.qNa
-                                      .add(_createdQ.getQuestion());
-                                }
-                              });
-                            },
-                            child: Text(
-                              'Add',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Mulish',
-                                  fontSize: 20),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-              icon: Container(
-                child: Icon(
-                  Icons.add_circle_outline,
-                  color: Colors.white,
-                ),
-              ),
-              label: Text(
-                "Add question",
-                style: TextStyle(
-                    color: Colors.white, fontSize: 20, fontFamily: 'Mulish'),
-              ),
-            ),
-            Expanded(
-              //bilo bi dobro kada bi ta predlozena pitanja bila neki gumbi pa bi se otvarao dijalog za potvrdu unosa pitanja
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: _suggestedQ.length,
-                itemBuilder: (context, index) {
-                  return _suggestedQ[index];
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    width: 10,
-                  );
-                },
-              ),
-            ),
-            Divider(
-              color: Colors.grey[700],
-              thickness: 2.0,
-              height: 50,
-            ),
-
-            //questions
-            Expanded(
-              flex: 5,
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return buildQTile(widget.survey.qNa[index], index);
-                },
-                itemCount: widget.survey.qNa.length,
-                separatorBuilder: (context, index) {
-                  return SizedBox(
-                    child: Divider(
-                      color: Colors.white,
-                    ),
-                    height: 15,
-                  );
-                },
-                padding: EdgeInsets.only(left: 15, right: 15),
-              ),
-            ),
-
-            //finish creating survey
-            TextButton(
-              onPressed: () {
-                //ovo je samo demonstraciju funkcionalnosti
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SurveyUIFill(widget.survey)));
-              },
-              child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: Colors.transparent, borderRadius: borderRadius),
-                  height: 60,
-                  width: 200,
-                  child: Text(
-                    'Finish',
-                    style: TextStyle(
-                        //fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontFamily: 'Mulish',
-                        fontSize: 22),
-                  )),
-            )
-          ],
-        ),
-      ),
     );
   }
 
@@ -520,7 +549,8 @@ class _SurveyUIState extends State<SurveyUI> {
     if (picked.isBefore(widget.survey.from)) {
       return showAlertDialog(context);
     }
-    if (picked != null && picked.isAfter(widget.survey.from)) setState(() => widget.survey.to = picked);
+    if (picked != null && picked.isAfter(widget.survey.from))
+      setState(() => widget.survey.to = picked);
   }
 
   showAlertDialog(BuildContext context) {

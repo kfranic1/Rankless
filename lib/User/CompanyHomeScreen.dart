@@ -161,6 +161,15 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                     ),
                   ),
                 ),
+                Visibility(
+                    child: Center(
+                  child: TextButton(
+                    child: Text('getResults'),
+                    onPressed: () {
+                      print(me.surveys[0].getResults());
+                    },
+                  ),
+                ))
               ],
             ),
           );

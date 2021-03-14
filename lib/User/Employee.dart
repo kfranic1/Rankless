@@ -107,10 +107,13 @@ class Employee {
     this.companyUid = ref['companyUid'];
     this.roles = List<String>.from(ref['roles'] as List<dynamic>);
     this.surveys = List<String>.from(ref['surveys'] as List<dynamic>)
-          .map((e) => Survey(uid: e))
-          .toList();
+        .map((e) => Survey(uid: e))
+        .toList();
     this.request = ref['request'];
     this.admin = ref['admin'];
+    this.position = ref['position'];
+    this.surveys.sort(
+        (a, b) => a.from.compareTo(b.from));
     return this;
   }
 
@@ -152,7 +155,6 @@ class Employee {
   Future handleSurveys() async {
     await Future.wait(
         this.surveys.map((e) async => await e.getSurvey()).toList());
-    print(surveys[0].name);
     List<String> past = [];
     for (Survey s in surveys) {
       if (s.status == STATUS.Past) {
