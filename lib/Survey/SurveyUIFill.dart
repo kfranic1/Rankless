@@ -197,13 +197,13 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
         "Yes",
         style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
       ),
-      onPressed: () {
-        setState(() async {
+      onPressed: () async {
+        setState(() {
           finishing = true;
-          await widget.survey.submitSurvey(widget.who);
-          Navigator.pop(context);//Close alert
-          Navigator.pop(context);//Close survey
         });
+        await widget.survey.submitSurvey(widget.who);
+        Navigator.pop(context); //Close alert
+        Navigator.pop(context); //Close survey
         //ovdje bi trebala ići neka radnja da se izlazi iz surveya i ulazi u izbornik anketa
       },
     );

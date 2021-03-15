@@ -25,7 +25,7 @@ class _CreateCompanyState extends State<CreateCompany> {
   String category = '';
   String country = '';
   bool creating = false;
-  List<String> categories;
+  List<String> categories = ['loading'];
 
   @override
   Widget build(BuildContext context) {
@@ -141,18 +141,22 @@ class _CreateCompanyState extends State<CreateCompany> {
                               height: 20,
                             ),
                             FutureBuilder(
-                              future: categoriesReference
-                                  .doc('GSM53sSt5zOWQbndHZH6')
-                                  .get()
-                                  .then((value) {
-                                categories = (value.data()['categories']
-                                        as List<dynamic>)
-                                    .map((e) => e as String)
-                                    .toList();
-                              }),
+                              future: categories.contains('loading')
+                                  ? categoriesReference
+                                      .doc('GSM53sSt5zOWQbndHZH6')
+                                      .get()
+                                      .then((value) {
+                                      setState(() {
+                                        categories = (value.data()['categories']
+                                                as List<dynamic>)
+                                            .map((e) => e as String)
+                                            .toList();
+                                        categories.sort();
+                                        categories.add('Other');
+                                      });
+                                    })
+                                  : null,
                               builder: (context, snapshot) {
-                                categories.sort();
-                                categories.add('Other');
                                 return SearchableDropdown(
                                   hint: 'Category',
                                   // searchBoxDecoration:
@@ -181,7 +185,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                                       setState(() => category = index),
                                 );
                               },
-                              initialData: categories = ["loading"],
+                              initialData: categories,
                             ),
                             SizedBox(
                               height: 20,
