@@ -15,6 +15,7 @@ class EmployeeHomeScreen extends StatefulWidget {
 
 class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   bool isCancelDisabled = false;
+  bool imageLoading = false;
   @override
   void initState() {
     final employee = Provider.of<Employee>(context, listen: false);
@@ -56,8 +57,33 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
     });
     return ListView(
       children: [
-        Text(
-          "Hello " + employee.name,
+        IconButton(
+          iconSize: 100,
+          icon: imageLoading
+              ? Center(child: CircularProgressIndicator())
+              : CircleAvatar(
+                  radius: 50, //should be half of icon size
+                  backgroundImage: employee.image == null
+                      ? null
+                      : Image.file(employee.image).image,
+                  child: employee.image == null
+                      ? Text(
+                          (employee.name[0] + employee.surname[0])
+                              .toUpperCase(),
+                          style: TextStyle(fontSize: 30),
+                        )
+                      : null,
+                ),
+          onPressed: () async {
+            setState(() => imageLoading = true);
+            await employee.getImage();
+            setState(() => imageLoading = false);
+          },
+        ),
+        Center(
+          child: Text(
+            "Hello " + employee.name,
+          ),
         ),
         employee.companyUid == null
             ? employee.request != ''

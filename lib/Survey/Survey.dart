@@ -93,8 +93,10 @@ class Survey {
     return this;
   }
 
+  /// Must recieve [Provied.of<Employee>(context)] in other words [me]
+  /// 
+  /// Submits [this] survey done by [me]
   Future submitSurvey(Employee who) async {
-    //! Who mora biti me iz streama inace nece radit
     who.surveys.remove(this);
     await who.updateEmployee(newSurveys: who.surveys);
     await resultCollection.doc(this.uid).set({
@@ -125,7 +127,7 @@ class Survey {
 
   /// Returns Map with following structure [position, Map<question_number, answers>]
   ///
-  /// Adding [filter] will return map  containt [position] that are in [filter]
+  /// Adding [filter] will return map containing [position] that are in [filter]
   Map<String, Map<int, List<String>>> getResults({List<String> filter}) {
     if (filter == null) return results;
     Map<String, Map<int, List<String>>> ret = results;

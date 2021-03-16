@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:rankless/Launch/uploader.dart';
 import 'package:rankless/Survey/Survey.dart';
 
 class Employee {
@@ -13,6 +18,7 @@ class Employee {
   bool admin = false;
   List<String> tags = [];
   List<Survey> surveys = [];
+  File image;
   //List<Komentar> comments;
   //TODO: Add error support
 
@@ -49,7 +55,8 @@ class Employee {
       String newRequest,
       List<Survey> newSurveys,
       bool newAdmin,
-      String newPosition}) async {
+      String newPosition,
+      File newImage}) async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       Map<String, dynamic> run = {};
       if (newName != null) {
@@ -86,11 +93,16 @@ class Employee {
       }
       transaction.update(userCollection.doc(this.uid), run);
     });
+    if (newImage != null) {
+      this.image = newImage;
+      await Uploader().uploadImage(newImage.path, this);
+    }
   }
 
   Future getEmployee() async {
     updateData(await userCollection.doc(this.uid).get());
     await handleSurveys();
+    await Uploader().getImage(this);
   }
 
   Stream<Employee> get self {
@@ -112,7 +124,6 @@ class Employee {
     this.request = ref['request'];
     this.admin = ref['admin'];
     this.position = ref['position'];
-    this.surveys.sort((a, b) => a.from.compareTo(b.from));
     return this;
   }
 
@@ -164,4 +175,13 @@ class Employee {
     this.surveys.removeWhere((element) => past.contains(element));
     await updateEmployee(newSurveys: this.surveys);
   }
+
+  /// Puts newly selected [image] as profile picture for [employee]
+  Future getImage() async {
+    PickedFile image =
+        await ImagePicker().getImage(source: ImageSource.gallery);
+    if (image == null) return;
+    File cropped = await ImageCropper.cropImage(sourcePath: image.path);
+    await updateEmployee(newImage: cropped ?? File(image.path));
+    }
 }
