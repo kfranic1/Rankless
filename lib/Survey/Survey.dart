@@ -123,6 +123,9 @@ class Survey {
     });
   }
 
+  /// Returns Map with following structure [position, Map<question_number, answers>]
+  ///
+  /// Adding [filter] will return map  containt [position] that are in [filter]
   Map<String, Map<int, List<String>>> getResults({List<String> filter}) {
     if (filter == null) return results;
     Map<String, Map<int, List<String>>> ret = results;
