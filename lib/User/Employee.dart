@@ -11,7 +11,7 @@ class Employee {
   String position = '';
   String request = '';
   bool admin = false;
-  List<String> roles = [];
+  List<String> tags = [];
   List<Survey> surveys = [];
   //List<Komentar> comments;
   //TODO: Add error support
@@ -33,7 +33,7 @@ class Employee {
       'surname': this.surname,
       'email': this.email,
       'companyUid': null,
-      'roles': <String>[],
+      'tags': <String>[],
       'surveys': <String>[],
       'request': this.request,
       'admin': this.admin,
@@ -42,50 +42,50 @@ class Employee {
   }
 
   Future updateEmployee(
-      {newName,
-      newSurname,
-      newRoles,
-      newCompanyUid,
-      newRequest,
-      newSurveys,
-      newAdmin,
-      newPosition}) async {
-    if (newName != null) {
-      this.name = newName;
-      await userCollection.doc(this.uid).update({'name': this.name});
-    }
-    if (newSurname != null) {
-      this.surname = newSurname;
-      await userCollection.doc(this.uid).update({'surname': this.surname});
-    }
-    if (newRoles != null) {
-      this.roles = newRoles;
-      await userCollection.doc(this.uid).update({'roles': this.roles});
-    }
-    if (newCompanyUid != null) {
-      this.companyUid = newCompanyUid;
-      await userCollection
-          .doc(this.uid)
-          .update({'companyUid': this.companyUid});
-    }
-    if (newRequest != null) {
-      this.request = newRequest;
-      await userCollection.doc(this.uid).update({'request': this.request});
-    }
-    if (newSurveys != null) {
-      this.surveys = newSurveys;
-      await userCollection
-          .doc(this.uid)
-          .update({'surveys': this.surveys.map((e) => e.uid).toList()});
-    }
-    if (newAdmin != null) {
-      this.admin = newAdmin;
-      await userCollection.doc(this.uid).update({'admin': this.admin});
-    }
-    if (newPosition != null) {
-      this.position = newPosition;
-      await userCollection.doc(this.uid).update({'surveys': this.position});
-    }
+      {String newName,
+      String newSurname,
+      List<String> newTags,
+      String newCompanyUid,
+      String newRequest,
+      List<Survey> newSurveys,
+      bool newAdmin,
+      String newPosition}) async {
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      Map<String, dynamic> run = {};
+      if (newName != null) {
+        this.name = newName;
+        run['name'] = this.name;
+      }
+      if (newSurname != null) {
+        this.surname = newSurname;
+        run['surname'] = this.surname;
+      }
+      if (newTags != null) {
+        this.tags = newTags;
+        run['tags'] = this.tags;
+      }
+      if (newCompanyUid != null) {
+        this.companyUid = newCompanyUid;
+        run['companyUid'] = this.companyUid;
+      }
+      if (newRequest != null) {
+        this.request = newRequest;
+        run['request'] = this.request;
+      }
+      if (newSurveys != null) {
+        this.surveys = newSurveys;
+        run['surveys'] = this.surveys.map((e) => e.uid).toList();
+      }
+      if (newAdmin != null) {
+        this.admin = newAdmin;
+        run['admin'] = this.admin;
+      }
+      if (newPosition != null) {
+        this.position = newPosition;
+        run['position'] = this.position;
+      }
+      transaction.update(userCollection.doc(this.uid), run);
+    });
   }
 
   Future getEmployee() async {
@@ -105,15 +105,14 @@ class Employee {
     this.surname = ref['surname'];
     this.email = ref['email'];
     this.companyUid = ref['companyUid'];
-    this.roles = List<String>.from(ref['roles'] as List<dynamic>);
+    this.tags = List<String>.from(ref['tags'] as List<dynamic>);
     this.surveys = List<String>.from(ref['surveys'] as List<dynamic>)
         .map((e) => Survey(uid: e))
         .toList();
     this.request = ref['request'];
     this.admin = ref['admin'];
     this.position = ref['position'];
-    this.surveys.sort(
-        (a, b) => a.from.compareTo(b.from));
+    this.surveys.sort((a, b) => a.from.compareTo(b.from));
     return this;
   }
 
@@ -154,7 +153,7 @@ class Employee {
 
   Future handleSurveys() async {
     await Future.wait(
-        this.surveys.map((e) async => await e.getSurvey()).toList());
+        this.surveys.map((e) async => await e.getSurvey(false)).toList());
     List<String> past = [];
     for (Survey s in surveys) {
       if (s.status == STATUS.Past) {

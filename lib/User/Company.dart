@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rankless/Survey/Survey.dart';
 
 import 'Employee.dart';
 import 'Post.dart';
@@ -17,6 +18,7 @@ class Company {
   List<String> positions = [];
   List<String> requests = [];
   List<String> surveys = [];
+  List<Survey> surveysFull = [];
   Employee me;
 
   CollectionReference companiesCollection =
@@ -96,6 +98,7 @@ class Company {
 
   Future surveyDone() async {}
 
+  /// Accepts or Denies access to Company based on [accepted]
   void handleRequest(bool accpeted) async {
     String e = requests[0];
     String uidTemp = e.substring(0, e.indexOf('%'));
@@ -113,5 +116,37 @@ class Company {
         'employees': employeesTemp,
       });
     });
+  }
+
+  /// Updates position or tags or both.
+  /// If [remove == true] then newTags will be removed from tags.
+  ///
+  /// [who] should be [me].
+  ///
+  /// Either [position] or [newTags] should have value. Otherwise nothing will happen.
+  Future addPositionOrTags(Employee who,
+      {String position, List<String> newTags, bool remove = false}) async {
+    if (position == null && newTags == null) return;
+    if (surveys.length != surveysFull.length) {
+      surveysFull = await Future.wait(surveys
+          .map((e) async => await Survey(uid: e).getSurvey(true))
+          .toList());
+    }
+    if (newTags != null) {
+      if (!remove) newTags.addAll(who.tags);
+      if (remove) newTags.removeWhere((element) => newTags.contains(element));
+      newTags = (newTags.toSet()).toList();
+    }
+    List<Survey> newSurveys = surveysFull
+        .where((e) {
+          if (position != null && e.tags.contains(position)) return true;
+          if (newTags != null)
+            for (String tag in newTags) if (e.tags.contains(tag)) return true;
+          return false;
+        })
+        .where((e) => e.status == STATUS.Upcoming)
+        .toList();
+    await who.updateEmployee(
+        newPosition: position, newTags: newTags, newSurveys: newSurveys);
   }
 }

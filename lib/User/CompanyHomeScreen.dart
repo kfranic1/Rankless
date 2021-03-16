@@ -161,15 +161,11 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                     ),
                   ),
                 ),
-                Visibility(
-                    child: Center(
-                  child: TextButton(
-                    child: Text('getResults'),
+                TextButton(
                     onPressed: () {
-                      print(me.surveys[0].getResults());
+                      company.addPositionOrTags(me, newTags: ['tim1']);
                     },
-                  ),
-                ))
+                    child: Text('add stuff')),
               ],
             ),
           );

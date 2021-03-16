@@ -35,6 +35,7 @@ class Survey {
       'question': qNa.map((e) => e.toMap()).toList(),
       'from': this.from.toString(),
       'to': this.to.toString(),
+      'tags': this.tags,
     });
     this.uid = ref.id;
     await company.updateCompany(newSurvey: this.uid);
@@ -44,7 +45,7 @@ class Survey {
       (Employee employee) async {
         bool gets = this.tags.length == 0;
         for (String tag in tags) {
-          if (employee.roles.contains(tag) || employee.position == tag) {
+          if (employee.tags.contains(tag) || employee.position == tag) {
             print(employee.name);
             gets = true;
             break;
@@ -63,7 +64,7 @@ class Survey {
     int ret = 0;
     company.employees.forEach((employee) async {
       for (String tag in tags) {
-        if (employee.roles.contains(tag) || employee.position == tag) {
+        if (employee.tags.contains(tag) || employee.position == tag) {
           ret++;
           break;
         }
@@ -72,9 +73,10 @@ class Survey {
     return ret;
   }
 
-  Future getSurvey() async {
+  Future<Survey> getSurvey(bool withResults) async {
     updateData(await surveyCollection.doc(this.uid).get());
-    await _getResults();
+    if (withResults) await _getResults();
+    return this;
   }
 
   Survey updateData(DocumentSnapshot ref) {
@@ -86,6 +88,7 @@ class Survey {
         .map((e) => e as Map<String, dynamic>)
         .map((e) => Question().fromMap(e))
         .toList();
+    this.tags = List<String>.from(ref['tags'] as List<dynamic>);
     this.status = _getStatus();
     return this;
   }
@@ -107,6 +110,7 @@ class Survey {
 
   Future _getResults() async {
     DocumentSnapshot data = await resultCollection.doc(this.uid).get();
+    if (!data.exists) return;
     data.data().forEach((key, value) {
       String pos = value['pos'];
       if (this.results[pos] == null)

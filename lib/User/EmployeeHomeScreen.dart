@@ -108,9 +108,9 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                     ],
                   )
             : Text("You are already in company"),
-        employee.roles.length != 0
-            ? Text(employee.roles[0])
-            : Text('Roles loading'),
+        employee.tags.length != 0
+            ? Text(employee.tags[0])
+            : Text('You have no tags'),
         employee.surveys.length > 0
             ? FutureBuilder(
                 future: employee.handleSurveys(),
