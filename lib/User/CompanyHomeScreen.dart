@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rankless/Survey/Results.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'package:rankless/Survey/SurveyUI.dart';
 import 'package:rankless/User/Employee.dart';
@@ -162,13 +163,21 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   ),
                 ),
                 TextButton(
-                    onPressed: () async {
-                      Survey sur = await Survey(uid: 'fRKQtId76sevJWKL7rIJ')
-                          .getSurvey(true);
-                      print(sur.getResults());
-                      //company.addPositionOrTags(me, newTags: ['tim1']);
+                    onPressed: () {
+                      company.addPositionOrTags(me, newTags: ['tim1']);
                     },
                     child: Text('add stuff')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) =>
+                                Results(Survey(uid: 'fRKQtId76sevJWKL7rIJ'))),
+                      );
+                    },
+                    child: Text('Press me'))
               ],
             ),
           );

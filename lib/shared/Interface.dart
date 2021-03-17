@@ -29,6 +29,13 @@ Decoration backgroundDecoration = BoxDecoration(
         end: Alignment.bottomCenter,
         colors: [Colors.black, const Color(0xff3f51b5)]));
 
+TextStyle surveyNameStyle = TextStyle(
+  color: Colors.white,
+  fontFamily: 'Mulish',
+  fontSize: 25,
+  fontWeight: FontWeight.bold,
+);
+
 InputDecoration textFieldDecoration = InputDecoration(
   // border: InputBorder.none,
   hintStyle: TextStyle(fontFamily: font, color: Colors.white60, fontSize: 15),
