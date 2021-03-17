@@ -162,8 +162,11 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   ),
                 ),
                 TextButton(
-                    onPressed: () {
-                      company.addPositionOrTags(me, newTags: ['tim1']);
+                    onPressed: () async {
+                      Survey sur = await Survey(uid: 'fRKQtId76sevJWKL7rIJ')
+                          .getSurvey(true);
+                      print(sur.getResults());
+                      //company.addPositionOrTags(me, newTags: ['tim1']);
                     },
                     child: Text('add stuff')),
               ],

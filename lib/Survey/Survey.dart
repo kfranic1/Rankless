@@ -94,7 +94,7 @@ class Survey {
   }
 
   /// Must recieve [Provied.of<Employee>(context)] in other words [me]
-  /// 
+  ///
   /// Submits [this] survey done by [me]
   Future submitSurvey(Employee who) async {
     who.surveys.remove(this);
@@ -107,7 +107,7 @@ class Survey {
           return e.mask.toString();
         }).toList()
       }
-    });
+    }, SetOptions(merge: true));
   }
 
   Future _getResults() async {
@@ -128,7 +128,21 @@ class Survey {
   /// Returns Map with following structure [position, Map<question_number, answers>]
   ///
   /// Adding [filter] will return map containing [position] that are in [filter]
-  Map<String, Map<int, List<String>>> getResults({List<String> filter}) {
+  Map<String, Map<int, List<String>>> getResults(
+      {List<String> filter, bool fake = false}) {
+    if (fake)
+      return {
+        'UI': {
+          0: ['Joj kakvo je ovo pitanje', 'kjjk'],
+          1: ['1', '1'],
+          2: ['6', '3']
+        },
+        'developer': {
+          0: ['Odgovor'],
+          1: ['1'],
+          2: ['3']
+        }
+      };
     if (filter == null) return results;
     Map<String, Map<int, List<String>>> ret = results;
     ret.removeWhere((key, value) => !filter.contains(key));
