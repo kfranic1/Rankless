@@ -32,77 +32,97 @@ class _CreateCompanyState extends State<CreateCompany> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Rankless"),
+        backgroundColor: Colors.black,
       ),
       body: Container(
         decoration: backgroundDecoration,
         padding: EdgeInsets.all(20),
         child: creating
             ? Center(child: CircularProgressIndicator())
-            : Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView(
-                    children: [
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TextFormField(
-                              initialValue: name,
-                              validator: (value) {
-                                return value.isEmpty
-                                    ? "Name can't be empty"
-                                    : null;
-                              },
-                              decoration: registerInputDecoration.copyWith(
-                                  labelText: 'Company name'),
-                              onChanged: (value) {
-                                setState(() => name = value);
-                              },
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Theme(
-                              data: ThemeData(
-                                  textSelectionTheme: TextSelectionThemeData(
-                                    cursorColor: Colors.white,
-                                    selectionColor: Colors.white,
-                                    /*selectionHandleColor: Colors.white*/
-                                  ),
-                                  primaryColor: Colors.white,
-                                  selectedRowColor: Colors.white,
-                                  canvasColor: Colors.white
-                                  // splashColor: Colors.white,
+            : Theme(
+                data: ThemeData(
+                  textSelectionTheme: TextSelectionThemeData(
+                    cursorColor: Colors.white,
+                    // selectionColor: Colors.white,
+                    // selectionHandleColor: Colors.white,
+                  ),
+                  primaryColor:
+                      Colors.black45, // mijenja search icon kod drzava
+                  // secondaryHeaderColor: Colors.white,
+                  // errorColor: Colors.white,
+                  // cardColor: Colors.white,
+                  // textSelectionColor: Colors.white,
+                  // selectedRowColor: Colors.white,
+                  // canvasColor: Colors.white,
+                  hintColor: Colors.white,
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView(
+                      children: [
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 20,
+                              ),
+                              TextFormField(
+                                initialValue: name,
+                                validator: (value) {
+                                  return value.isEmpty
+                                      ? "Name can't be empty"
+                                      : null;
+                                },
+                                decoration: registerInputDecoration.copyWith(
+                                    labelText: 'Company name'),
+                                style: inputTextStyle,
+                                onChanged: (value) {
+                                  setState(() => name = value);
+                                },
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              // Theme(
+                              //   data: ThemeData(
+                              //       textSelectionTheme: TextSelectionThemeData(
+                              //         cursorColor: Colors.white,
+                              //         selectionColor: Colors.white,
+                              //         /*selectionHandleColor: Colors.white*/
+                              //       ),
+                              //       primaryColor: Colors.white,
+                              //       selectedRowColor: Colors.white,
+                              //       canvasColor: Colors.white
+                              // splashColor: Colors.white,
 
-                                  // colorScheme: ColorScheme(
-                                  //     primary: Colors.white,
-                                  //     primaryVariant: Colors.white,
-                                  //     secondary: Colors.white,
-                                  //     secondaryVariant: Colors.white,
-                                  //     surface: Colors.white,
-                                  //     background: Colors.transparent,
-                                  //     error: Colors.red,
-                                  //     onPrimary: Colors.white,
-                                  //     onSecondary: Colors.white,
-                                  //     onSurface: Colors.white,
-                                  //     onBackground: Colors.transparent,
-                                  //     onError: Colors.red,
-                                  //     brightness: Brightness.light)
+                              // colorScheme: ColorScheme(
+                              //     primary: Colors.white,
+                              //     primaryVariant: Colors.white,
+                              //     secondary: Colors.white,
+                              //     secondaryVariant: Colors.white,
+                              //     surface: Colors.white,
+                              //     background: Colors.transparent,
+                              //     error: Colors.red,
+                              //     onPrimary: Colors.white,
+                              //     onSecondary: Colors.white,
+                              //     onSurface: Colors.white,
+                              //     onBackground: Colors.transparent,
+                              //     onError: Colors.red,
+                              //     brightness: Brightness.light)
 
-                                  // cardColor: Colors.white,
-                                  // hintColor: Colors.white,
-                                  // indicatorColor: Colors.white,
-                                  // backgroundColor: Colors.white,
-                                  // buttonColor: Colors.white
-                                  // accentColor: Colors.white,
-                                  // unselectedWidgetColor: Colors.white,
-                                  // focusColor: Colors.white,
-                                  ),
-                              child: CountryCodePicker(
+                              // cardColor: Colors.white,
+                              // hintColor: Colors.white,
+                              // indicatorColor: Colors.white,
+                              // backgroundColor: Colors.white,
+                              // buttonColor: Colors.white
+                              // accentColor: Colors.white,
+                              // unselectedWidgetColor: Colors.white,
+                              // focusColor: Colors.white,
+                              // ),
+                              // child:
+                              CountryCodePicker(
                                 initialSelection: country,
                                 showCountryOnly: true,
                                 showOnlyCountryWhenClosed: true,
@@ -117,7 +137,8 @@ class _CreateCompanyState extends State<CreateCompany> {
                                 dialogTextStyle: inputTextStyle,
                                 textStyle: inputTextStyle,
                                 searchStyle: inputTextStyle.copyWith(
-                                    color: Colors.white),
+                                  color: Colors.black,
+                                ),
                                 searchDecoration:
                                     registerInputDecoration.copyWith(
                                         // icon: Icon(Icons.ac_unit),
@@ -136,104 +157,117 @@ class _CreateCompanyState extends State<CreateCompany> {
                                 //     border: Border(
                                 //         bottom: BorderSide(color: Colors.white))),
                               ),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            FutureBuilder(
-                              future: categories.contains('loading')
-                                  ? categoriesReference
-                                      .doc('GSM53sSt5zOWQbndHZH6')
-                                      .get()
-                                      .then((value) {
-                                      setState(() {
-                                        categories = (value.data()['categories']
-                                                as List<dynamic>)
-                                            .map((e) => e as String)
-                                            .toList();
-                                        categories.sort();
-                                        categories.add('Other');
-                                      });
-                                    })
-                                  : null,
-                              builder: (context, snapshot) {
-                                return SearchableDropdown(
-                                  hint: 'Category',
-                                  // searchBoxDecoration:
-                                  //     registerInputDecoration.copyWith(
-                                  //         focusColor: Colors.white,
-                                  //         icon: Icon(Icons.search,
-                                  //             color: Colors.white)),
-                                  // dropdownSearchDecoration:
-                                  //     // InputDecoration(
-                                  //     //     border: OutlineInputBorder()),
-                                  //     registerInputDecoration,
-                                  // popupBarrierColor: Colors.white,
-                                  style: inputTextStyle.copyWith(
-                                      color: Colors.white),
-                                  menuBackgroundColor: Colors.blue[200],
+                              // ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              FutureBuilder(
+                                future: categories.contains('loading')
+                                    ? categoriesReference
+                                        .doc('GSM53sSt5zOWQbndHZH6')
+                                        .get()
+                                        .then((value) {
+                                        setState(() {
+                                          categories =
+                                              (value.data()['categories']
+                                                      as List<dynamic>)
+                                                  .map((e) => e as String)
+                                                  .toList();
+                                          categories.sort();
+                                          categories.add('Other');
+                                        });
+                                      })
+                                    : null,
+                                builder: (context, snapshot) {
+                                  return
+                                      // Theme(
+                                      //   data: ThemeData(
+                                      //     primaryColor: Colors.white,
+                                      //     hintColor: Colors.white,
+                                      //   ),
+                                      // child:
+                                      SearchableDropdown(
+                                    hint: 'Category',
 
-                                  // mode: Mode.MENU,
-                                  // showSearchBox: true,
-                                  isExpanded: true,
-                                  items: categories
-                                      .map((e) => DropdownMenuItem(
-                                          child:
-                                              Text(e, style: inputTextStyle)))
-                                      .toList(),
-                                  onChanged: (index) =>
-                                      setState(() => category = index),
-                                );
-                              },
-                              initialData: categories,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TextFormField(
-                              initialValue: info,
-                              validator: (value) {
-                                return value.isEmpty
-                                    ? "Info can't be empty"
-                                    : null;
-                              },
-                              decoration: registerInputDecoration.copyWith(
-                                  labelText: 'Info'),
-                              onChanged: (value) {
-                                setState(() => info = value);
-                              },
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              error,
-                              style: TextStyle(color: Colors.red[400]),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            ElevatedButton(
-                              child: Text("Register Company with this data"),
-                              onPressed: () async {
-                                if (_formKey.currentState.validate()) {
-                                  setState(() => creating = true);
-                                  String ret = await finish();
-                                  if (ret == 'OK')
-                                    Navigator.pop(context);
-                                  else {
-                                    setState(() {
-                                      creating = false;
-                                      error = ret;
-                                    });
+                                    // underline: BorderSide(color: Colors.white),
+                                    // searchBoxDecoration:
+                                    //     registerInputDecoration.copyWith(
+                                    //         focusColor: Colors.white,
+                                    //         icon: Icon(Icons.search,
+                                    //             color: Colors.white)),
+                                    // dropdownSearchDecoration:
+                                    //     // InputDecoration(
+                                    //     //     border: OutlineInputBorder()),
+                                    //     registerInputDecoration,
+                                    // popupBarrierColor: Colors.white,
+                                    style: inputTextStyle.copyWith(
+                                        color: Colors.white),
+                                    menuBackgroundColor: Colors.blue,
+
+                                    // mode: Mode.MENU,
+                                    // showSearchBox: true,
+                                    isExpanded: true,
+                                    items: categories
+                                        .map((e) => DropdownMenuItem(
+                                            child:
+                                                Text(e, style: inputTextStyle)))
+                                        .toList(),
+                                    onChanged: (index) =>
+                                        setState(() => category = index),
+                                  );
+                                  // );
+                                },
+                                initialData: categories,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              TextFormField(
+                                initialValue: info,
+                                validator: (value) {
+                                  return value.isEmpty
+                                      ? "Info can't be empty"
+                                      : null;
+                                },
+                                decoration: registerInputDecoration.copyWith(
+                                    labelText: 'Info'),
+                                style: inputTextStyle,
+                                onChanged: (value) {
+                                  setState(() => info = value);
+                                },
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                error,
+                                style: TextStyle(color: Colors.red[400]),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              ElevatedButton(
+                                child: Text("Register Company with this data"),
+                                onPressed: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    setState(() => creating = true);
+                                    String ret = await finish();
+                                    if (ret == 'OK')
+                                      Navigator.pop(context);
+                                    else {
+                                      setState(() {
+                                        creating = false;
+                                        error = ret;
+                                      });
+                                    }
                                   }
-                                }
-                              },
-                            ),
-                          ],
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -7,6 +7,7 @@ class CustomAppBar {
   final AuthService _auth = AuthService();
   AppBar build(String title, Employee employee) {
     return AppBar(
+      backgroundColor: Colors.black,
       leading: Icon(Icons.circle),
       title: Text(title),
       actions: [

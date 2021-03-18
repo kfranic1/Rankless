@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rankless/shared/Interface.dart';
 import 'Employee.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
@@ -22,86 +23,102 @@ class _JoinCompanyState extends State<JoinCompany> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Rankless"),
+        backgroundColor: Colors.black,
       ),
-      body: loading
-          ? Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FutureBuilder(
-                initialData: null,
-                future: companies == null
-                    ? companiesCollection.get().then((value) => {
-                          companies = value.docs
-                              .map((e) => SimpleCompany(
-                                  name: e.data()['name'],
-                                  uid: e.id,
-                                  country: e.data()['country']))
-                              .toList()
-                        })
-                    : null,
-                builder: (context, snapshot) {
-                  return (!snapshot.hasData)
-                      ? Center(child: CircularProgressIndicator())
-                      : ListView(
-                          children: [
-                            SearchableDropdown.single(
-                              displayClearIcon: false,
-                              items: companies
-                                  .map(
-                                    (e) => DropdownMenuItem(
-                                      value: e.uid +
-                                          '%' +
-                                          e.name +
-                                          '%' +
-                                          e.country,
-                                      child: ListTile(
-                                        title: Text(e.name),
-                                        subtitle: Text(e.country),
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                              hint: Text(
-                                'Company',
-                                style: TextStyle(
-                                    color: Colors.grey[600],
-                                    fontFamily: 'Mulish',
-                                    fontSize: 15),
+      body: Container(
+        decoration: backgroundDecoration,
+        child: loading
+            ? Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FutureBuilder(
+                  initialData: null,
+                  future: companies == null
+                      ? companiesCollection.get().then((value) => {
+                            companies = value.docs
+                                .map((e) => SimpleCompany(
+                                    name: e.data()['name'],
+                                    uid: e.id,
+                                    country: e.data()['country']))
+                                .toList()
+                          })
+                      : null,
+                  builder: (context, snapshot) {
+                    return (!snapshot.hasData)
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView(
+                            children: [
+                              Theme(
+                                data: ThemeData(
+                                  textSelectionTheme: TextSelectionThemeData(
+                                    cursorColor: Colors.white,
+                                  ),
+                                  primaryColor: Colors.white,
+                                  hintColor: Colors.white,
+                                ),
+                                child: SearchableDropdown.single(
+                                  displayClearIcon: false,
+                                  items: companies
+                                      .map(
+                                        (e) => DropdownMenuItem(
+                                          value: e.uid +
+                                              '%' +
+                                              e.name +
+                                              '%' +
+                                              e.country,
+                                          child: ListTile(
+                                            title: Text(e.name,
+                                                style: inputTextStyle),
+                                            subtitle: Text(
+                                              e.country,
+                                              style: inputTextStyle.copyWith(
+                                                  fontSize: 15),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                  menuBackgroundColor: Colors.blue,
+                                  hint: Text(
+                                    'Company',
+                                    style: inputTextStyle,
+                                  ),
+                                  style: inputTextStyle,
+                                  isExpanded: true,
+                                  onChanged: (item) {
+                                    String temp = item as String;
+                                    setState(() {
+                                      selectedCompany = temp.substring(
+                                          temp.indexOf('%') + 1,
+                                          temp.lastIndexOf('%'));
+                                      selectedUid =
+                                          temp.substring(0, temp.indexOf('%'));
+                                    });
+                                  },
+                                ),
                               ),
-                              searchHint: 'What is your company',
-                              isExpanded: true,
-                              onChanged: (item) {
-                                String temp = item as String;
-                                setState(() {
-                                  selectedCompany = temp.substring(
-                                      temp.indexOf('%') + 1,
-                                      temp.lastIndexOf('%'));
-                                  selectedUid =
-                                      temp.substring(0, temp.indexOf('%'));
-                                });
-                              },
-                            ),
-                            SizedBox(height: 20),
-                            Container(
-                              color: Colors.grey[300],
-                              child: TextButton(
-                                child: Text("Send request"),
-                                onPressed: () {
-                                  if (selectedCompany == null) return;
-                                  setState(() {
-                                    loading = true;
-                                    widget.employee.sendRequestToCompany(
-                                        selectedCompany, selectedUid);
-                                    Navigator.pop(context);
-                                  });
-                                },
+                              SizedBox(height: 20),
+                              Container(
+                                color: Colors.grey[300],
+                                child: TextButton(
+                                  child: Text("Send request"),
+                                  onPressed: () {
+                                    if (selectedCompany == null) return;
+                                    setState(() {
+                                      loading = true;
+                                      widget.employee.sendRequestToCompany(
+                                          selectedCompany, selectedUid);
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
-                        );
-                },
+                            ],
+                          );
+                  },
+                ),
               ),
-            ),
+      ),
     );
   }
 }
