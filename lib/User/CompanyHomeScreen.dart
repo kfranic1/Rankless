@@ -172,7 +172,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            fullscreenDialog: true,
+                            //fullscreenDialog: true,
                             builder: (context) =>
                                 Results(Survey(uid: 'fRKQtId76sevJWKL7rIJ'))),
                       );

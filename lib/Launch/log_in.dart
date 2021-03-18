@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rankless/Launch/auth.dart';
-import 'package:rankless/Launch/register.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'package:rankless/shared/custom_app_bar.dart';
 
@@ -28,9 +27,8 @@ class _LogInState extends State<LogIn> {
       decoration: backgroundDecoration,
       padding: EdgeInsets.all(20),
       child: loading
-          //TODO swap with custom loader
           ? Center(
-              child: CircularProgressIndicator(),
+              child: loader,
             )
           : Center(
               child: ListView(

@@ -4,6 +4,7 @@ import 'package:rankless/User/Company.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/User/EmployeeHome.dart';
 import 'package:rankless/Launch/authenticate.dart';
+import 'package:rankless/shared/Interface.dart';
 import 'package:rankless/shared/custom_app_bar.dart';
 
 class Wrapper extends StatelessWidget {
@@ -29,7 +30,7 @@ class Wrapper extends StatelessWidget {
                           child: EmployeeHome(),
                         )
                       : Center(
-                          child: CircularProgressIndicator(),
+                          child: loader,
                         ),
             ),
     );

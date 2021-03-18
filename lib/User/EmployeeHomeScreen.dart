@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:rankless/Survey/SurveyUIFill.dart';
+import 'package:rankless/shared/Interface.dart';
 import 'CreateCompany.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'JoinCompany.dart';
@@ -60,7 +61,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
         IconButton(
           iconSize: 100,
           icon: imageLoading
-              ? Center(child: CircularProgressIndicator())
+              ? Center(child: loader)
               : CircleAvatar(
                   radius: 50, //should be half of icon size
                   backgroundImage: employee.image == null
@@ -143,7 +144,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 builder: (context, snapshot) => snapshot.connectionState ==
                         ConnectionState.active
                     ? Center(
-                        child: CircularProgressIndicator(),
+                        child: loader,
                       )
                     : Center(
                         child: TextButton(

@@ -44,9 +44,8 @@ class _RegisterState extends State<Register> {
       decoration: backgroundDecoration,
       padding: EdgeInsets.all(15),
       child: loading
-          //TODO swap with custom loader
           ? Center(
-              child: CircularProgressIndicator(),
+              child: loader,
             )
           : Center(
               child: ListView(
