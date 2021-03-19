@@ -13,61 +13,83 @@ class Results extends StatefulWidget {
 }
 
 class _ResultsState extends State<Results> {
+  Map<String, Map<int, List<String>>> results;
+  Future _future;
+
+  @override
+  void initState() {
+    _future = widget.survey.getSurvey(true).whenComplete(() {
+      setState(() {
+        print('here');
+        results = widget.survey.getResults();
+        print(results);
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //appBar: AppBar(),
       body: Container(
         decoration: backgroundDecoration,
         child: FutureBuilder(
-          future: widget.survey.getSurvey(true),
-          builder: (context, snapshot) => snapshot.connectionState !=
-                  ConnectionState.done
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              //TU IDE WIDGET
-              : Column(
-                  children: [
-                    Container(
-                      child: Text(
-                        widget.survey.name,
-                        style: surveyNameStyle,
+          future: _future,
+          builder: (context, snapshot) {
+            print(snapshot.connectionState);
+            return snapshot.connectionState != ConnectionState.done
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                //TU IDE WIDGET
+                : Column(
+                    children: [
+                      Container(
+                        child: Text(
+                          widget.survey.name,
+                          style: surveyNameStyle,
+                        ),
+                        alignment: Alignment.topCenter,
+                        padding: EdgeInsets.all(20),
                       ),
-                      alignment: Alignment.topCenter,
-                      padding: EdgeInsets.all(20),
-                    ),
-                    ListView.separated(
-                      key: UniqueKey(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        if (widget.survey.qNa[index].answerType == TYPE.Text) {
-                          return showTextQ(widget.survey.qNa[index], index);
-                        }
-                        if (widget.survey.qNa[index].answerType ==
-                            TYPE.RadioButton) {
-                          return showRadioQ(widget.survey.qNa[index]);
-                        }
-                        return null;
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(
-                          height: 20,
-                        );
-                      },
-                      itemCount: widget.survey.qNa.length,
-                    ),
-                    TextButton(
-                      child: Text(
-                        'Done',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: font,
-                            fontSize: 20),
+                      Expanded(
+                        child: ListView.separated(
+                          key: UniqueKey(),
+                          shrinkWrap: true,
+                          itemCount: widget.survey.qNa.length,
+                          itemBuilder: (context, index) {
+                            print(widget.survey.qNa[index].answerType);
+                            if (widget.survey.qNa[index].answerType ==
+                                TYPE.Text) {
+                              return showTextQ(widget.survey.qNa[index], index);
+                            }
+                            if (widget.survey.qNa[index].answerType ==
+                                TYPE.RadioButton) {
+                              return showRadioQ(widget.survey.qNa[index]);
+                            }
+                            return null;
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox(
+                              height: 20,
+                            );
+                          },
+                        ),
                       ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
+                      TextButton(
+                        child: Text(
+                          'Done',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: font,
+                              fontSize: 20),
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  );
+          },
         ),
       ),
     );
@@ -75,8 +97,6 @@ class _ResultsState extends State<Results> {
 
   int countTextAns() {
     int cnt = 0;
-    Map<String, Map<int, List<String>>> results =
-        widget.survey.getResults(fake: true);
     for (int i = 0; i < widget.survey.qNa.length; i++) {
       if (widget.survey.qNa[i].answerType == TYPE.Text) {
         results.forEach((key, value) {
@@ -91,45 +111,96 @@ class _ResultsState extends State<Results> {
     return cnt;
   }
 
-  Widget showTextQ(Question question, int index) {
-    Map<String, Map<int, List<String>>> results =
-        widget.survey.getResults(fake: true);
-    String position;
-    return ListView.separated(
-      key: UniqueKey(),
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        results.forEach((key, value) {
-          position = key;
-          value.forEach((key, value) {
-            if (key == index) {
-              return Container(
-                child: Column(children: [
+  Widget showTextQ(Question question, int questionNum) {
+    return ListTile(
+      tileColor: Colors.white,
+      title: Row(
+        children: [
+          Expanded(
+              //alignment: Alignment.topCenter,
+              child: Text(
+                  (questionNum + 1).toString() + '. ' + question.questionText)),
+          TextButton(
+            child: Text('See all'),
+            onPressed: () {
+              setState(() {
+                showDialog(
+                  context: context,
+                  builder: (context) => showAll(question, questionNum),
+                );
+              });
+            },
+          ),
+        ],
+      ),
+      subtitle: ListView.separated(
+        physics: ClampingScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: results.length,
+        itemBuilder: (context, index) {
+          String position = results.keys.toList()[index];
+          return ListTile(
+            title: Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Text(position),
+            ),
+            subtitle: Text(results[position][questionNum][0]),
+          );
+        },
+        separatorBuilder: (context, index) => Divider(),
+      ),
+    );
+  }
+
+  Widget showAll(Question question, int questionNum) {
+    return Dialog(
+      child: Container(
+        constraints: BoxConstraints(maxHeight: 300),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
                   Text(
-                    position,
-                    style: TextStyle(
-                        fontFamily: font, fontSize: 12, color: Colors.white),
-                    textAlign: TextAlign.left,
+                    (questionNum + 1).toString() + '. ' + question.questionText,
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
+            ),
+            Expanded(
+              child: Container(
+                child: RawScrollbar(
+                  isAlwaysShown: true,
+                  thumbColor: Colors.black,
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: results.length,
+                    itemBuilder: (context, index) {
+                      String position = results.keys.toList()[index];
+                      return ListView.separated(
+                          physics: ClampingScrollPhysics(),
+                          shrinkWrap: true,
+                          itemBuilder: (context, index2) => ListTile(
+                                title: Padding(
+                                  padding: const EdgeInsets.only(bottom: 10.0),
+                                  child: Text(position),
+                                ),
+                                subtitle: Text(
+                                    results[position][questionNum][index2]),
+                              ),
+                          itemCount: results[position][questionNum].length,
+                          separatorBuilder: (context, index) => Divider());
+                    },
+                    separatorBuilder: (context, index) => Divider(),
                   ),
-                  Text(
-                    value[index],
-                    style: TextStyle(
-                        fontFamily: font, fontSize: 15, color: Colors.white),
-                    textAlign: TextAlign.left,
-                  ),
-                ]),
-                color: Colors.blue,
-              );
-            }
-          });
-        });
-      },
-      itemCount: countTextAns(),
-      separatorBuilder: (context, index) {
-        return SizedBox(
-          height: 20,
-        );
-      },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -239,7 +310,7 @@ class _ResultsState extends State<Results> {
                 showingTooltipIndicators: [0],
               ),
               BarChartGroupData(
-                x: 3,
+                x: 4,
                 barRods: [
                   BarChartRodData(
                       y: 13,
@@ -248,7 +319,7 @@ class _ResultsState extends State<Results> {
                 showingTooltipIndicators: [0],
               ),
               BarChartGroupData(
-                x: 3,
+                x: 5,
                 barRods: [
                   BarChartRodData(
                       y: 10,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rankless/Survey/Survey.dart';
-import 'package:rankless/Survey/SurveyUI.dart';
+import 'package:rankless/shared/Interface.dart';
 import 'Company.dart';
 import 'CompanyHomeScreen.dart';
 import 'EmployeeHomeScreen.dart';
@@ -9,7 +8,6 @@ import 'EmployeeHomeScreen.dart';
 import 'Employee.dart';
 
 class EmployeeHome extends StatefulWidget {
-  //Pazi employee moze biti guest to provjeravas sa employee.anonymus TODO
   @override
   _EmployeeHomeState createState() => _EmployeeHomeState();
 }
@@ -63,7 +61,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
         }),
       ),
       body: employee == null
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: loader)
           : PageView(
               onPageChanged: (index) => setState(() {
                 _currentIndex = index;

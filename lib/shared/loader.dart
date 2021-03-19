@@ -1,23 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'dart:math';
+
+class CustomLoader extends StatefulWidget {
+  @override
+  _CustomLoaderState createState() => _CustomLoaderState();
+}
+
+class _CustomLoaderState extends State<CustomLoader> {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 100,
+      width: 100,
+      child: Column(
+        children: [
+          Expanded(child: Loader()),
+          Expanded(
+              child: Loader(
+            direction: false,
+          )),
+          Expanded(child: Loader()),
+        ],
+      ),
+    );
+  }
+}
 
 class Loader extends StatefulWidget {
   const Loader({
     Key key,
-    @required this.color,
-    this.lineWidth = 7.0,
-    this.size = 50.0,
-    this.duration = const Duration(milliseconds: 1200),
-    this.controller,
-    @required this.allowAnimation,
+    this.color = Colors.blue,
+    this.size = 30.0,
+    this.duration = const Duration(milliseconds: 1400),
+    this.animate = true,
+    this.allowAnimation = true,
+    this.direction = true,
   }) : super(key: key);
 
   final Color color;
-  final double lineWidth;
   final double size;
   final Duration duration;
-  final AnimationController controller;
+  final bool animate;
   final bool allowAnimation;
+  final bool direction;
 
   @override
   _LoaderState createState() => _LoaderState();
@@ -25,20 +51,14 @@ class Loader extends StatefulWidget {
 
 class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
   AnimationController _controller;
-  Animation<double> _animation;
-  bool animate = false;
+  bool animating = true;
 
   @override
   void initState() {
     super.initState();
 
-    _controller = (widget.controller ??
-        AnimationController(vsync: this, duration: widget.duration))
-      ..addListener(() => setState(() {}))
+    _controller = (AnimationController(vsync: this, duration: widget.duration))
       ..repeat();
-    _animation = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 1.0, curve: Curves.linear)));
   }
 
   @override
@@ -50,53 +70,50 @@ class _LoaderState extends State<Loader> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Transform(
-        transform: Matrix4.identity()..rotateZ((_animation.value) * pi * 2),
-        alignment: FractionalOffset.center,
-        child: CustomPaint(
-          painter: _TripleRingPainter(
-              paintWidth: widget.lineWidth, color: widget.color),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20), border: Border.all()),
           child: SizedBox.fromSize(
-            size: Size.square(widget.size),
-            child: TextButton(
-              style: TextButton.styleFrom(primary: Colors.white),
-              onPressed: () {
-                if (!widget.allowAnimation) return;
-                if (animate)
-                  _controller.stop();
-                else
-                  _controller.repeat();
-                animate = !animate;
-                
-              },
-              child: Container(),
+            size: Size(widget.size * 2, widget.size),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(4, (i) {
+                return ScaleTransition(
+                  scale: DelayTween(
+                          begin: 0.0,
+                          end: 1.0,
+                          delay: ((widget.direction ? i : (2 - i))) - 1 * .2)
+                      .animate(_controller),
+                  child: SizedBox.fromSize(
+                      size: Size.square(widget.size * 0.3),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: _itemBuilder(i),
+                      )),
+                );
+              }),
             ),
           ),
         ),
       ),
     );
   }
+
+  Widget _itemBuilder(int index) => DecoratedBox(
+      decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle));
 }
 
-class _TripleRingPainter extends CustomPainter {
-  _TripleRingPainter({@required double paintWidth, @required Color color})
-      : ringPaint = Paint()
-          ..color = color
-          ..strokeWidth = paintWidth
-          ..style = PaintingStyle.stroke;
+class DelayTween extends Tween<double> {
+  DelayTween({double begin, double end, @required this.delay})
+      : super(begin: begin, end: end);
 
-  final Paint ringPaint;
+  final double delay;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromPoints(Offset.zero, Offset(size.width, size.height));
-    canvas.drawArc(rect, 0.0, getRadian(110.0), false, ringPaint);
-    canvas.drawArc(rect, getRadian(140.0), getRadian(90.0), false, ringPaint);
-    canvas.drawArc(rect, getRadian(260.0), getRadian(70.0), false, ringPaint);
-  }
+  double lerp(double t) => super.lerp((sin((t - delay) * 2 * pi) + 1) / 2);
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
-
-  double getRadian(double angle) => pi / 180 * angle;
+  double evaluate(Animation<double> animation) => lerp(animation.value);
 }

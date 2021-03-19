@@ -123,6 +123,21 @@ class Survey {
         this.results[pos][i].add(ans[i]);
       }
     });
+    for (String key in this.results.keys) {
+      if (this.results[key][0].length == 1) {
+        Map<int, List<String>> temp = this.results.remove(key);
+        if (this.results['Other'] == null) {
+          this.results['Other'] = new Map<int, List<String>>();
+        }
+        print(temp.keys.length);
+        for (int i = 0; i < temp.keys.length; i++) {
+          if (this.results['Other'][i] == null)
+            this.results['Other'][i] = <String>[];
+          this.results['Other'][i].add(temp[i][0]);
+        }
+      }
+    }
+    print(results);
   }
 
   /// Returns Map with following structure [position, Map<question_number, answers>]

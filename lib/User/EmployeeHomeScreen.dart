@@ -63,7 +63,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
           IconButton(
             iconSize: 100,
             icon: imageLoading
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: loader)
                 : Row(children: [
                     Container(
                       alignment: Alignment.topLeft,
