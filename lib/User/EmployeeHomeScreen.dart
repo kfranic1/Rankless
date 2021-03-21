@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:rankless/Survey/SurveyUIFill.dart';
 import 'package:rankless/shared/Interface.dart';
+import 'Company.dart';
 import 'CreateCompany.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'JoinCompany.dart';
@@ -52,14 +53,15 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Company company = Provider.of<Company>(context);
     final employee = Provider.of<Employee>(context);
     employee.surveys.forEach((element) {
       print(element.uid);
     });
     return Container(
-      decoration: backgroundDecoration,
-      child: ListView(
-        children: [
+        decoration: backgroundDecoration,
+        padding: EdgeInsets.all(20),
+        child: ListView(children: [
           IconButton(
             iconSize: 100,
             icon: imageLoading
@@ -67,7 +69,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 : Row(children: [
                     Container(
                       alignment: Alignment.topLeft,
-                      padding: EdgeInsets.all(10),
+                      // padding: EdgeInsets.all(10),
                       child: CircleAvatar(
                         radius: 50, //should be half of icon size
                         backgroundImage: employee.image == null
@@ -85,19 +87,22 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                             : null,
                       ),
                     ),
-                    Column(
-                      children: [
-                        Text(
-                          employee.name,
-                          style: inputTextStyle.copyWith(
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(employee.surname,
+                    Container(
+                      padding: EdgeInsets.only(left: 20.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            employee.name,
                             style: inputTextStyle.copyWith(
-                                fontWeight: FontWeight.bold)),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(employee.surname,
+                              style: inputTextStyle.copyWith(
+                                  fontWeight: FontWeight.bold)),
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                      ),
                     ),
                   ]),
             onPressed: () async {
@@ -106,6 +111,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
               setState(() => imageLoading = false);
             },
           ),
+          SizedBox(height: 20),
           employee.companyUid == null
               ? employee.request != ''
                   ? Column(children: [
@@ -150,7 +156,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                           ),
                         ),
                         SizedBox(
-                          height: 60,
+                          height: 100,
                         ),
                         Expanded(
                           child: Padding(
@@ -172,52 +178,99 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                         ),
                       ],
                     )
-              : Text("You are already in company", style: inputTextStyle),
-          employee.tags.length != 0
-              ? Text(employee.tags[0])
-              : Text('You have no tags'),
-          employee.surveys.length > 0
-              ? FutureBuilder(
-                  future: employee.handleSurveys(),
-                  builder: (context, snapshot) => snapshot.connectionState ==
-                          ConnectionState.active
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : Center(
-                          child: TextButton(
-                            onPressed: () async {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SurveyUIFill(
-                                      employee.surveys[0], employee),
-                                ),
-                              );
-                            },
-                            child: Text('You have ' +
-                                employee.surveys
-                                    .where((element) {
-                                      print(element.name);
-                                      return element.status == STATUS.Active;
-                                    })
-                                    .length
-                                    .toString() +
-                                ' active and ' +
-                                employee.surveys
-                                    .where((element) =>
-                                        element.status == STATUS.Upcoming)
-                                    .length
-                                    .toString() +
-                                ' upcoming surveys'),
-                          ),
-                        ),
-                )
-              : Center(
-                  child: Text('There are no new surveys'),
-                )
-        ],
-      ),
-    );
+              : Column(
+                  children: [
+                    // sve sto treba biti ispod slike i imena kad si u firmi
+                    Row(children: [
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              Icon(Icons.house_outlined, color: Colors.white),
+                              SizedBox(width: 10),
+                              Text(company.name, style: inputTextStyle),
+                            ]),
+                            Row(
+                              children: [
+                                Icon(Icons.home_repair_service_outlined,
+                                    color: Colors.white),
+                                SizedBox(width: 10),
+                                Text(
+                                  'position' /*employee.position*/,
+                                  style: inputTextStyle,
+                                )
+                              ],
+                            ),
+                          ]),
+                      // RichText(
+                      //     text: TextSpan(children: [
+                      //   WidgetSpan(
+                      //       child: Icon(
+                      //     Icons.home_repair_service_outlined,
+                      //     color: Colors.white,
+                      //   )),
+                      //   TextSpan(
+                      //       text: 'pos' /*employee.position*/,
+                      //       style: inputTextStyle)
+                      // ])),
+                      SizedBox(
+                        width: 35,
+                      ),
+                      employee.tags.length != 0
+                          ? Text(employee.tags[0])
+                          : Text('You have no tags', style: inputTextStyle),
+                    ]),
+                    SizedBox(height: 20),
+                    employee.surveys.length > 0
+                        ? FutureBuilder(
+                            future: employee.handleSurveys(),
+                            builder: (context, snapshot) => snapshot
+                                        .connectionState ==
+                                    ConnectionState.active
+                                ? Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : Center(
+                                    child: TextButton(
+                                      onPressed: () async {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => SurveyUIFill(
+                                                employee.surveys[0], employee),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                          'You have ' +
+                                              employee.surveys
+                                                  .where((element) {
+                                                    print(element.name);
+                                                    return element.status ==
+                                                        STATUS.Active;
+                                                  })
+                                                  .length
+                                                  .toString() +
+                                              ' active and ' +
+                                              employee.surveys
+                                                  .where((element) =>
+                                                      element.status ==
+                                                      STATUS.Upcoming)
+                                                  .length
+                                                  .toString() +
+                                              ' upcoming surveys',
+                                          style: inputTextStyle),
+                                    ),
+                                  ),
+                          )
+                        : Center(
+                            child: Text(
+                              'There are no new surveys',
+                              style: inputTextStyle,
+                            ),
+                          )
+                  ],
+                ),
+        ]));
   }
 }
