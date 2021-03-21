@@ -21,7 +21,7 @@ class _AuthenticationState extends State<Authenticate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar().build(showLogIn ? 'Login' : 'Register', null),
+      appBar: CustomAppBar(titleText: showLogIn ? 'Login' : 'Register'),
       body: showLogIn
           ? LogIn(toogleView: toogleView)
           : Register(toogleView: toogleView),

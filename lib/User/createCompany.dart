@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:rankless/shared/Interface.dart';
+import 'package:rankless/shared/custom_app_bar.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'Company.dart';
 import 'Employee.dart';
@@ -30,10 +30,7 @@ class _CreateCompanyState extends State<CreateCompany> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Rankless"),
-        backgroundColor: Colors.black,
-      ),
+      appBar: CustomAppBar(show: false),
       body: Container(
         decoration: backgroundDecoration,
         padding: EdgeInsets.all(20),

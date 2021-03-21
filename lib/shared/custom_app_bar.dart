@@ -3,44 +3,45 @@ import 'package:rankless/Launch/auth.dart';
 
 import 'package:rankless/User/Employee.dart';
 
-class CustomAppBar {
-  final AuthService _auth = AuthService();
-  AppBar build(String title, Employee employee) {
-    return AppBar(
-      backgroundColor: Colors.black,
-      leading: Icon(Icons.circle),
-      title: Text(title),
-      actions: [
-        employee == null
-            ? Container()
-            : employee.anonymus
-                ? TextButton.icon(
-                    onPressed: () async {
-                      await _auth.signOut();
-                    },
-                    icon: Icon(
-                      Icons.login,
-                      color: Colors.white,
-                    ),
-                    label: Text(
-                      "register",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )
-                : TextButton.icon(
-                    onPressed: () async {
-                      await _auth.signOut();
-                    },
-                    icon: Icon(
-                      Icons.logout,
-                      color: Colors.white,
-                    ),
-                    label: Text(
-                      "logut",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-      ],
-    );
-  }
+class CustomAppBar extends AppBar {
+  final String titleText;
+  final Employee employee;
+  final bool show;
+  CustomAppBar({this.titleText = 'Rankless', this.employee, this.show = true})
+      : super(
+          leading: show ? Icon(Icons.circle) : null,
+          title: Text(titleText),
+          actions: [
+            employee == null
+                ? Container()
+                : employee.anonymus
+                    ? TextButton.icon(
+                        onPressed: () async {
+                          await AuthService().signOut();
+                        },
+                        icon: Icon(
+                          Icons.login,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          "register",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    : TextButton.icon(
+                        onPressed: () async {
+                          await AuthService().signOut();
+                        },
+                        icon: Icon(
+                          Icons.logout,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          "logut",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+          ],
+          backgroundColor: Colors.black,
+        );
 }

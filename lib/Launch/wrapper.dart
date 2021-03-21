@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rankless/User/Company.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/User/EmployeeHome.dart';
 import 'package:rankless/Launch/authenticate.dart';
@@ -15,11 +14,9 @@ class Wrapper extends StatelessWidget {
     if (employee == null) return Authenticate();
     //Handle user/guest login
     return Scaffold(
-      appBar: CustomAppBar().build('Rankless', employee),
+      appBar: CustomAppBar(employee: employee),
       body: employee.anonymus
-          ? Center(
-              child: Text("You are anonymus"),
-            )
+          ? Center(child: Text("You are anonymus"))
           : FutureBuilder(
               future: employee.getEmployee(),
               builder: (context, snapshot) =>
@@ -29,9 +26,7 @@ class Wrapper extends StatelessWidget {
                           updateShouldNotify: (previous, current) => true,
                           child: EmployeeHome(),
                         )
-                      : Center(
-                          child: loader,
-                        ),
+                      : Center(child: loader),
             ),
     );
   }

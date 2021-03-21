@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rankless/shared/Interface.dart';
+import 'package:rankless/shared/custom_app_bar.dart';
 import 'Employee.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
@@ -21,10 +22,7 @@ class _JoinCompanyState extends State<JoinCompany> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Rankless"),
-        backgroundColor: Colors.black,
-      ),
+      appBar: CustomAppBar(show: false),
       body: Container(
         decoration: backgroundDecoration,
         child: loading

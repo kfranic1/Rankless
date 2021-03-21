@@ -11,7 +11,6 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
-  final CustomAppBar appBar = CustomAppBar();
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
