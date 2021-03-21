@@ -62,22 +62,22 @@ class _EmployeeHomeState extends State<EmployeeHome> {
       ),
       body: employee == null
           ? Center(child: loader)
-          : PageView(
-              onPageChanged: (index) => setState(() {
-                _currentIndex = index;
-              }),
-              controller: _controller,
-              children: [
-                StreamProvider.value(
-                  value: Company(uid: employee.companyUid ?? null).self,
-                  updateShouldNotify: (previous, current) => true,
-                  child: CompanyHomeScreen(),
-                ),
-                EmployeeHomeScreen(),
-                Center(
-                  child: Text("This is company list screen"),
-                ),
-              ],
+          : StreamProvider.value(
+              value: Company(uid: employee.companyUid ?? null).self,
+              updateShouldNotify: (previous, current) => true,
+              child: PageView(
+                onPageChanged: (index) => setState(() {
+                  _currentIndex = index;
+                }),
+                controller: _controller,
+                children: [
+                  CompanyHomeScreen(),
+                  EmployeeHomeScreen(),
+                  Center(
+                    child: Text("This is company list screen"),
+                  ),
+                ],
+              ),
             ),
     );
   }
