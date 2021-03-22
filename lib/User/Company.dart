@@ -12,13 +12,11 @@ class Company {
   String description;
   String country;
   List<Employee> employees = [];
-  //List<Survey> surveys;
   List<Post> posts = [];
   List<String> tags = [];
   List<String> positions = [];
   List<String> requests = [];
-  List<String> surveys = [];
-  List<Survey> surveysFull = [];
+  List<Survey> surveys = [];
   Employee me;
 
   CollectionReference companiesCollection =
@@ -45,7 +43,7 @@ class Company {
       'tags': this.tags,
       'country': this.country,
       'requests': this.requests,
-      'surveys': this.surveys,
+      'surveys': <String>[],
       'positions': this.positions,
     });
     this.uid = ref.id;
@@ -53,8 +51,8 @@ class Company {
   }
 
   Future updateCompany({
-    newDescription,
-    newSurvey,
+    String newDescription,
+    Survey newSurvey,
   }) async {
     if (newDescription != null) {
       this.description = newDescription;
@@ -64,7 +62,9 @@ class Company {
     }
     if (newSurvey != null) {
       this.surveys.add(newSurvey);
-      await companiesCollection.doc(this.uid).update({'surveys': this.surveys});
+      await companiesCollection
+          .doc(this.uid)
+          .update({'surveys': this.surveys.map((e) => e.uid).toList()});
     }
   }
 
@@ -88,7 +88,8 @@ class Company {
     this.employees = (employeesFromFirebase as List<dynamic>)
         .map((e) => Employee(uid: e as String))
         .toList();
-    this.surveys = List<String>.from(ref['surveys'] as List<dynamic>);
+    this.surveys = List<String>.from(ref['surveys'] as List<dynamic>)
+        .map((e) => Survey(uid: e));
     return this;
   }
 
@@ -127,17 +128,13 @@ class Company {
   Future addPositionOrTags(Employee who,
       {String position, List<String> newTags, bool remove = false}) async {
     if (position == null && newTags == null) return;
-    if (surveys.length != surveysFull.length) {
-      surveysFull = await Future.wait(surveys
-          .map((e) async => await Survey(uid: e).getSurvey(true))
-          .toList());
-    }
+    await getAllSurveys();
     if (newTags != null) {
       if (!remove) newTags.addAll(who.tags);
       if (remove) newTags.removeWhere((element) => newTags.contains(element));
       newTags = (newTags.toSet()).toList();
     }
-    List<Survey> newSurveys = surveysFull
+    List<Survey> newSurveys = surveys
         .where((e) {
           if (position != null && e.tags.contains(position)) return true;
           if (newTags != null)
@@ -148,5 +145,9 @@ class Company {
         .toList();
     await who.updateEmployee(
         newPosition: position, newTags: newTags, newSurveys: newSurveys);
+  }
+
+  Future getAllSurveys() async {
+    Future.forEach(surveys, (Survey item) => item.getSurvey(true));
   }
 }
