@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:rankless/Survey/SurveyUIFill.dart';
-import 'package:rankless/User/Employee.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'Question.dart';
 import 'QuestionUICreate.dart';
@@ -30,8 +27,6 @@ class _SurveyUIState extends State<SurveyUI> {
   List<ListTile> _suggestedQ = [];
   List<DropdownMenuItem> tags = [];
   bool loading = false;
-
-  bool sendToDB = true; //! ako nezelite slat survey u bazu ovo u false stavit
 
   @override
   initState() {
@@ -62,17 +57,18 @@ class _SurveyUIState extends State<SurveyUI> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    //survey name
-                    child: TextField(
+                    child: TextFormField(
+                      initialValue: widget.survey.name,
                       decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: widget.survey.name,
-                          hintStyle: TextStyle(
-                            fontFamily: 'Mulish',
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          )),
+                        border: InputBorder.none,
+                        hintText: 'input survey name',
+                        hintStyle: TextStyle(
+                          fontFamily: 'Mulish',
+                          color: Colors.grey[600],
+                          fontSize: 25,
+                          //fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -80,7 +76,7 @@ class _SurveyUIState extends State<SurveyUI> {
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
                       ),
-                      onSubmitted: (value) {
+                      onFieldSubmitted: (value) {
                         setState(() => widget.survey.name = value);
                       },
                     ),
@@ -158,7 +154,9 @@ class _SurveyUIState extends State<SurveyUI> {
                     child: Row(
                       children: [
                         Text(
-                          'For',
+                          'For(' +
+                              widget.survey.getCountBasedOnTags().toString() +
+                              ')',
                           style: TextStyle(
                               fontSize: 20,
                               color: Colors.white,
@@ -368,39 +366,29 @@ class _SurveyUIState extends State<SurveyUI> {
                   //finish creating survey
                   TextButton(
                     onPressed: () async {
-                      if (sendToDB) {
-                        setState(() {
-                          loading = true;
-                        });
-                        await widget.survey.createSurvey();
-                      }
-                        Navigator.pop(context);
-                      //ovo je samo demonstraciju funkcionalnosti
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => SurveyUIFill(
-                      //       widget.survey,
-                      //       Provider.of<Employee>(context),//ovo bi trebalo vratit vlasnika profila
-                      //     ),
-                      //   ),
-                      // );
+                      setState(() {
+                        loading = true;
+                      });
+                      await widget.survey.createSurvey();
+
+                      Navigator.pop(context);
                     },
                     child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: borderRadius),
-                        height: 60,
-                        width: 200,
-                        child: Text(
-                          'Finish',
-                          style: TextStyle(
-                              //fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontFamily: 'Mulish',
-                              fontSize: 22),
-                        )),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: borderRadius),
+                      height: 60,
+                      width: 200,
+                      child: Text(
+                        'Finish',
+                        style: TextStyle(
+                            //fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontFamily: 'Mulish',
+                            fontSize: 22),
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -510,10 +498,6 @@ class _SurveyUIState extends State<SurveyUI> {
         },
       )),
     );
-  }
-
-  Survey getSurvey() {
-    return widget.survey;
   }
 
   _selectFrom(BuildContext context) async {

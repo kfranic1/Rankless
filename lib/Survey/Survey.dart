@@ -19,6 +19,7 @@ class Survey {
   STATUS status;
   Map<String, Map<int, List<String>>> results =
       new Map<String, Map<int, List<String>>>();
+  bool hasData = false;
 
   Survey({this.uid, this.name, this.company});
 
@@ -38,7 +39,7 @@ class Survey {
       'tags': this.tags,
     });
     this.uid = ref.id;
-    await company.updateCompany(newSurvey: this.uid);
+    await company.updateCompany(newSurvey: this);
     await company.getEmployees();
     await Future.forEach(
       company.employees,
@@ -74,7 +75,10 @@ class Survey {
   }
 
   Future<Survey> getSurvey(bool withResults) async {
-    updateData(await surveyCollection.doc(this.uid).get());
+    if (!hasData) {
+      updateData(await surveyCollection.doc(this.uid).get());
+      hasData = true;
+    }
     if (withResults) await _getResults();
     return this;
   }
@@ -129,7 +133,6 @@ class Survey {
         if (this.results['Other'] == null) {
           this.results['Other'] = new Map<int, List<String>>();
         }
-        print(temp.keys.length);
         for (int i = 0; i < temp.keys.length; i++) {
           if (this.results['Other'][i] == null)
             this.results['Other'][i] = <String>[];
@@ -137,7 +140,6 @@ class Survey {
         }
       }
     }
-    print(results);
   }
 
   /// Returns Map with following structure [position, Map<question_number, answers>]

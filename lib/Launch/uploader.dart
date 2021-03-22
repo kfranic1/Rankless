@@ -2,31 +2,31 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:rankless/User/Employee.dart';
 
 class Uploader {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  Future uploadImage(String filePath, Employee employee) async {
+  Future uploadImage(String filePath, String where) async {
     File file = File(filePath);
     try {
-      await _storage.ref().child(employee.uid).putFile(file);
+      await _storage.ref().child(where).putFile(file);
     } on FirebaseException catch (e) {
-      return 'something went wrong ' + e.message;
+      return null;
     }
-    employee.image = file;
+    return file;
   }
 
-  Future getImage(Employee employee) async {
+  Future<File> getImage(String where) async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
 
-    File file = new File('${appDocDir.path}/download-profile-pic');
+    File file = new File('${appDocDir.path}/$where');
 
     try {
-      await _storage.ref().child(employee.uid).writeToFile(file);
+      await _storage.ref().child(where).writeToFile(file);
     } on FirebaseException catch (e) {
-      return 'somthing went wrong ' + e.message;
+      print(e.message);
+      return null;
     }
-    employee.image = file;
+    return file;
   }
 }

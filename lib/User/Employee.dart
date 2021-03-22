@@ -94,15 +94,14 @@ class Employee {
       transaction.update(userCollection.doc(this.uid), run);
     });
     if (newImage != null) {
-      this.image = newImage;
-      await Uploader().uploadImage(newImage.path, this);
+      this.image = await Uploader().uploadImage(newImage.path, this.uid + '1');
     }
   }
 
   Future getEmployee() async {
     updateData(await userCollection.doc(this.uid).get());
     await handleSurveys();
-    await Uploader().getImage(this);
+    await getImage();
   }
 
   Stream<Employee> get self {
@@ -176,12 +175,21 @@ class Employee {
     await updateEmployee(newSurveys: this.surveys);
   }
 
+  Future<File> getImage() async {
+    if (this.image != null) return this.image;
+    Uploader().getImage(this.uid + '1').then((value) {
+      print(value);
+      this.image = value;
+    });
+    return this.image;
+  }
+
   /// Puts newly selected [image] as profile picture for [employee]
-  Future getImage() async {
+  Future changeImage() async {
     PickedFile image =
         await ImagePicker().getImage(source: ImageSource.gallery);
     if (image == null) return;
     File cropped = await ImageCropper.cropImage(sourcePath: image.path);
     await updateEmployee(newImage: cropped ?? File(image.path));
-    }
+  }
 }
