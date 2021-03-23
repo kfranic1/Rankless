@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rankless/Launch/auth.dart';
 import 'package:rankless/shared/Interface.dart';
+import 'package:rankless/Launch/register.dart';
 import 'package:rankless/shared/custom_app_bar.dart';
 
 class LogIn extends StatefulWidget {
@@ -99,6 +100,7 @@ class _LogInState extends State<LogIn> {
                               //automatic homescreen from stream
                             }
                           },
+                          style: textButtonStyleRegister,
                         ),
                         SizedBox(
                           height: 20,
