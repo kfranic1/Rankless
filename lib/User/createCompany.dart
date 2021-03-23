@@ -214,6 +214,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                                     isExpanded: true,
                                     items: categories
                                         .map((e) => DropdownMenuItem(
+                                            value: e,
                                             child:
                                                 Text(e, style: inputTextStyle)))
                                         .toList(),

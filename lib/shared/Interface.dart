@@ -58,6 +58,6 @@ InputDecoration registerInputDecoration = textFieldDecoration.copyWith(
 
 ButtonStyle textButtonStyleRegister = ButtonStyle(
   backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-  shape: MaterialStateProperty.all<OutlinedBorder>(
-      RoundedRectangleBorder(borderRadius: borderRadius)),
+  shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(20)))),
 );

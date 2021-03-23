@@ -10,6 +10,8 @@ import 'JoinCompany.dart';
 
 import 'Employee.dart';
 
+double detailsSize = 22.0;
+
 class EmployeeHomeScreen extends StatefulWidget {
   @override
   _EmployeeHomeScreenState createState() => _EmployeeHomeScreenState();
@@ -62,76 +64,104 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
         decoration: backgroundDecoration,
         padding: EdgeInsets.all(20),
         child: ListView(children: [
-          IconButton(
-            iconSize: 100,
-            icon: imageLoading
-                ? Center(child: loader)
-                : Row(children: [
-                    Container(
-                      alignment: Alignment.topLeft,
-                      // padding: EdgeInsets.all(10),
-                      child: CircleAvatar(
-                        radius: 50, //should be half of icon size
-                        backgroundImage: employee.image == null
-                            ? null
-                            : Image.file(employee.image).image,
-                        child: employee.image == null
-                            ? Text(
-                                (employee.name[0] + employee.surname[0])
-                                    .toUpperCase(),
-                                style: TextStyle(
-                                    fontSize: 25,
-                                    fontFamily: font,
-                                    letterSpacing: 2.0),
-                              )
-                            : null,
+          Row(
+            children: [
+              IconButton(
+                iconSize: 100,
+                icon: imageLoading
+                    ? Center(child: loader)
+                    : Container(
+                        alignment: Alignment.topLeft,
+                        // padding: EdgeInsets.all(10),
+
+                        child: FutureBuilder(
+                            future: employee.getImage(),
+                            builder: (context, snapshot) {
+                              return CircleAvatar(
+                                radius: 50, //should be half of icon size
+                                backgroundImage: employee.image == null
+                                    ? null
+                                    : Image.file(employee.image).image,
+                                child: employee.image == null
+                                    ? Text(
+                                        (employee.name[0] + employee.surname[0])
+                                            .toUpperCase(),
+                                        style: TextStyle(
+                                            fontSize: 25,
+                                            fontFamily: font,
+                                            letterSpacing: 2.0),
+                                      )
+                                    : null,
+                              );
+                            }),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 20.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            employee.name,
-                            style: inputTextStyle.copyWith(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(employee.surname,
-                              style: inputTextStyle.copyWith(
-                                  fontWeight: FontWeight.bold)),
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                      ),
-                    ),
-                  ]),
-            onPressed: () async {
-              setState(() => imageLoading = true);
-              await employee.getImage();
-              setState(() => imageLoading = false);
-            },
+                onPressed: () async {
+                  setState(() => imageLoading = true);
+                  await employee.getImage();
+                  setState(() => imageLoading = false);
+                },
+              ),
+              // Container(
+              // padding: EdgeInsets.only(left: 20.0),
+              // width: 230,
+              // child:
+              // Column(
+              //     children: [
+              //       Text(
+              //         employee.name,
+              //         style: surveyNameStyle,
+              //         // inputTextStyle.copyWith(
+              //         // fontWeight: FontWeight.bold, ),
+              //       ),
+              //       Text(
+              //         employee.surname,
+              //         style: surveyNameStyle,
+              //       )
+              //     ],
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //   ),
+              // ),
+              SizedBox(width: 20),
+              Expanded(
+                // flex: 2,
+                child: Text(
+                  employee.name + " " + employee.surname,
+                  style: surveyNameStyle,
+                  maxLines: 4,
+                  overflow:
+                      TextOverflow.ellipsis, // ako bude jos dulje, bit ce ...
+                ),
+              ),
+              // ),
+            ],
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,     // htjela sam umjesto SizedBoxa, ali ne radi
           ),
           SizedBox(height: 20),
           employee.companyUid == null
               ? employee.request != ''
-                  ? Column(children: [
-                      Text(
-                          "You sent request to " +
-                              employee.request
-                                  .substring(employee.request.indexOf('%') + 1),
-                          style: inputTextStyle),
-                      isCancelDisabled
-                          ? Container()
-                          : TextButton(
-                              onPressed: () async {
-                                setState(() => isCancelDisabled = true);
-                                await employee.cancelRequestToCompany();
-                                setState(() => isCancelDisabled = false);
-                              },
-                              child:
-                                  Text("Cancel request", style: inputTextStyle),
-                            ),
-                    ])
+                  ? Column(
+                      children: [
+                        Text(
+                            "You sent request to " +
+                                employee.request.substring(
+                                    employee.request.indexOf('%') + 1),
+                            style: inputTextStyle),
+                        SizedBox(height: 20),
+                        isCancelDisabled
+                            ? Container()
+                            : TextButton(
+                                onPressed: () async {
+                                  setState(() => isCancelDisabled = true);
+                                  await employee.cancelRequestToCompany();
+                                  setState(() => isCancelDisabled = false);
+                                },
+                                child: Text("Cancel request",
+                                    style: inputTextStyle),
+                                style: textButtonStyleRegister,
+                              ),
+                      ],
+                    )
                   : Row(
                       children: [
                         Expanded(
@@ -139,20 +169,22 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: TextButton(
-                                child: Text(
-                                  "Create Company",
-                                  style: TextStyle(
-                                      fontFamily: font,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
+                              child: Text(
+                                "Create Company",
+                                style: TextStyle(
+                                    fontFamily: font,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CreateCompany(employee),
                                 ),
-                                onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            CreateCompany(employee),
-                                      ),
-                                    )),
+                              ),
+                              style: textButtonStyleRegister,
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -167,12 +199,14 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                   style: TextStyle(
                                       fontFamily: font,
                                       fontSize: 15,
-                                      fontWeight: FontWeight.bold)),
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
                               onPressed: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => JoinCompany(employee),
                                   )),
+                              style: textButtonStyleRegister,
                             ),
                           ),
                         ),
@@ -181,45 +215,121 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
               : Column(
                   children: [
                     // sve sto treba biti ispod slike i imena kad si u firmi
-                    Row(children: [
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(children: [
-                              Icon(Icons.house_outlined, color: Colors.white),
-                              SizedBox(width: 10),
-                              Text(company.name, style: inputTextStyle),
-                            ]),
-                            Row(
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.home_repair_service_outlined,
-                                    color: Colors.white),
-                                SizedBox(width: 10),
-                                Text(
-                                  'position' /*employee.position*/,
-                                  style: inputTextStyle,
-                                )
-                              ],
+                                Row(children: [
+                                  Icon(
+                                    Icons.house_outlined,
+                                    color: Colors.white,
+                                    size: 50,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(company.name,
+                                      style: inputTextStyle.copyWith(
+                                          fontSize: detailsSize)),
+                                ]),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.home_repair_service_outlined,
+                                      color: Colors.white,
+                                      size: 50,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      employee.position == ''
+                                          ? 'Position'
+                                          : employee.position,
+                                      style: inputTextStyle.copyWith(
+                                          fontSize: detailsSize),
+                                    )
+                                  ],
+                                ),
+                              ]),
+                          // RichText(
+                          //     text: TextSpan(children: [
+                          //   WidgetSpan(
+                          //       child: Icon(
+                          //     Icons.home_repair_service_outlined,
+                          //     color: Colors.white,
+                          //   )),
+                          //   TextSpan(
+                          //       text: 'pos' /*employee.position*/,
+                          //       style: inputTextStyle)
+                          // ])),
+                          SizedBox(
+                            width: 35,
+                          ),
+                          TextButton(
+                            style: textButtonStyleRegister,
+                            child: Text(
+                              'My tags',
+                              style: inputTextStyle.copyWith(
+                                  fontSize: detailsSize),
                             ),
-                          ]),
-                      // RichText(
-                      //     text: TextSpan(children: [
-                      //   WidgetSpan(
-                      //       child: Icon(
-                      //     Icons.home_repair_service_outlined,
-                      //     color: Colors.white,
-                      //   )),
-                      //   TextSpan(
-                      //       text: 'pos' /*employee.position*/,
-                      //       style: inputTextStyle)
-                      // ])),
-                      SizedBox(
-                        width: 35,
-                      ),
-                      employee.tags.length != 0
-                          ? Text(employee.tags[0])
-                          : Text('You have no tags', style: inputTextStyle),
-                    ]),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  //Koristi widget.survey.results jer su results u ovom widgetu podlozni filterima
+                                  builder: (context) => Dialog(
+                                        child: Container(
+                                            padding: EdgeInsets.all(25),
+                                            height: 300,
+                                            color: Colors.blue,
+                                            child: employee.tags.isNotEmpty
+                                                ? ListView.separated(
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return Text(
+                                                        employee.tags[index],
+                                                        style: inputTextStyle
+                                                            .copyWith(
+                                                                fontSize:
+                                                                    detailsSize),
+                                                      );
+                                                    },
+                                                    itemCount:
+                                                        employee.tags.length,
+                                                    separatorBuilder: (context,
+                                                            index) =>
+                                                        SizedBox(height: 20),
+                                                  )
+                                                : Text(
+                                                    'You don\'t have any tags',
+                                                    style:
+                                                        inputTextStyle.copyWith(
+                                                            fontSize:
+                                                                detailsSize),
+                                                  )),
+                                      ));
+                            },
+                          ),
+                          // employee.tags.length != 0
+                          //     ? Expanded(
+                          //         child: ListView.separated(
+                          //           shrinkWrap: true,
+                          //           itemBuilder: (context, index) {
+                          //             return Text(
+                          //               employee.tags[index],
+                          //               style: inputTextStyle.copyWith(
+                          //                   fontSize: detailsSize),
+                          //             );
+                          //           },
+                          //           itemCount: employee.tags.length,
+                          //           separatorBuilder: (context, index) {
+                          //             return SizedBox(
+                          //               height: 5,
+                          //               width: 5,
+                          //             );
+                          //           },
+                          //         ),
+                          //       )
+                          //     : Text('You have no tags', style: inputTextStyle),
+                        ]),
                     SizedBox(height: 20),
                     employee.surveys.length > 0
                         ? FutureBuilder(
@@ -266,7 +376,8 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                         : Center(
                             child: Text(
                               'There are no new surveys',
-                              style: inputTextStyle,
+                              style: inputTextStyle.copyWith(
+                                  fontSize: detailsSize),
                             ),
                           )
                   ],
