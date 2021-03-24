@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rankless/Launch/uploader.dart';
@@ -15,10 +17,11 @@ class Employee {
   String email;
   String position = '';
   String request = '';
+  String filePath = '';
   bool admin = false;
   List<String> tags = [];
   List<Survey> surveys = [];
-  File image;
+  NetworkImage image;
   //List<Komentar> comments;
   //TODO: Add error support
 
@@ -94,7 +97,7 @@ class Employee {
       transaction.update(userCollection.doc(this.uid), run);
     });
     if (newImage != null) {
-      this.image = await Uploader().uploadImage(newImage.path, this.uid + '1');
+      this.image = NetworkImage(await Uploader().uploadImage(newImage.path, this.uid + '1'));
     }
   }
 
@@ -175,12 +178,9 @@ class Employee {
     await updateEmployee(newSurveys: this.surveys);
   }
 
-  Future<File> getImage() async {
+  Future<NetworkImage> getImage() async {
     if (this.image != null) return this.image;
-    Uploader().getImage(this.uid + '1').then((value) {
-      print(value);
-      this.image = value;
-    });
+    this.image = NetworkImage(await Uploader().getImage(this.uid + '1'));
     return this.image;
   }
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rankless/Launch/uploader.dart';
@@ -13,7 +14,7 @@ class Company {
   String uid;
   String name;
   String industry;
-  File image;
+  NetworkImage image;
   String description;
   String country;
   List<Employee> employees = [];
@@ -73,7 +74,8 @@ class Company {
           .update({'surveys': this.surveys.map((e) => e.uid).toList()});
     }
     if (newImage != null) {
-      this.image = await Uploader().uploadImage(newImage.path, this.uid + '2');
+      this.image = NetworkImage(
+          await Uploader().uploadImage(newImage.path, this.uid + '2'));
     }
   }
 
@@ -164,11 +166,9 @@ class Company {
     return this.surveys;
   }
 
-  Future<File> getImage() async {
+  Future<NetworkImage> getImage() async {
     if (this.image != null) return this.image;
-    await Uploader()
-        .getImage(this.uid + '2')
-        .then((value) => this.image = value);
+    this.image = NetworkImage(await Uploader().getImage(this.uid + '2'));
     return this.image;
   }
 
