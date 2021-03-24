@@ -117,6 +117,7 @@ class Survey {
   Future _getResults() async {
     DocumentSnapshot data = await resultCollection.doc(this.uid).get();
     if (!data.exists) return;
+    results.clear();
     data.data().forEach((key, value) {
       String pos = value['pos'];
       if (this.results[pos] == null)
@@ -151,8 +152,6 @@ class Survey {
         Map<String, Map<int, List<String>>>();
     ret.addAll(results);
     ret.removeWhere((key, value) => !filter.contains(key));
-    print(ret);
-    print(results);
     return ret;
   }
 
