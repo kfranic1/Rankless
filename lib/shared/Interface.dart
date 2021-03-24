@@ -30,7 +30,7 @@ Decoration backgroundDecoration = BoxDecoration(
         end: Alignment.bottomCenter,
         colors: [Colors.black, const Color(0xff3f51b5)]));
 
-TextStyle surveyNameStyle = TextStyle(
+TextStyle titleNameStyle = TextStyle(
   color: Colors.white,
   fontFamily: 'Mulish',
   fontSize: 25,
@@ -56,8 +56,15 @@ InputDecoration registerInputDecoration = textFieldDecoration.copyWith(
 
 // BUTTONS
 
+Color buttonColor = Colors.blue.withOpacity(0.7);
+
 ButtonStyle textButtonStyleRegister = ButtonStyle(
-  backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-  shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(20)))),
+  // elevation: MaterialStateProperty.all<double>(5.0),
+  backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
+  shape: MaterialStateProperty.all<OutlinedBorder>(
+    RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(20)),
+    ),
+  ),
+  // minimumSize: MaterialStateProperty.all<Size>(Size(30, 8)),
 );
