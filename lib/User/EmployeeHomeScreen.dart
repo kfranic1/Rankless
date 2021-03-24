@@ -69,7 +69,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
               IconButton(
                 iconSize: 100,
                 icon: imageLoading
-                    ? Center(child: loader)
+                    ? loader
                     : Container(
                         alignment: Alignment.topLeft,
                         // padding: EdgeInsets.all(10),

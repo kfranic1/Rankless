@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rankless/Survey/QuestionUIAnswer.dart';
-import 'package:rankless/Survey/SurveyUI.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/shared/Interface.dart';
 

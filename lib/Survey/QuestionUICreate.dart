@@ -1,7 +1,6 @@
 import 'package:customtogglebuttons/customtogglebuttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rankless/Launch/register.dart';
 import 'Question.dart';
 import 'package:rankless/shared/Interface.dart';
 

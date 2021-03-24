@@ -5,8 +5,8 @@ const borderRadius = BorderRadius.all(Radius.circular(10));
 const font = 'Mulish';
 // const whiteColor = Colors.white70;
 
-CircularProgressIndicator loader =
-    CircularProgressIndicator() /*Loader(color: Colors.blue, allowAnimation: false)*/;
+Widget loader =
+    Center(child: CircularProgressIndicator()) /*Loader(color: Colors.blue, allowAnimation: false)*/;
 
 TextStyle inputTextStyle =
     TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rankless/User/Company.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/User/EmployeeHome.dart';
 import 'package:rankless/Launch/authenticate.dart';
@@ -19,14 +20,16 @@ class Wrapper extends StatelessWidget {
           ? Center(child: Text("You are anonymus"))
           : FutureBuilder(
               future: employee.getEmployee(),
-              builder: (context, snapshot) =>
-                  snapshot.connectionState == ConnectionState.done
-                      ? StreamProvider<Employee>.value(
-                          value: employee.self,
-                          updateShouldNotify: (previous, current) => true,
-                          child: EmployeeHome(),
-                        )
-                      : Center(child: loader),
+              builder: (context, snapshot) => snapshot.connectionState ==
+                      ConnectionState.done
+                  ? StreamProvider<Employee>.value(
+                      value: employee.self,
+                      child: StreamProvider<Company>.value(
+                        value: Company(uid: employee.companyUid ?? null).self,
+                        child: EmployeeHome(),
+                      ),
+                    )
+                  : loader,
             ),
     );
   }

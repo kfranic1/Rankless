@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -83,9 +80,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   IconButton(
                       iconSize: 100,
                       icon: imageLoading
-                          ? Center(
-                              child: loader,
-                            )
+                          ? loader
                           : Row(
                               children: [
                                 Container(

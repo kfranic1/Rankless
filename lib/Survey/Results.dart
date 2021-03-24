@@ -40,7 +40,7 @@ class _ResultsState extends State<Results> {
                       Container(
                         child: Text(
                           widget.survey.name,
-                          style: surveyNameStyle,
+                          style: titleNameStyle,
                         ),
                         alignment: Alignment.topCenter,
                         padding: EdgeInsets.all(20),
