@@ -81,7 +81,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                 radius: 50, //should be half of icon size
                                 backgroundImage: employee.image == null
                                     ? null
-                                    : Image.file(employee.image).image,
+                                    : employee.image,
                                 child: employee.image == null
                                     ? Text(
                                         (employee.name[0] + employee.surname[0])
@@ -127,7 +127,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 // flex: 2,
                 child: Text(
                   employee.name + " " + employee.surname,
-                  style: surveyNameStyle,
+                  style: titleNameStyle,
                   maxLines: 4,
                   overflow:
                       TextOverflow.ellipsis, // ako bude jos dulje, bit ce ...
