@@ -44,7 +44,7 @@ class _JoinCompanyState extends State<JoinCompany> {
                   builder: (context, snapshot) {
                     return (!snapshot.hasData)
                         ? Center(child: CircularProgressIndicator())
-                        : ListView(
+                        : Column(
                             children: [
                               Theme(
                                 data: ThemeData(
@@ -97,9 +97,12 @@ class _JoinCompanyState extends State<JoinCompany> {
                               ),
                               SizedBox(height: 20),
                               Container(
-                                color: Colors.grey[300],
+                                padding: EdgeInsets.all(10),
                                 child: TextButton(
-                                  child: Text("Send request"),
+                                  child: Text(
+                                    "Send request",
+                                    style: inputTextStyle,
+                                  ),
                                   onPressed: () {
                                     if (selectedCompany == null) return;
                                     setState(() {
@@ -109,6 +112,7 @@ class _JoinCompanyState extends State<JoinCompany> {
                                       Navigator.pop(context);
                                     });
                                   },
+                                  style: textButtonStyleRegister,
                                 ),
                               ),
                             ],

@@ -40,18 +40,41 @@ class _CreateCompanyState extends State<CreateCompany> {
                 data: ThemeData(
                   textSelectionTheme: TextSelectionThemeData(
                     cursorColor: Colors.white,
-                    // selectionColor: Colors.white,
-                    // selectionHandleColor: Colors.white,
+                    selectionColor: Colors.white,
+                    selectionHandleColor: Colors.white,
                   ),
                   primaryColor:
                       Colors.black45, // mijenja search icon kod drzava
-                  // secondaryHeaderColor: Colors.white,
+                  // secondaryHeaderColor: Colors.white,  // nista
                   // errorColor: Colors.white,
-                  // cardColor: Colors.white,
+                  // cardColor: Colors.white,             // nista
                   // textSelectionColor: Colors.white,
                   // selectedRowColor: Colors.white,
-                  // canvasColor: Colors.white,
-                  hintColor: Colors.white,
+                  // canvasColor: Colors.white,           // nista
+                  // accentColor: Colors.white,
+
+                  // colorScheme: ColorScheme(
+                  //     primary: Colors.white,
+                  //     primaryVariant: Colors.white,
+                  //     secondary: Colors.white,
+                  //     secondaryVariant: Colors.white,
+                  //     surface: Colors.white,
+                  //     background: Colors.transparent,
+                  //     error: Colors.red,
+                  //     onPrimary: Colors.white,
+                  //     onSecondary: Colors.white,
+                  //     onSurface: Colors.white,
+                  //     onBackground: Colors.transparent,
+                  //     onError: Colors.red,
+                  //     brightness: Brightness.light),
+
+                  // indicatorColor: Colors.white,        // nista
+                  // textSelectionColor: Colors.white,    // nista
+                  // textSelectionHandleColor: Colors.white,
+                  // splashColor: Colors.white,
+                  // buttonColor: Colors.white,
+                  hintColor: Colors.white, // boja naziva dropdowna
+                  fontFamily: font,
                 ),
                 child: Center(
                   child: Padding(
@@ -93,21 +116,6 @@ class _CreateCompanyState extends State<CreateCompany> {
                               //       selectedRowColor: Colors.white,
                               //       canvasColor: Colors.white
                               // splashColor: Colors.white,
-
-                              // colorScheme: ColorScheme(
-                              //     primary: Colors.white,
-                              //     primaryVariant: Colors.white,
-                              //     secondary: Colors.white,
-                              //     secondaryVariant: Colors.white,
-                              //     surface: Colors.white,
-                              //     background: Colors.transparent,
-                              //     error: Colors.red,
-                              //     onPrimary: Colors.white,
-                              //     onSecondary: Colors.white,
-                              //     onSurface: Colors.white,
-                              //     onBackground: Colors.transparent,
-                              //     onError: Colors.red,
-                              //     brightness: Brightness.light)
 
                               // cardColor: Colors.white,
                               // hintColor: Colors.white,
@@ -206,6 +214,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                                     isExpanded: true,
                                     items: categories
                                         .map((e) => DropdownMenuItem(
+                                            value: e,
                                             child:
                                                 Text(e, style: inputTextStyle)))
                                         .toList(),
@@ -243,8 +252,11 @@ class _CreateCompanyState extends State<CreateCompany> {
                               SizedBox(
                                 height: 10,
                               ),
-                              ElevatedButton(
-                                child: Text("Register Company with this data"),
+                              TextButton(
+                                child: Text(
+                                  "Register Company with this data",
+                                  style: inputTextStyle,
+                                ),
                                 onPressed: () async {
                                   if (_formKey.currentState.validate()) {
                                     setState(() => creating = true);
@@ -259,6 +271,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                                     }
                                   }
                                 },
+                                style: textButtonStyleRegister,
                               ),
                             ],
                           ),

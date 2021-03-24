@@ -5,7 +5,8 @@ const borderRadius = BorderRadius.all(Radius.circular(10));
 const font = 'Mulish';
 // const whiteColor = Colors.white70;
 
-CircularProgressIndicator loader = CircularProgressIndicator()/*Loader(color: Colors.blue, allowAnimation: false)*/;
+CircularProgressIndicator loader =
+    CircularProgressIndicator() /*Loader(color: Colors.blue, allowAnimation: false)*/;
 
 TextStyle inputTextStyle =
     TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);
@@ -51,4 +52,12 @@ InputDecoration registerInputDecoration = textFieldDecoration.copyWith(
   focusedErrorBorder:
       UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
   labelStyle: TextStyle(fontSize: 18, fontFamily: font, color: Colors.white),
+);
+
+// BUTTONS
+
+ButtonStyle textButtonStyleRegister = ButtonStyle(
+  backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+  shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(20)))),
 );

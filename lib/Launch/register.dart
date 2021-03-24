@@ -200,6 +200,7 @@ class _RegisterState extends State<Register> {
                               //automatic homescreen from stream
                             }
                           },
+                          style: textButtonStyleRegister,
                         ),
                       ],
                     ),
