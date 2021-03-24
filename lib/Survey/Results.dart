@@ -146,11 +146,10 @@ class _ResultsState extends State<Results> {
             TextButton(
               child: Text('See all'),
               onPressed: () {
-                setState(() => showDialog(
-                      context: context,
-                      builder: (context) =>
-                          showAllDialog(question, questionNum),
-                    ));
+                showDialog(
+                  context: context,
+                  builder: (context) => showAllDialog(question, questionNum),
+                );
               },
             ),
           ],

@@ -85,23 +85,28 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                           ? loader
                           : Row(
                               children: [
-                                Container(
-                                    alignment: Alignment.topLeft,
-                                    padding: EdgeInsets.only(left: 30),
-                                    child: CircleAvatar(
-                                        //backgroundColor: Colors.white,
-                                        radius:
-                                            50, //should be half of icon size
-                                        backgroundImage: company.image == null
-                                            ? null
-                                            : company.image,
-                                        child: company.image == null
-                                            ? Icon(
-                                                Icons.camera_alt_outlined,
-                                                size: 60,
-                                                //color: Colors.black,
-                                              )
-                                            : null)),
+                                FutureBuilder(
+                                    future: company.getImage(),
+                                    builder: (context, snapshot) {
+                                      return Container(
+                                          alignment: Alignment.topLeft,
+                                          padding: EdgeInsets.only(left: 30),
+                                          child: CircleAvatar(
+                                              //backgroundColor: Colors.white,
+                                              radius:
+                                                  50, //should be half of icon size
+                                              backgroundImage:
+                                                  company.image == null
+                                                      ? null
+                                                      : company.image,
+                                              child: company.image == null
+                                                  ? Icon(
+                                                      Icons.camera_alt_outlined,
+                                                      size: 60,
+                                                      //color: Colors.black,
+                                                    )
+                                                  : null));
+                                    }),
                                 SizedBox(
                                   width: 60,
                                 ),
@@ -111,7 +116,11 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                 )
                               ],
                             ),
-                      onPressed: () {}), //franić?
+                      onPressed: () async {
+                        setState(() => imageLoading = true);
+                        await company.changeImage();
+                        setState(() => imageLoading = false);
+                      }),
                   Visibility(
                     visible: (me.admin && company.requests.length != 0),
                     child: Padding(

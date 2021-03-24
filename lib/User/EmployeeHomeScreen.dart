@@ -97,7 +97,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                       ),
                 onPressed: () async {
                   setState(() => imageLoading = true);
-                  await employee.getImage();
+                  await employee.changeImage();
                   setState(() => imageLoading = false);
                 },
               ),
