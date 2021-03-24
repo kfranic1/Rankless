@@ -35,6 +35,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                         ? Expanded(
                             flex: 2,
                             child: FloatingActionButton(
+                                heroTag: 'left',
                                 backgroundColor: Colors.blue.withOpacity(0.7),
                                 child: Icon(
                                   Icons.group_add_rounded,
@@ -52,6 +53,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                     ),
                     Expanded(
                       child: FloatingActionButton(
+                        heroTag: 'right',
                         backgroundColor: Colors.blue.withOpacity(0.7),
                         child: Icon(
                           Icons.post_add_rounded,
@@ -345,19 +347,27 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                         );
                       },
                       child: Text('Press me')),
-                  Container(
-                    height: 80,
-                    child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return filledSurveys(company.surveys[index]);
-                        },
-                        separatorBuilder: (context, index) => SizedBox(
-                              width: 20,
-                            ),
-                        itemCount: company.surveys.length),
-                  )
+                  FutureBuilder(
+                      future: company.getAllSurveys(true),
+                      builder: (context, snapshot) {
+                        return snapshot.connectionState != ConnectionState.done
+                            ? loader
+                            : Container(
+                                height: 80,
+                                child: ListView.separated(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      return filledSurveys(
+                                          company.surveys[index]);
+                                    },
+                                    separatorBuilder: (context, index) =>
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                    itemCount: company.surveys.length),
+                              );
+                      })
                 ],
               ),
             ),
@@ -366,7 +376,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
 
   Widget filledSurveys(Survey survey) {
     return Container(
-      decoration: BoxDecoration(color: Colors.blue),
+      decoration: BoxDecoration(color: Colors.blue[50]),
       child: (TextButton(
         onPressed: () {
           Navigator.push(

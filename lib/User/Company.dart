@@ -136,7 +136,7 @@ class Company {
   Future addPositionOrTags(Employee who,
       {String position, List<String> addTags, List<String> removeTags}) async {
     if (position == null && addTags == null && removeTags != null) return;
-    await getAllSurveys();
+    await getAllSurveys(false);
     List<String> allTags;
     allTags.addAll(who.tags);
     if (addTags != null) allTags.addAll(addTags);
@@ -160,9 +160,9 @@ class Company {
   }
 
   ///Returns [List] of [surveys] without [results]
-  Future<List<Survey>> getAllSurveys() async {
+  Future<List<Survey>> getAllSurveys(bool withResults) async {
     await Future.wait(
-        surveys.map((e) async => await e.getSurvey(false)).toList());
+        surveys.map((e) async => await e.getSurvey(withResults)).toList());
     return this.surveys;
   }
 

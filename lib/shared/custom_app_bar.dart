@@ -37,7 +37,7 @@ class CustomAppBar extends AppBar {
                           color: Colors.white,
                         ),
                         label: Text(
-                          "logut",
+                          "logout",
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
