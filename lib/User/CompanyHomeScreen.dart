@@ -307,7 +307,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                     ],
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 50,
                   ),
                   company.surveys.length == 0
                       ? Center(
