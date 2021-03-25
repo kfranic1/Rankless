@@ -110,7 +110,7 @@ class Company {
   }
 
   /// Accepts or Denies access to Company based on [accepted]
-  void handleRequest(bool accpeted) async {
+  Future handleRequest(bool accpeted) async {
     String e = requests[0];
     String uidTemp = e.substring(0, e.indexOf('%'));
 
