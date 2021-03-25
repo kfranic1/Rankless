@@ -36,17 +36,35 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     me.admin
                         ? Expanded(
-                            child: FloatingActionButton(
-                                heroTag: 'left',
-                                backgroundColor: Colors.blue.withOpacity(0.7),
-                                child: Icon(
-                                  Icons.group_add_rounded,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                                onPressed: () {
-                                  company.addPositionOrTags(me, addTags: ['tim1']);
-                                }),
+                            child: Stack(clipBehavior: Clip.none, alignment: AlignmentDirectional.bottomCenter, children: [
+                              FloatingActionButton(
+                                  heroTag: 'left',
+                                  backgroundColor: Colors.blue.withOpacity(0.7),
+                                  child: Icon(
+                                    Icons.group_add_rounded,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {
+                                    company.addPositionOrTags(me, addTags: ['tim1']);
+                                  }),
+                              company.requests.length == 0
+                                  ? Positioned(
+                                      top: 0,
+                                      child: Container(
+                                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.transparent),
+                                      ),
+                                    )
+                                  : Positioned(
+                                      top: -5,
+                                      left: 80,
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                                      ),
+                                    ),
+                            ]),
                           )
                         : Container(),
                     Expanded(

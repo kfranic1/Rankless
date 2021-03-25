@@ -51,6 +51,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
     final Company company = Provider.of<Company>(context);
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
+        selectedLabelStyle: TextStyle(fontFamily: font, color: Colors.white),
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.shifting,
         items: [
