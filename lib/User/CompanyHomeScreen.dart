@@ -31,54 +31,49 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
             child: Text('You are not in any company'),
           )
         : Scaffold(
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
             floatingActionButton: me.admin
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                        me.admin
-                            ? Expanded(
-                                child: FloatingActionButton(
-                                    heroTag: 'left',
-                                    backgroundColor:
-                                        Colors.blue.withOpacity(0.7),
-                                    child: Icon(
-                                      Icons.group_add_rounded,
-                                      color: Colors.white,
-                                      size: 30,
-                                    ),
-                                    onPressed: () {
-                                      company.addPositionOrTags(me,
-                                          addTags: ['tim1']);
-                                    }),
-                              )
-                            : Container(),
-                        Expanded(
-                          child: SizedBox(
-                            width: 210,
-                          ),
-                        ),
-                        Expanded(
-                          child: FloatingActionButton(
-                            heroTag: 'right',
-                            backgroundColor: Colors.blue.withOpacity(0.7),
-                            child: Icon(
-                              Icons.post_add_rounded,
-                              size: 30,
-                              color: Colors.white,
-                            ),
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SurveyUI(
-                                  new Survey(name: 'Survey', company: company),
+                ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    me.admin
+                        ? Expanded(
+                            child: FloatingActionButton(
+                                heroTag: 'left',
+                                backgroundColor: Colors.blue.withOpacity(0.7),
+                                child: Icon(
+                                  Icons.group_add_rounded,
+                                  color: Colors.white,
+                                  size: 30,
                                 ),
-                              ),
+                                onPressed: () {
+                                  company.addPositionOrTags(me, addTags: ['tim1']);
+                                }),
+                          )
+                        : Container(),
+                    Expanded(
+                      child: SizedBox(
+                        width: 210,
+                      ),
+                    ),
+                    Expanded(
+                      child: FloatingActionButton(
+                        heroTag: 'right',
+                        backgroundColor: Colors.blue.withOpacity(0.7),
+                        child: Icon(
+                          Icons.post_add_rounded,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SurveyUI(
+                              new Survey(name: 'Survey', company: company),
                             ),
                           ),
                         ),
-                      ])
+                      ),
+                    ),
+                  ])
                 : Container(),
             body: Container(
               width: double.infinity,
@@ -101,12 +96,8 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                           padding: EdgeInsets.only(left: 30),
                                           child: CircleAvatar(
                                               //backgroundColor: Colors.white,
-                                              radius:
-                                                  50, //should be half of icon size
-                                              backgroundImage:
-                                                  company.image == null
-                                                      ? null
-                                                      : company.image,
+                                              radius: 50, //should be half of icon size
+                                              backgroundImage: company.image == null ? null : company.image,
                                               child: company.image == null
                                                   ? Icon(
                                                       Icons.camera_alt_outlined,
@@ -141,30 +132,22 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                 children: company.requests
                                     .map(
                                       (e) {
-                                        String nameTemp = e.substring(
-                                            e.indexOf('%') + 1,
-                                            e.lastIndexOf('%'));
-                                        String surnameTemp =
-                                            e.substring(e.lastIndexOf('%') + 1);
+                                        String nameTemp = e.substring(e.indexOf('%') + 1, e.lastIndexOf('%'));
+                                        String surnameTemp = e.substring(e.lastIndexOf('%') + 1);
                                         return Dismissible(
-                                          dragStartBehavior:
-                                              DragStartBehavior.down,
-                                          resizeDuration:
-                                              Duration(microseconds: 100),
+                                          dragStartBehavior: DragStartBehavior.down,
+                                          resizeDuration: Duration(microseconds: 100),
                                           key: UniqueKey(),
                                           onDismissed: (direction) => {
-                                            if (direction ==
-                                                DismissDirection.endToStart)
+                                            if (direction == DismissDirection.endToStart)
                                               setState(() {
-                                                company.requests
-                                                    .add(company.requests[0]);
+                                                company.requests.add(company.requests[0]);
                                                 company.requests.removeAt(0);
                                               })
                                             else
                                               {
                                                 setState(() {
-                                                  company.requests.insert(
-                                                      0, company.requests.last);
+                                                  company.requests.insert(0, company.requests.last);
                                                   company.requests.removeLast();
                                                 })
                                               }
@@ -172,36 +155,21 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                           child: Card(
                                             child: Column(
                                               children: [
-                                                Text(nameTemp +
-                                                    ' ' +
-                                                    surnameTemp +
-                                                    ' has requested to join your company'),
+                                                Text(nameTemp + ' ' + surnameTemp + ' has requested to join your company'),
                                                 Row(
                                                   children: [
                                                     Expanded(
                                                       child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
+                                                        padding: const EdgeInsets.all(8.0),
                                                         child: Container(
                                                           color: Colors.green,
-                                                          child:
-                                                              TextButton.icon(
-                                                            icon: Icon(
-                                                                Icons.check),
-                                                            label:
-                                                                Text('Allow'),
-                                                            onPressed:
-                                                                () async {
-                                                              setState(() =>
-                                                                  handling =
-                                                                      true);
-                                                              await company
-                                                                  .handleRequest(
-                                                                      true);
-                                                              setState(() =>
-                                                                  handling =
-                                                                      false);
+                                                          child: TextButton.icon(
+                                                            icon: Icon(Icons.check),
+                                                            label: Text('Allow'),
+                                                            onPressed: () async {
+                                                              setState(() => handling = true);
+                                                              await company.handleRequest(true);
+                                                              setState(() => handling = false);
                                                             },
                                                           ),
                                                         ),
@@ -209,27 +177,18 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                     ),
                                                     Expanded(
                                                       child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
+                                                        padding: const EdgeInsets.all(8.0),
                                                         child: Container(
                                                           color: Colors.red,
-                                                          child:
-                                                              TextButton.icon(
-                                                            icon: Icon(
-                                                                Icons.cancel),
+                                                          child: TextButton.icon(
+                                                            icon: Icon(Icons.cancel),
                                                             label: Text('Deny'),
-                                                            onPressed:
-                                                                () async {
+                                                            onPressed: () async {
                                                               setState(() {
                                                                 handling = true;
                                                               });
-                                                              company
-                                                                  .handleRequest(
-                                                                      false);
-                                                              setState(() =>
-                                                                  handling =
-                                                                      false);
+                                                              company.handleRequest(false);
+                                                              setState(() => handling = false);
                                                             },
                                                           ),
                                                         ),
@@ -262,10 +221,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                           ),
                           title: Text(
                             company.industry,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: font,
-                                fontSize: 22),
+                            style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 22),
                           ),
                         ),
                         padding: EdgeInsets.only(left: 15),
@@ -281,10 +237,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                             ),
                             title: Text(
                               '#',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: font,
-                                  fontSize: 22),
+                              style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 22),
                             ), //ovdje ide pozicija na rankingu
                           ),
                         ),
@@ -359,8 +312,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                           context,
                           MaterialPageRoute(
                               //fullscreenDialog: true,
-                              builder: (context) =>
-                                  Results(Survey(uid: 'fRKQtId76sevJWKL7rIJ'))),
+                              builder: (context) => Results(Survey(uid: 'fRKQtId76sevJWKL7rIJ'))),
                         );
                       },
                       child: Text('Press me')),
@@ -372,16 +324,13 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                             : Container(
                                 height: 200,
                                 child: ListView.separated(
-                                    padding:
-                                        EdgeInsets.only(left: 20, right: 20),
+                                    padding: EdgeInsets.only(left: 20, right: 20),
                                     scrollDirection: Axis.horizontal,
                                     shrinkWrap: true,
                                     itemBuilder: (context, index) {
-                                      return filledSurveys(
-                                          company.surveys[index]);
+                                      return filledSurveys(company.surveys[index]);
                                     },
-                                    separatorBuilder: (context, index) =>
-                                        SizedBox(
+                                    separatorBuilder: (context, index) => SizedBox(
                                           width: 20,
                                         ),
                                     itemCount: company.surveys.length),
@@ -401,10 +350,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         decoration: BoxDecoration(
             color: Colors.blue[50],
             borderRadius: borderRadius,
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.indigo, Colors.blue])),
+            gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.indigo, Colors.blue])),
         child: (TextButton(
             onPressed: () {
               Navigator.push(
@@ -419,11 +365,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 Expanded(
                   child: Text(
                     survey.name + "\n" + _formatted.format(survey.to),
-                    style: TextStyle(
-                        fontFamily: font,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                    style: TextStyle(fontFamily: font, fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                 ),

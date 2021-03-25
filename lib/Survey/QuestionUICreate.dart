@@ -9,8 +9,7 @@ class QuestionUICreate extends StatefulWidget {
   List<TextEditingController> _controllers = [];
 
   @override
-  _QuestionUICreateState createState() =>
-      _QuestionUICreateState(_question, _controllers);
+  _QuestionUICreateState createState() => _QuestionUICreateState(_question, _controllers);
 
   Question getQuestion() {
     _question.multipleAnswers = _controllers.map((e) => e.text).toList();
@@ -22,8 +21,7 @@ class QuestionUICreate extends StatefulWidget {
 
 const shadedWhite = Colors.white70; // used for icons in multiple answers types
 Color lighterBlue = Colors.blue[200]; // used as background for containers
-Color opacityWhite = Colors.white
-    .withOpacity(0.4); // optional: used as background for containers
+Color opacityWhite = Colors.white.withOpacity(0.4); // optional: used as background for containers
 Color containerBackgroundColor = opacityWhite;
 // uredit cu jos ove boje
 
@@ -49,8 +47,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
   Question _question;
   List<TextEditingController> _controllers = [];
 
-  List<bool> _answerTypes = List.generate(
-      3, (_) => false); //_ == 0 tak da prvi bude true na pocetku a ostali false
+  List<bool> _answerTypes = List.generate(3, (_) => false); //_ == 0 tak da prvi bude true na pocetku a ostali false
   Widget _proba = Text('');
   int _counter;
   Icon _icon;
@@ -107,8 +104,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
             padding: EdgeInsets.all(8.0),
             child: TextFormField(
               initialValue: _question.questionText,
-              decoration: textFieldDecoration.copyWith(
-                  hintText: "Add text...", border: InputBorder.none),
+              decoration: textFieldDecoration.copyWith(hintText: "Add text...", border: InputBorder.none),
               style: TextStyle(fontFamily: font),
               onChanged: (value) {
                 setState(() => _question.questionText = value);
@@ -161,8 +157,7 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
                 enabled: false,
               ),
               onChanged: (value) {
-                setState(() => _question.singleAnswer =
-                    value); // ovo se nikad nece dogadjat
+                setState(() => _question.singleAnswer = value); // ovo se nikad nece dogadjat
               },
             ),
             visible: _answerTypes[0],

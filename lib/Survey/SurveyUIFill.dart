@@ -19,8 +19,7 @@ class SurveyUIFill extends StatefulWidget {
 }
 
 bool allAnswered;
-BoxDecoration decorate =
-    BoxDecoration(border: Border.all(color: Colors.transparent));
+BoxDecoration decorate = BoxDecoration(border: Border.all(color: Colors.transparent));
 
 class _SurveyUIFillState extends State<SurveyUIFill> {
   bool finishing = false;
@@ -43,8 +42,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                             fontWeight: FontWeight.bold,
                           )),
                       alignment: Alignment.topCenter,
-                      padding:
-                          EdgeInsets.all(20), //ovo bi moglop biti drugacije
+                      padding: EdgeInsets.all(20), //ovo bi moglop biti drugacije
                     ),
                     Expanded(
                       child: RawScrollbar(
@@ -60,21 +58,15 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                             return (ListTile(
                               leading: Text(
                                 (index + 1).toString(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Mulish',
-                                    fontSize: 18),
+                                style: TextStyle(color: Colors.white, fontFamily: 'Mulish', fontSize: 18),
                               ),
                               title: Container(
                                 decoration: decorate,
-                                child: Transform.translate(
-                                    offset: Offset(-15, -22),
-                                    child: widget.qNa[index]),
+                                child: Transform.translate(offset: Offset(-15, -22), child: widget.qNa[index]),
                               ),
                               minVerticalPadding: 0,
                               minLeadingWidth: 0,
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: -10),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: -10),
                             ));
                           },
                           separatorBuilder: (context, index) {
@@ -107,9 +99,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                       },
                       child: Container(
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: borderRadius),
+                          decoration: BoxDecoration(color: Colors.transparent, borderRadius: borderRadius),
                           height: 60,
                           width: 200,
                           child: Text(
@@ -130,8 +120,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
 
   bool isAnswered(QuestionUIAnswer element) {
     if ((element.question.mask == null || element.question.mask == 0) &&
-        (element.question.singleAnswer.isEmpty ||
-            !singleAnswerCheck(element.question.singleAnswer))) {
+        (element.question.singleAnswer.isEmpty || !singleAnswerCheck(element.question.singleAnswer))) {
       allAnswered = false;
       return false;
     }
@@ -141,21 +130,16 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
   List<QuestionUIAnswer> checkAnswered(List<QuestionUIAnswer> list) {
     List<QuestionUIAnswer> result = [];
     list.forEach((element) {
-      print(element.question.questionText +
-          ' ' +
-          element.question.mask.toString());
+      print(element.question.questionText + ' ' + element.question.mask.toString());
       if ((element.question.mask == null || element.question.mask == 0) &&
-          (element.question.singleAnswer.isEmpty ||
-              !singleAnswerCheck(element.question.singleAnswer))) {
+          (element.question.singleAnswer.isEmpty || !singleAnswerCheck(element.question.singleAnswer))) {
         setState(() {
           allAnswered = false;
-          element.notAnsweredD =
-              BoxDecoration(border: Border.all(color: Colors.red));
+          element.notAnsweredD = BoxDecoration(border: Border.all(color: Colors.red));
         });
       } else {
         setState(() {
-          element.notAnsweredD =
-              BoxDecoration(border: Border.all(color: Colors.transparent));
+          element.notAnsweredD = BoxDecoration(border: Border.all(color: Colors.transparent));
         });
       }
       result.add(element);
@@ -164,9 +148,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
   }
 
   bool singleAnswerCheck(String singleAns) {
-    if (singleAns.contains(RegExp(r'[A-Z]')) ||
-        singleAns.contains(RegExp(r'[a-z]')) ||
-        singleAns.contains(RegExp(r'[0-9]'))) return true;
+    if (singleAns.contains(RegExp(r'[A-Z]')) || singleAns.contains(RegExp(r'[a-z]')) || singleAns.contains(RegExp(r'[0-9]'))) return true;
     return false;
   }
 

@@ -24,8 +24,7 @@ class Employee {
   //List<Komentar> comments;
   //TODO: Add error support
 
-  CollectionReference userCollection =
-      FirebaseFirestore.instance.collection('users');
+  CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
 
   Employee({
     this.anonymus,
@@ -100,17 +99,14 @@ class Employee {
     }
   }
 
-  Future getEmployee() async {
+  Future getEmployee(bool withImage) async {
     updateData(await userCollection.doc(this.uid).get());
     await handleSurveys();
-    await getImage();
+    if (withImage) await getImage();
   }
 
   Stream<Employee> get self {
-    return userCollection
-        .doc(this.uid)
-        .snapshots()
-        .map((event) => updateData(event));
+    return userCollection.doc(this.uid).snapshots().map((event) => updateData(event));
   }
 
   Employee updateData(DocumentSnapshot ref) {
@@ -119,42 +115,30 @@ class Employee {
     this.email = ref['email'];
     this.companyUid = ref['companyUid'];
     this.tags = List<String>.from(ref['tags'] as List<dynamic>);
-    this.surveys = List<String>.from(ref['surveys'] as List<dynamic>)
-        .map((e) => Survey(uid: e))
-        .toList();
+    this.surveys = List<String>.from(ref['surveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
     this.request = ref['request'];
     this.admin = ref['admin'];
     this.position = ref['position'];
     return this;
   }
 
-  Future sendRequestToCompany(
-      String futureCompanyName, String futureCompanyUid) async {
+  Future sendRequestToCompany(String futureCompanyName, String futureCompanyUid) async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       print(futureCompanyName + ' ' + futureCompanyUid);
-      DocumentReference ref = FirebaseFirestore.instance
-          .collection('companies')
-          .doc(futureCompanyUid);
-      List<String> req = ((await ref.get())['requests'] as List)
-          .map((e) => e.toString())
-          .toList();
+      DocumentReference ref = FirebaseFirestore.instance.collection('companies').doc(futureCompanyUid);
+      List<String> req = ((await ref.get())['requests'] as List).map((e) => e.toString()).toList();
       req.add(this.uid + '%' + this.name + '%' + this.surname);
       transaction.update(ref, {
         'requests': req,
       });
     });
-    await updateEmployee(
-        newRequest: futureCompanyUid + '%' + futureCompanyName);
+    await updateEmployee(newRequest: futureCompanyUid + '%' + futureCompanyName);
   }
 
   Future cancelRequestToCompany() async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentReference ref = FirebaseFirestore.instance
-          .collection('companies')
-          .doc(this.request.substring(0, this.request.indexOf('%')));
-      List<String> req = ((await ref.get())['requests'] as List)
-          .map((e) => e.toString())
-          .toList();
+      DocumentReference ref = FirebaseFirestore.instance.collection('companies').doc(this.request.substring(0, this.request.indexOf('%')));
+      List<String> req = ((await ref.get())['requests'] as List).map((e) => e.toString()).toList();
       req.remove(this.uid);
       transaction.update(ref, {
         'requests': req,
@@ -164,8 +148,7 @@ class Employee {
   }
 
   Future handleSurveys() async {
-    await Future.wait(
-        this.surveys.map((e) async => await e.getSurvey(false)).toList());
+    await Future.wait(this.surveys.map((e) async => await e.getSurvey(false)).toList());
     List<String> past = [];
     for (Survey s in surveys) {
       if (s.status == STATUS.Past) {
@@ -185,8 +168,7 @@ class Employee {
 
   /// Puts newly selected [image] as profile picture for [employee]
   Future changeImage() async {
-    PickedFile image =
-        await ImagePicker().getImage(source: ImageSource.gallery);
+    PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery);
     if (image == null) return;
     File cropped = await ImageCropper.cropImage(sourcePath: image.path);
     await updateEmployee(newImage: cropped ?? File(image.path));

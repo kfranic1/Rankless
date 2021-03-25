@@ -22,9 +22,7 @@ class _AuthenticationState extends State<Authenticate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(titleText: showLogIn ? 'Login' : 'Register'),
-      body: showLogIn
-          ? LogIn(toogleView: toogleView)
-          : Register(toogleView: toogleView),
+      body: showLogIn ? LogIn(toogleView: toogleView) : Register(toogleView: toogleView),
     );
   }
 }

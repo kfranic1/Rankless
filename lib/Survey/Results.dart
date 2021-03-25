@@ -52,8 +52,7 @@ class _ResultsState extends State<Results> {
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: widget.survey.qNa[index].answerType ==
-                                      TYPE.Text
+                              child: widget.survey.qNa[index].answerType == TYPE.Text
                                   ? showTextQ(widget.survey.qNa[index], index)
                                   : showGraphQ(widget.survey.qNa[index], index),
                             );
@@ -68,10 +67,7 @@ class _ResultsState extends State<Results> {
                       TextButton(
                         child: Text(
                           'Done',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: font,
-                              fontSize: 20),
+                          style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
                         ),
                         onPressed: () {
                           Navigator.pop(context);
@@ -97,17 +93,13 @@ class _ResultsState extends State<Results> {
                     return Card(
                       child: index < widget.survey.results.length
                           ? TextButton(
-                              child: Text(
-                                  widget.survey.results.keys.toList()[index]),
+                              child: Text(widget.survey.results.keys.toList()[index]),
                               onPressed: () {
                                 Navigator.pop(context);
                                 setState(
                                   () {
                                     results = widget.survey.getResults(
-                                      filter: [
-                                        widget.survey.results.keys
-                                            .toList()[index]
-                                      ],
+                                      filter: [widget.survey.results.keys.toList()[index]],
                                     );
                                   },
                                 );
@@ -117,8 +109,7 @@ class _ResultsState extends State<Results> {
                               child: Text('Remove filters'),
                               onPressed: () {
                                 Navigator.pop(context);
-                                setState(
-                                    () => results = widget.survey.getResults());
+                                setState(() => results = widget.survey.getResults());
                               },
                             ),
                     );
@@ -139,10 +130,7 @@ class _ResultsState extends State<Results> {
         tileColor: const Color(0xff2c4260),
         title: Row(
           children: [
-            Expanded(
-                child: Text((questionNum + 1).toString() +
-                    '. ' +
-                    question.questionText)),
+            Expanded(child: Text((questionNum + 1).toString() + '. ' + question.questionText)),
             TextButton(
               child: Text('See all'),
               onPressed: () {
@@ -183,11 +171,7 @@ class _ResultsState extends State<Results> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                children: [
-                  Text((questionNum + 1).toString() +
-                      '. ' +
-                      question.questionText)
-                ],
+                children: [Text((questionNum + 1).toString() + '. ' + question.questionText)],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
             ),
@@ -209,8 +193,7 @@ class _ResultsState extends State<Results> {
                                 padding: const EdgeInsets.only(bottom: 10.0),
                                 child: Text(position),
                               ),
-                              subtitle:
-                                  Text(results[position][questionNum][index2])),
+                              subtitle: Text(results[position][questionNum][index2])),
                           itemCount: results[position][questionNum].length,
                           separatorBuilder: (context, index) => Divider());
                     },
@@ -226,14 +209,11 @@ class _ResultsState extends State<Results> {
   }
 
   Widget showGraphQ(Question question, int questionNum) {
-    List<int> values =
-        List.generate(question.multipleAnswers.length, (index) => 0);
+    List<int> values = List.generate(question.multipleAnswers.length, (index) => 0);
     for (String key in results.keys) {
-      List<int> temp =
-          results[key][questionNum].map((e) => int.parse(e)).toList();
+      List<int> temp = results[key][questionNum].map((e) => int.parse(e)).toList();
       for (int mask in temp) {
-        for (int i = 0; i < question.multipleAnswers.length; i++)
-          if (mask & (1 << i) != 0) values[i]++;
+        for (int i = 0; i < question.multipleAnswers.length; i++) if (mask & (1 << i) != 0) values[i]++;
       }
     }
     return Container(
@@ -256,11 +236,7 @@ class _ResultsState extends State<Results> {
         subtitle: BarChart(
           BarChartData(
             alignment: BarChartAlignment.spaceAround,
-            maxY: values.fold(
-                    0,
-                    (previousValue, element) =>
-                        previousValue > element ? previousValue : element) *
-                1.2,
+            maxY: values.fold(0, (previousValue, element) => previousValue > element ? previousValue : element) * 1.2,
             barTouchData: BarTouchData(
               enabled: false,
               touchTooltipData: BarTouchTooltipData(
@@ -287,10 +263,7 @@ class _ResultsState extends State<Results> {
               show: true,
               bottomTitles: SideTitles(
                 showTitles: true,
-                getTextStyles: (value) => const TextStyle(
-                    color: Color(0xff7589a2),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14),
+                getTextStyles: (value) => const TextStyle(color: Color(0xff7589a2), fontWeight: FontWeight.bold, fontSize: 14),
                 margin: 0,
                 getTitles: (double value) {
                   return (value + 1).toInt().toString();

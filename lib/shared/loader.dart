@@ -2,31 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:math';
 
-class CustomLoader extends StatefulWidget {
-  @override
-  _CustomLoaderState createState() => _CustomLoaderState();
-}
-
-class _CustomLoaderState extends State<CustomLoader> {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      width: 100,
-      child: Column(
-        children: [
-          Expanded(child: Loader()),
-          Expanded(
-              child: Loader(
-            direction: false,
-          )),
-          Expanded(child: Loader()),
-        ],
-      ),
-    );
-  }
-}
-
 class Loader extends StatefulWidget {
   const Loader({
     Key key,

@@ -10,24 +10,17 @@ class Survey {
   String name;
   List<Question> qNa = [];
   List<String> tags = [];
-  DateTime from =
-      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-  DateTime to = DateTime(
-      DateTime.now().year,
-      DateTime.now().add(Duration(days: 7)).month,
-      DateTime.now().add(Duration(days: 7)).day);
+  DateTime from = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  DateTime to = DateTime(DateTime.now().year, DateTime.now().add(Duration(days: 7)).month, DateTime.now().add(Duration(days: 7)).day);
   STATUS status;
-  Map<String, Map<int, List<String>>> results =
-      new Map<String, Map<int, List<String>>>();
+  Map<String, Map<int, List<String>>> results = new Map<String, Map<int, List<String>>>();
   bool hasData = false;
 
   Survey({this.uid, this.name, this.company});
 
-  CollectionReference surveyCollection =
-      FirebaseFirestore.instance.collection('surveys');
+  CollectionReference surveyCollection = FirebaseFirestore.instance.collection('surveys');
 
-  CollectionReference resultCollection =
-      FirebaseFirestore.instance.collection('results');
+  CollectionReference resultCollection = FirebaseFirestore.instance.collection('results');
 
   Future createSurvey() async {
     DocumentReference ref = surveyCollection.doc();
@@ -88,10 +81,7 @@ class Survey {
     this.from = DateTime.parse(ref['from']);
     this.to = DateTime.parse(ref['to']);
     dynamic questions = ref['question'];
-    this.qNa = (questions as List<dynamic>)
-        .map((e) => e as Map<String, dynamic>)
-        .map((e) => Question().fromMap(e))
-        .toList();
+    this.qNa = (questions as List<dynamic>).map((e) => e as Map<String, dynamic>).map((e) => Question().fromMap(e)).toList();
     this.tags = List<String>.from(ref['tags'] as List<dynamic>);
     this.status = _getStatus();
     return this;
@@ -120,8 +110,7 @@ class Survey {
     results.clear();
     data.data().forEach((key, value) {
       String pos = value['pos'];
-      if (this.results[pos] == null)
-        this.results[pos] = new Map<int, List<String>>();
+      if (this.results[pos] == null) this.results[pos] = new Map<int, List<String>>();
       List<String> ans = List<String>.from(value['ans'] as List<dynamic>);
       for (int i = 0; i < this.qNa.length; i++) {
         if (this.results[pos][i] == null) this.results[pos][i] = <String>[];
@@ -135,8 +124,7 @@ class Survey {
           this.results['Other'] = new Map<int, List<String>>();
         }
         for (int i = 0; i < temp.keys.length; i++) {
-          if (this.results['Other'][i] == null)
-            this.results['Other'][i] = <String>[];
+          if (this.results['Other'][i] == null) this.results['Other'][i] = <String>[];
           this.results['Other'][i].add(temp[i][0]);
         }
       }
@@ -148,8 +136,7 @@ class Survey {
   /// Adding [filter] will return map containing [position] that are in [filter]
   Map<String, Map<int, List<String>>> getResults({List<String> filter}) {
     if (filter == null) return results;
-    Map<String, Map<int, List<String>>> ret =
-        Map<String, Map<int, List<String>>>();
+    Map<String, Map<int, List<String>>> ret = Map<String, Map<int, List<String>>>();
     ret.addAll(results);
     ret.removeWhere((key, value) => !filter.contains(key));
     return ret;

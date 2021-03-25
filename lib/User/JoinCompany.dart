@@ -13,8 +13,7 @@ class JoinCompany extends StatefulWidget {
 }
 
 class _JoinCompanyState extends State<JoinCompany> {
-  CollectionReference companiesCollection =
-      FirebaseFirestore.instance.collection('companies');
+  CollectionReference companiesCollection = FirebaseFirestore.instance.collection('companies');
   List<SimpleCompany> companies;
   String selectedUid;
   String selectedCompany;
@@ -33,12 +32,7 @@ class _JoinCompanyState extends State<JoinCompany> {
                   initialData: null,
                   future: companies == null
                       ? companiesCollection.get().then((value) => {
-                            companies = value.docs
-                                .map((e) => SimpleCompany(
-                                    name: e.data()['name'],
-                                    uid: e.id,
-                                    country: e.data()['country']))
-                                .toList()
+                            companies = value.docs.map((e) => SimpleCompany(name: e.data()['name'], uid: e.id, country: e.data()['country'])).toList()
                           })
                       : null,
                   builder: (context, snapshot) {
@@ -59,18 +53,12 @@ class _JoinCompanyState extends State<JoinCompany> {
                                   items: companies
                                       .map(
                                         (e) => DropdownMenuItem(
-                                          value: e.uid +
-                                              '%' +
-                                              e.name +
-                                              '%' +
-                                              e.country,
+                                          value: e.uid + '%' + e.name + '%' + e.country,
                                           child: ListTile(
-                                            title: Text(e.name,
-                                                style: inputTextStyle),
+                                            title: Text(e.name, style: inputTextStyle),
                                             subtitle: Text(
                                               e.country,
-                                              style: inputTextStyle.copyWith(
-                                                  fontSize: 15),
+                                              style: inputTextStyle.copyWith(fontSize: 15),
                                             ),
                                           ),
                                         ),
@@ -86,11 +74,8 @@ class _JoinCompanyState extends State<JoinCompany> {
                                   onChanged: (item) {
                                     String temp = item as String;
                                     setState(() {
-                                      selectedCompany = temp.substring(
-                                          temp.indexOf('%') + 1,
-                                          temp.lastIndexOf('%'));
-                                      selectedUid =
-                                          temp.substring(0, temp.indexOf('%'));
+                                      selectedCompany = temp.substring(temp.indexOf('%') + 1, temp.lastIndexOf('%'));
+                                      selectedUid = temp.substring(0, temp.indexOf('%'));
                                     });
                                   },
                                 ),
@@ -107,8 +92,7 @@ class _JoinCompanyState extends State<JoinCompany> {
                                     if (selectedCompany == null) return;
                                     setState(() {
                                       loading = true;
-                                      widget.employee.sendRequestToCompany(
-                                          selectedCompany, selectedUid);
+                                      widget.employee.sendRequestToCompany(selectedCompany, selectedUid);
                                       Navigator.pop(context);
                                     });
                                   },

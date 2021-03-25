@@ -61,16 +61,13 @@ class _RegisterState extends State<Register> {
                         TextFormField(
                           initialValue: name,
                           validator: (value) {
-                            return (value.isEmpty || value.contains('%'))
-                                ? "Name can't be empty or contain %"
-                                : null;
+                            return (value.isEmpty || value.contains('%')) ? "Name can't be empty or contain %" : null;
                           },
                           onChanged: (value) {
                             setState(() => name = value);
                           },
                           // textCapitalization: TextCapitalization.words,
-                          decoration: registerInputDecoration.copyWith(
-                              labelText: 'name'),
+                          decoration: registerInputDecoration.copyWith(labelText: 'name'),
                           style: inputTextStyle,
                         ),
                         SizedBox(
@@ -79,15 +76,12 @@ class _RegisterState extends State<Register> {
                         TextFormField(
                           initialValue: surname,
                           validator: (value) {
-                            return (value.isEmpty || value.contains('%'))
-                                ? "Surname can't be empty"
-                                : null;
+                            return (value.isEmpty || value.contains('%')) ? "Surname can't be empty" : null;
                           },
                           onChanged: (value) {
                             setState(() => surname = value);
                           },
-                          decoration: registerInputDecoration.copyWith(
-                              labelText: 'surname'),
+                          decoration: registerInputDecoration.copyWith(labelText: 'surname'),
                           style: inputTextStyle,
                         ),
                         SizedBox(
@@ -95,17 +89,14 @@ class _RegisterState extends State<Register> {
                         ),
                         TextFormField(
                           initialValue: email,
-                          decoration: registerInputDecoration.copyWith(
-                              labelText: 'email'),
+                          decoration: registerInputDecoration.copyWith(labelText: 'email'),
                           style: inputTextStyle,
                           onChanged: (value) {
                             setState(() => email = value);
                           },
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
-                            return (!value.contains('@'))
-                                ? 'Not a valid email address'
-                                : null;
+                            return (!value.contains('@')) ? 'Not a valid email address' : null;
                           },
                         ),
                         SizedBox(
@@ -115,8 +106,7 @@ class _RegisterState extends State<Register> {
                           contentPadding: EdgeInsets.all(0),
                           title: TextFormField(
                             initialValue: password,
-                            decoration: registerInputDecoration.copyWith(
-                                labelText: 'password'),
+                            decoration: registerInputDecoration.copyWith(labelText: 'password'),
                             style: inputTextStyle,
                             obscureText: obscureText,
                             onChanged: (value) {
@@ -152,17 +142,13 @@ class _RegisterState extends State<Register> {
                             onChanged: (value) {
                               setState(() => confPass = value);
                             },
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             validator: (value) {
-                              return (value != password)
-                                  ? 'Passwords don’t match.'
-                                  : null;
+                              return (value != password) ? 'Passwords don’t match.' : null;
                             },
                           ),
                           trailing: IconButton(
-                            icon:
-                                Icon(Icons.remove_red_eye, color: Colors.white),
+                            icon: Icon(Icons.remove_red_eye, color: Colors.white),
                             onPressed: () {
                               setState(() {
                                 obscureText = !obscureText;
@@ -188,9 +174,7 @@ class _RegisterState extends State<Register> {
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
                               setState(() => loading = true);
-                              dynamic result =
-                                  await _auth.registerWithEmailAndPassword(
-                                      email, password, name, surname);
+                              dynamic result = await _auth.registerWithEmailAndPassword(email, password, name, surname);
                               if (result is String) {
                                 setState(() {
                                   error = result;
@@ -209,8 +193,7 @@ class _RegisterState extends State<Register> {
                     height: 20,
                   ),
                   TextButton(
-                    child: Text("Already have an acount? Log in here.",
-                        style: inputTextStyle),
+                    child: Text("Already have an acount? Log in here.", style: inputTextStyle),
                     onPressed: widget.toogleView,
                   ),
                   SizedBox(

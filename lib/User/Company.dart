@@ -25,8 +25,7 @@ class Company {
   List<Survey> surveys = [];
   Employee me;
 
-  CollectionReference companiesCollection =
-      FirebaseFirestore.instance.collection('companies');
+  CollectionReference companiesCollection = FirebaseFirestore.instance.collection('companies');
 
   Company({
     this.uid,
@@ -63,28 +62,20 @@ class Company {
   }) async {
     if (newDescription != null) {
       this.description = newDescription;
-      await companiesCollection
-          .doc(this.uid)
-          .update({'description': this.description});
+      await companiesCollection.doc(this.uid).update({'description': this.description});
     }
     if (newSurvey != null) {
       this.surveys.add(newSurvey);
-      await companiesCollection
-          .doc(this.uid)
-          .update({'surveys': this.surveys.map((e) => e.uid).toList()});
+      await companiesCollection.doc(this.uid).update({'surveys': this.surveys.map((e) => e.uid).toList()});
     }
     if (newImage != null) {
-      this.image = NetworkImage(
-          await Uploader().uploadImage(newImage.path, this.uid + '2'));
+      this.image = NetworkImage(await Uploader().uploadImage(newImage.path, this.uid + '2'));
     }
   }
 
   Stream<Company> get self {
     if (uid == null) return null;
-    return companiesCollection
-        .doc(this.uid)
-        .snapshots()
-        .map((event) => updateData(event));
+    return companiesCollection.doc(this.uid).snapshots().map((event) => updateData(event));
   }
 
   Company updateData(DocumentSnapshot ref) {
@@ -96,17 +87,13 @@ class Company {
     this.country = ref['country'];
     this.requests = List<String>.from(ref['requests'] as List<dynamic>) ?? [];
     this.positions = List<String>.from(ref['positions'] as List<dynamic>);
-    this.employees = (employeesFromFirebase as List<dynamic>)
-        .map((e) => Employee(uid: e as String))
-        .toList();
-    this.surveys = List<String>.from(ref['surveys'] as List<dynamic>)
-        .map((e) => Survey(uid: e))
-        .toList();
+    this.employees = (employeesFromFirebase as List<dynamic>).map((e) => Employee(uid: e as String)).toList();
+    this.surveys = List<String>.from(ref['surveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
     return this;
   }
 
   Future getEmployees() async {
-    for (Employee e in employees) await e.getEmployee();
+    for (Employee e in employees) await e.getEmployee(false);
   }
 
   /// Accepts or Denies access to Company based on [accepted]
@@ -133,20 +120,17 @@ class Company {
   /// If [remove == true] then newTags will be removed from tags.
   ///
   /// Either [position] or [addTags] or [removeTags] should have value. Otherwise nothing will happen.
-  Future addPositionOrTags(Employee who,
-      {String position, List<String> addTags, List<String> removeTags}) async {
+  Future addPositionOrTags(Employee who, {String position, List<String> addTags, List<String> removeTags}) async {
     if (position == null && addTags == null && removeTags != null) return;
     await getAllSurveys(false);
     List<String> allTags;
     allTags.addAll(who.tags);
     if (addTags != null) allTags.addAll(addTags);
-    if (removeTags != null)
-      allTags.removeWhere((element) => removeTags.contains(element));
+    if (removeTags != null) allTags.removeWhere((element) => removeTags.contains(element));
     List<Survey> newSurveys = surveys
         .where((e) {
           if (position != null && e.tags.contains(position)) return true;
-          if (allTags != null)
-            for (String tag in allTags) if (e.tags.contains(tag)) return true;
+          if (allTags != null) for (String tag in allTags) if (e.tags.contains(tag)) return true;
           return false;
         })
         .where((e) => e.status == STATUS.Upcoming)
@@ -155,27 +139,23 @@ class Company {
       ..addAll(newSurveys)
       ..toSet()
       ..toList();
-    await who.updateEmployee(
-        newPosition: position, newTags: allTags, newSurveys: who.surveys);
+    await who.updateEmployee(newPosition: position, newTags: allTags, newSurveys: who.surveys);
   }
 
   ///Returns [List] of [surveys] without [results]
   Future<List<Survey>> getAllSurveys(bool withResults) async {
-    await Future.wait(
-        surveys.map((e) async => await e.getSurvey(withResults)).toList());
+    await Future.wait(surveys.map((e) async => await e.getSurvey(withResults)).toList());
     return this.surveys;
   }
 
   Future<NetworkImage> getImage() async {
     if (this.image != null) return this.image;
-    this.image = NetworkImage(await Uploader().getImage(this.uid + '2'));
-    return this.image;
+    return this.image = NetworkImage(await Uploader().getImage(this.uid + '2'));
   }
 
   /// Puts newly selected [image] as profile picture for [company]
   Future changeImage() async {
-    PickedFile image =
-        await ImagePicker().getImage(source: ImageSource.gallery);
+    PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery);
     if (image == null) return;
     File cropped = await ImageCropper.cropImage(sourcePath: image.path);
     await updateCompany(newImage: cropped ?? File(image.path));

@@ -40,8 +40,7 @@ class _LogInState extends State<LogIn> {
                         ),
                         TextFormField(
                           initialValue: email,
-                          decoration: registerInputDecoration.copyWith(
-                              labelText: "email"),
+                          decoration: registerInputDecoration.copyWith(labelText: "email"),
                           style: inputTextStyle,
                           onChanged: (value) {
                             setState(() => email = value);
@@ -54,8 +53,7 @@ class _LogInState extends State<LogIn> {
                           contentPadding: EdgeInsets.all(0),
                           title: TextFormField(
                             initialValue: password,
-                            decoration: registerInputDecoration.copyWith(
-                                labelText: "password"),
+                            decoration: registerInputDecoration.copyWith(labelText: "password"),
                             style: inputTextStyle,
                             obscureText: obscureText,
                             onChanged: (value) {
@@ -63,8 +61,7 @@ class _LogInState extends State<LogIn> {
                             },
                           ),
                           trailing: IconButton(
-                            icon:
-                                Icon(Icons.remove_red_eye, color: Colors.white),
+                            icon: Icon(Icons.remove_red_eye, color: Colors.white),
                             onPressed: () {
                               setState(() {
                                 obscureText = !obscureText;
@@ -75,9 +72,7 @@ class _LogInState extends State<LogIn> {
                         SizedBox(
                           height: 20,
                         ),
-                        Text(error,
-                            style: inputTextStyle.copyWith(
-                                fontSize: 12, color: Colors.blue)),
+                        Text(error, style: inputTextStyle.copyWith(fontSize: 12, color: Colors.blue)),
                         SizedBox(
                           height: 20,
                         ),
@@ -85,10 +80,8 @@ class _LogInState extends State<LogIn> {
                           child: Text("Log In", style: inputTextStyle),
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
-                              _formKey.currentState
-                                  .setState(() => loading = true);
-                              dynamic result = await _auth
-                                  .logInWithEmailAndPassword(email, password);
+                              _formKey.currentState.setState(() => loading = true);
+                              dynamic result = await _auth.logInWithEmailAndPassword(email, password);
                               if (result is String) {
                                 setState(() {
                                   error = result;
@@ -105,8 +98,7 @@ class _LogInState extends State<LogIn> {
                         ),
                         TextButton(
                           onPressed: widget.toogleView,
-                          child: Text("Don't have an account? Register here.",
-                              style: inputTextStyle),
+                          child: Text("Don't have an account? Register here.", style: inputTextStyle),
                         )
                       ],
                     ),

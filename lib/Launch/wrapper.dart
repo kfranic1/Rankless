@@ -19,7 +19,7 @@ class Wrapper extends StatelessWidget {
       body: employee.anonymus
           ? Center(child: Text("You are anonymus"))
           : FutureBuilder(
-              future: employee.getEmployee(),
+              future: employee.getEmployee(true),
               builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
                   ? StreamProvider<Employee>.value(
                       updateShouldNotify: (a, b) => true,

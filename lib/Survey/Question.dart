@@ -10,11 +10,7 @@ class Question {
   List<String> multipleAnswers = [];
   List<TextEditingController> controllers = [];
 
-  Question(
-      {this.questionText,
-      this.answerType = TYPE.Text,
-      this.singleAnswer,
-      this.multipleAnswers}) {
+  Question({this.questionText, this.answerType = TYPE.Text, this.singleAnswer, this.multipleAnswers}) {
     singleAnswer = '';
   }
 

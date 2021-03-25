@@ -87,11 +87,7 @@ class _SurveyUIState extends State<SurveyUI> {
                     child: Row(
                       children: <Widget>[
                         //date
-                        Text('Date',
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontFamily: 'Mulish')),
+                        Text('Date', style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'Mulish')),
                         SizedBox(
                           width: 20,
                         ),
@@ -105,11 +101,7 @@ class _SurveyUIState extends State<SurveyUI> {
                             child: TextButton(
                               child: Text(
                                 _formatted.format(widget.survey.from),
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Mulish',
-                                    color: Colors.white),
+                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontFamily: 'Mulish', color: Colors.white),
                               ),
                               onPressed: () => _selectFrom(context),
                             ),
@@ -134,11 +126,7 @@ class _SurveyUIState extends State<SurveyUI> {
                             child: TextButton(
                               child: Text(
                                 _formatted.format(widget.survey.to),
-                                style: TextStyle(
-                                    fontFamily: 'Mulish',
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                                style: TextStyle(fontFamily: 'Mulish', fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
                               ),
                               onPressed: () => _selectTo(context),
                             ),
@@ -154,21 +142,15 @@ class _SurveyUIState extends State<SurveyUI> {
                     child: Row(
                       children: [
                         Text(
-                          'For(' +
-                              widget.survey.getCountBasedOnTags().toString() +
-                              ')',
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontFamily: 'Mulish'),
+                          'For(' + widget.survey.getCountBasedOnTags().toString() + ')',
+                          style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'Mulish'),
                         ),
                         SizedBox(
                           width: 20,
                         ),
                         Expanded(
                           child: SearchableDropdown.multiple(
-                            items:
-                                tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
+                            items: tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
                             selectedItems: _selectedTags,
                             selectedValueWidgetFn: (item) {
                               return Container();
@@ -178,8 +160,7 @@ class _SurveyUIState extends State<SurveyUI> {
                             onChanged: (value) {
                               setState(() {
                                 _selectedTags = value;
-                                widget.survey.tags =
-                                    showTagsUpdate(_selectedTags);
+                                widget.survey.tags = showTagsUpdate(_selectedTags);
                               });
                             },
                             menuBackgroundColor: Colors.lightBlue[50],
@@ -202,8 +183,7 @@ class _SurveyUIState extends State<SurveyUI> {
                                   Expanded(
                                     child: Text(
                                       item.value,
-                                      style: TextStyle(
-                                          fontFamily: 'Mulish', fontSize: 17),
+                                      style: TextStyle(fontFamily: 'Mulish', fontSize: 17),
                                     ),
                                   ),
                                 ])),
@@ -218,10 +198,7 @@ class _SurveyUIState extends State<SurveyUI> {
 
                             searchHint: Text(
                               'Who should get the survey',
-                              style: TextStyle(
-                                  fontFamily: 'Mulish',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
+                              style: TextStyle(fontFamily: 'Mulish', fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                             isExpanded: false,
                             displayClearIcon: false,
@@ -242,8 +219,7 @@ class _SurveyUIState extends State<SurveyUI> {
                                 key: Key(index.toString()),
                                 index: index,
                                 title: item,
-                                textStyle: const TextStyle(
-                                    fontFamily: 'Mulish', fontSize: 17),
+                                textStyle: const TextStyle(fontFamily: 'Mulish', fontSize: 17),
                                 pressEnabled: false,
                                 singleItem: false,
                                 activeColor: Colors.blue,
@@ -265,8 +241,7 @@ class _SurveyUIState extends State<SurveyUI> {
                         context: context,
                         builder: (BuildContext context) {
                           return Dialog(
-                            insetPadding:
-                                EdgeInsets.only(left: 0.0, right: 0.0),
+                            insetPadding: EdgeInsets.only(left: 0.0, right: 0.0),
                             backgroundColor: Colors.transparent,
                             child: ListView(
                               addAutomaticKeepAlives: true,
@@ -283,22 +258,15 @@ class _SurveyUIState extends State<SurveyUI> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                     setState(() {
-                                      if (_createdQ
-                                              .getQuestion()
-                                              .questionText !=
-                                          null) {
+                                      if (_createdQ.getQuestion().questionText != null) {
                                         _questions.add(_createdQ);
-                                        widget.survey.qNa
-                                            .add(_createdQ.getQuestion());
+                                        widget.survey.qNa.add(_createdQ.getQuestion());
                                       }
                                     });
                                   },
                                   child: Text(
                                     'Add',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Mulish',
-                                        fontSize: 20),
+                                    style: TextStyle(color: Colors.white, fontFamily: 'Mulish', fontSize: 20),
                                   ),
                                 ),
                               ],
@@ -315,10 +283,7 @@ class _SurveyUIState extends State<SurveyUI> {
                     ),
                     label: Text(
                       "Add question",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontFamily: 'Mulish'),
+                      style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'Mulish'),
                     ),
                   ),
                   Expanded(
@@ -375,9 +340,7 @@ class _SurveyUIState extends State<SurveyUI> {
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: borderRadius),
+                      decoration: BoxDecoration(color: Colors.transparent, borderRadius: borderRadius),
                       height: 60,
                       width: 200,
                       child: Text(
@@ -429,14 +392,10 @@ class _SurveyUIState extends State<SurveyUI> {
                 style: TextStyle(fontFamily: font),
               ),
               actions: <Widget>[
-                TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text("DELETE",
-                        style: TextStyle(fontFamily: font))),
+                TextButton(onPressed: () => Navigator.of(context).pop(true), child: const Text("DELETE", style: TextStyle(fontFamily: font))),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child:
-                      const Text("CANCEL", style: TextStyle(fontFamily: font)),
+                  child: const Text("CANCEL", style: TextStyle(fontFamily: font)),
                 ),
               ],
             );
@@ -446,8 +405,7 @@ class _SurveyUIState extends State<SurveyUI> {
       child: (ListTile(
         leading: Text(
           (index + 1).toString(),
-          style: TextStyle(
-              color: Colors.white, fontFamily: 'Mulish', fontSize: 20),
+          style: TextStyle(color: Colors.white, fontFamily: 'Mulish', fontSize: 20),
         ),
         title: Container(
           constraints: BoxConstraints(
@@ -457,8 +415,7 @@ class _SurveyUIState extends State<SurveyUI> {
           padding: EdgeInsets.only(left: 10, right: 10),
           child: Text(
             question.questionText,
-            style: TextStyle(
-                color: Colors.white, fontFamily: 'Mulish', fontSize: 20),
+            style: TextStyle(color: Colors.white, fontFamily: 'Mulish', fontSize: 20),
             textAlign: TextAlign.left,
           ),
           decoration: BoxDecoration(
@@ -533,8 +490,7 @@ class _SurveyUIState extends State<SurveyUI> {
     if (picked.isBefore(widget.survey.from)) {
       return showAlertDialog(context);
     }
-    if (picked != null && picked.isAfter(widget.survey.from))
-      setState(() => widget.survey.to = picked);
+    if (picked != null && picked.isAfter(widget.survey.from)) setState(() => widget.survey.to = picked);
   }
 
   showAlertDialog(BuildContext context) {

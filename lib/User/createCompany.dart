@@ -16,8 +16,7 @@ class CreateCompany extends StatefulWidget {
 
 class _CreateCompanyState extends State<CreateCompany> {
   final _formKey = GlobalKey<FormState>();
-  CollectionReference categoriesReference =
-      FirebaseFirestore.instance.collection('categories');
+  CollectionReference categoriesReference = FirebaseFirestore.instance.collection('categories');
 
   String name = '';
   String info = '';
@@ -43,8 +42,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                     selectionColor: Colors.white,
                     selectionHandleColor: Colors.white,
                   ),
-                  primaryColor:
-                      Colors.black45, // mijenja search icon kod drzava
+                  primaryColor: Colors.black45, // mijenja search icon kod drzava
                   // secondaryHeaderColor: Colors.white,  // nista
                   // errorColor: Colors.white,
                   // cardColor: Colors.white,             // nista
@@ -91,12 +89,9 @@ class _CreateCompanyState extends State<CreateCompany> {
                               TextFormField(
                                 initialValue: name,
                                 validator: (value) {
-                                  return value.isEmpty
-                                      ? "Name can't be empty"
-                                      : null;
+                                  return value.isEmpty ? "Name can't be empty" : null;
                                 },
-                                decoration: registerInputDecoration.copyWith(
-                                    labelText: 'Company name'),
+                                decoration: registerInputDecoration.copyWith(labelText: 'Company name'),
                                 style: inputTextStyle,
                                 onChanged: (value) {
                                   setState(() => name = value);
@@ -144,18 +139,16 @@ class _CreateCompanyState extends State<CreateCompany> {
                                 searchStyle: inputTextStyle.copyWith(
                                   color: Colors.black,
                                 ),
-                                searchDecoration:
-                                    registerInputDecoration.copyWith(
-                                        // icon: Icon(Icons.ac_unit),
-                                        // counterStyle: inputTextStyle,
-                                        // suffixStyle: inputTextStyle,
-                                        // focusColor: Colors.yellow,
-                                        // prefixStyle: inputTextStyle,
-                                        // helperStyle: inputTextStyle,
-                                        // labelStyle: inputTextStyle,
+                                searchDecoration: registerInputDecoration.copyWith(
+                                    // icon: Icon(Icons.ac_unit),
+                                    // counterStyle: inputTextStyle,
+                                    // suffixStyle: inputTextStyle,
+                                    // focusColor: Colors.yellow,
+                                    // prefixStyle: inputTextStyle,
+                                    // helperStyle: inputTextStyle,
+                                    // labelStyle: inputTextStyle,
 
-                                        hintStyle:
-                                            TextStyle(color: Colors.white)),
+                                    hintStyle: TextStyle(color: Colors.white)),
                                 // za popout
                                 boxDecoration: popOutDecoration,
                                 //  BoxDecoration(
@@ -168,16 +161,9 @@ class _CreateCompanyState extends State<CreateCompany> {
                               ),
                               FutureBuilder(
                                 future: categories.contains('loading')
-                                    ? categoriesReference
-                                        .doc('GSM53sSt5zOWQbndHZH6')
-                                        .get()
-                                        .then((value) {
+                                    ? categoriesReference.doc('GSM53sSt5zOWQbndHZH6').get().then((value) {
                                         setState(() {
-                                          categories =
-                                              (value.data()['categories']
-                                                      as List<dynamic>)
-                                                  .map((e) => e as String)
-                                                  .toList();
+                                          categories = (value.data()['categories'] as List<dynamic>).map((e) => e as String).toList();
                                           categories.sort();
                                           categories.add('Other');
                                         });
@@ -205,21 +191,14 @@ class _CreateCompanyState extends State<CreateCompany> {
                                     //     //     border: OutlineInputBorder()),
                                     //     registerInputDecoration,
                                     // popupBarrierColor: Colors.white,
-                                    style: inputTextStyle.copyWith(
-                                        color: Colors.white),
+                                    style: inputTextStyle.copyWith(color: Colors.white),
                                     menuBackgroundColor: Colors.blue,
 
                                     // mode: Mode.MENU,
                                     // showSearchBox: true,
                                     isExpanded: true,
-                                    items: categories
-                                        .map((e) => DropdownMenuItem(
-                                            value: e,
-                                            child:
-                                                Text(e, style: inputTextStyle)))
-                                        .toList(),
-                                    onChanged: (index) =>
-                                        setState(() => category = index),
+                                    items: categories.map((e) => DropdownMenuItem(value: e, child: Text(e, style: inputTextStyle))).toList(),
+                                    onChanged: (index) => setState(() => category = index),
                                   );
                                   // );
                                 },
@@ -231,12 +210,9 @@ class _CreateCompanyState extends State<CreateCompany> {
                               TextFormField(
                                 initialValue: info,
                                 validator: (value) {
-                                  return value.isEmpty
-                                      ? "Info can't be empty"
-                                      : null;
+                                  return value.isEmpty ? "Info can't be empty" : null;
                                 },
-                                decoration: registerInputDecoration.copyWith(
-                                    labelText: 'Info'),
+                                decoration: registerInputDecoration.copyWith(labelText: 'Info'),
                                 style: inputTextStyle,
                                 onChanged: (value) {
                                   setState(() => info = value);
@@ -293,8 +269,7 @@ class _CreateCompanyState extends State<CreateCompany> {
         .where('country', isEqualTo: this.country)
         .get()
         .then((value) {
-      if (value.size > 0)
-        ret = 'Company with same name and country already exists.';
+      if (value.size > 0) ret = 'Company with same name and country already exists.';
     });
     if (ret != '') return ret;
     Company company = Company(
@@ -307,8 +282,7 @@ class _CreateCompanyState extends State<CreateCompany> {
     );
     dynamic result = await company.createCompany();
     if (result is String) return result;
-    result = await widget.employee
-        .updateEmployee(newAdmin: true, newCompanyUid: company.uid);
+    result = await widget.employee.updateEmployee(newAdmin: true, newCompanyUid: company.uid);
     if (result is String) return result;
     return 'OK';
   }
