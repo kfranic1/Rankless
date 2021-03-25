@@ -82,44 +82,45 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  IconButton(
-                      iconSize: 100,
-                      icon: imageLoading
-                          ? loader
-                          : Row(
-                              children: [
-                                FutureBuilder(
-                                    future: company.getImage(),
-                                    builder: (context, snapshot) {
-                                      return Container(
-                                          alignment: Alignment.topLeft,
-                                          padding: EdgeInsets.only(left: 30),
-                                          child: CircleAvatar(
-                                              //backgroundColor: Colors.white,
-                                              radius: 50, //should be half of icon size
-                                              backgroundImage: company.image == null ? null : company.image,
-                                              child: company.image == null
-                                                  ? Icon(
-                                                      Icons.camera_alt_outlined,
-                                                      size: 60,
-                                                      //color: Colors.black,
-                                                    )
-                                                  : null));
-                                    }),
-                                SizedBox(
-                                  width: 60,
-                                ),
-                                Text(
-                                  company.name,
-                                  style: titleNameStyle,
-                                )
-                              ],
-                            ),
-                      onPressed: () async {
-                        setState(() => imageLoading = true);
-                        await company.changeImage();
-                        setState(() => imageLoading = false);
-                      }),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          setState(() => imageLoading = true);
+                          await company.changeImage();
+                          setState(() => imageLoading = false);
+                        },
+                        iconSize: 100,
+                        icon: imageLoading
+                            ? loader
+                            : FutureBuilder(
+                                future: company.getImage(),
+                                builder: (context, snapshot) {
+                                  return Container(
+                                      alignment: Alignment.topLeft,
+                                      padding: EdgeInsets.only(left: 30),
+                                      child: CircleAvatar(
+                                          //backgroundColor: Colors.white,
+                                          radius: 50, //should be half of icon size
+                                          backgroundImage: company.image == null ? null : company.image,
+                                          child: company.image == null
+                                              ? Icon(
+                                                  Icons.camera_alt_outlined,
+                                                  size: 60,
+                                                  //color: Colors.black,
+                                                )
+                                              : null));
+                                }),
+                      ),
+                      SizedBox(
+                        width: 60,
+                      ),
+                      Text(
+                        company.name,
+                        style: titleNameStyle,
+                      )
+                    ],
+                  ),
                   Visibility(
                     visible: (me.admin && company.requests.length != 0),
                     child: Padding(
@@ -288,41 +289,32 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                     ],
                   ),
                   SizedBox(
-                    height: 40,
+                    height: 30,
                   ),
-                  // Container(
-                  //     margin: EdgeInsets.only(left: 20, right: 20),
-                  //     decoration: BoxDecoration(
-                  //         border: Border.all(color: Colors.white, width: 2),
-                  //         borderRadius: borderRadius),
-                  //     child: TextButton(
-                  //       onPressed: () {
-                  //         company.addPositionOrTags(me, newTags: ['tim1']);
-                  //       },
-                  //       child: Text('Manage',
-                  //           style: TextStyle(
-                  //               fontFamily: font,
-                  //               color: Colors.white,
-                  //               fontSize: 22)),
-                  //     )),
-                  TextButton(
-                      onPressed: () {
-                        //print(company.surveysFull.length);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              //fullscreenDialog: true,
-                              builder: (context) => Results(Survey(uid: 'fRKQtId76sevJWKL7rIJ'))),
-                        );
-                      },
-                      child: Text('Press me')),
+                  company.surveys.length == 0
+                      ? Center(
+                          child: Text(
+                            "You don't have any completed surveys",
+                            style: TextStyle(fontFamily: font, fontSize: 20, color: Colors.white),
+                          ),
+                        )
+                      : Container(
+                          margin: EdgeInsets.only(left: 20),
+                          child: Text(
+                            "Survey results:",
+                            style: TextStyle(fontFamily: font, fontSize: 20, color: Colors.white),
+                          ),
+                        ),
+                  SizedBox(
+                    height: 30,
+                  ),
                   FutureBuilder(
                       future: company.getAllSurveys(true),
                       builder: (context, snapshot) {
                         return snapshot.connectionState != ConnectionState.done
                             ? loader
                             : Container(
-                                height: 200,
+                                height: 80,
                                 child: ListView.separated(
                                     padding: EdgeInsets.only(left: 20, right: 20),
                                     scrollDirection: Axis.horizontal,
@@ -345,13 +337,12 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   Widget filledSurveys(Survey survey) {
     DateFormat _formatted = DateFormat('dd-MM-yyyy');
     return Container(
-        //height: ,
-        width: 250,
+        //width: 250,
         decoration: BoxDecoration(
             color: Colors.blue[50],
             borderRadius: borderRadius,
             gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.indigo, Colors.blue])),
-        child: (TextButton(
+        child: (TextButton.icon(
             onPressed: () {
               Navigator.push(
                   context,
@@ -360,24 +351,15 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                     builder: (context) => Results(survey),
                   ));
             },
-            child: Column(
-              children: [
-                Expanded(
-                  child: Text(
-                    survey.name + "\n" + _formatted.format(survey.to),
-                    style: TextStyle(fontFamily: font, fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Icon(
-                    Icons.insert_chart_outlined_outlined,
-                    color: Colors.white.withOpacity(0.8),
-                    size: 130,
-                  ),
-                )
-              ],
+            icon: Icon(
+              (Icons.bar_chart_rounded),
+              color: Colors.greenAccent,
+              size: 50,
+            ),
+            label: Text(
+              survey.name + "\n" + "ended: " + _formatted.format(survey.to),
+              style: TextStyle(fontFamily: font, fontSize: 22, color: Colors.white),
+              textAlign: TextAlign.center,
             ))));
   }
 }
