@@ -9,6 +9,7 @@ import 'package:rankless/Survey/Survey.dart';
 
 class Employee {
   bool anonymus;
+  bool hasData = false;
   String uid;
   String name;
   String surname;
@@ -100,7 +101,7 @@ class Employee {
   }
 
   Future getEmployee(bool withImage) async {
-    updateData(await userCollection.doc(this.uid).get());
+    if (!hasData) updateData(await userCollection.doc(this.uid).get());
     await handleSurveys();
     if (withImage) await getImage();
   }
@@ -119,6 +120,7 @@ class Employee {
     this.request = ref['request'];
     this.admin = ref['admin'];
     this.position = ref['position'];
+    this.hasData = true;
     return this;
   }
 

@@ -26,78 +26,79 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   Widget build(BuildContext context) {
     final Company company = Provider.of<Company>(context);
     final Employee me = Provider.of<Employee>(context);
-    return company == null
-        ? Center(
-            child: Text('You are not in any company'),
-          )
-        : Scaffold(
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-            floatingActionButton: me.admin
-                ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    me.admin
-                        ? Expanded(
-                            child: Stack(clipBehavior: Clip.none, alignment: AlignmentDirectional.bottomCenter, children: [
-                              FloatingActionButton(
-                                  heroTag: 'left',
-                                  backgroundColor: Colors.blue.withOpacity(0.7),
-                                  child: Icon(
-                                    Icons.group_add_rounded,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                  onPressed: () {
-                                    company.addPositionOrTags(me, addTags: ['tim1']);
-                                  }),
-                              company.requests.length == 0
-                                  ? Positioned(
-                                      top: 0,
-                                      child: Container(
-                                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.transparent),
-                                      ),
-                                    )
-                                  : Positioned(
-                                      top: -5,
-                                      left: 80,
-                                      child: Container(
-                                        height: 20,
-                                        width: 20,
-                                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red),
-                                      ),
-                                    ),
-                            ]),
-                          )
-                        : Container(),
-                    Expanded(
-                      child: SizedBox(
-                        width: 210,
-                      ),
-                    ),
-                    Expanded(
-                      child: FloatingActionButton(
-                        heroTag: 'right',
-                        backgroundColor: Colors.blue.withOpacity(0.7),
-                        child: Icon(
-                          Icons.post_add_rounded,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SurveyUI(
-                              new Survey(name: 'Survey', company: company),
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: me.admin
+          ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              me.admin
+                  ? Expanded(
+                      child: Stack(clipBehavior: Clip.none, alignment: AlignmentDirectional.bottomCenter, children: [
+                        FloatingActionButton(
+                            heroTag: 'left',
+                            backgroundColor: Colors.blue.withOpacity(0.7),
+                            child: Icon(
+                              Icons.group_add_rounded,
+                              color: Colors.white,
+                              size: 30,
                             ),
-                          ),
-                        ),
+                            onPressed: () {}),
+                        company.requests.length == 0
+                            ? Positioned(
+                                top: 0,
+                                child: Container(
+                                  decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.transparent),
+                                ),
+                              )
+                            : Positioned(
+                                top: -5,
+                                left: 80,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                                ),
+                              ),
+                      ]),
+                    )
+                  : Container(),
+              Expanded(
+                child: SizedBox(
+                  width: 210,
+                ),
+              ),
+              Expanded(
+                child: FloatingActionButton(
+                  heroTag: 'right',
+                  backgroundColor: Colors.blue.withOpacity(0.7),
+                  child: Icon(
+                    Icons.post_add_rounded,
+                    size: 30,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SurveyUI(
+                        new Survey(name: 'Survey', company: company),
                       ),
                     ),
-                  ])
-                : Container(),
-            body: Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: backgroundDecoration,
-              child: ListView(
+                  ),
+                ),
+              ),
+            ])
+          : Container(),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: backgroundDecoration,
+        child: company == null
+            ? Center(
+                child: Text(
+                  'You are not in any company',
+                  style: titleNameStyle.copyWith(fontWeight: FontWeight.normal),
+                ),
+              )
+            : ListView(
                 shrinkWrap: true,
                 children: [
                   Row(
@@ -348,8 +349,8 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                       })
                 ],
               ),
-            ),
-          );
+      ),
+    );
   }
 
   Widget filledSurveys(Survey survey) {

@@ -33,7 +33,7 @@ class Survey {
     });
     this.uid = ref.id;
     await company.updateCompany(newSurvey: this);
-    await company.getEmployees();
+    await company.getEmployees(false);
     await Future.forEach(
       company.employees,
       (Employee employee) async {
@@ -117,18 +117,17 @@ class Survey {
         this.results[pos][i].add(ans[i]);
       }
     });
-    for (String key in this.results.keys) {
+    Map<int, List<String>> other = new Map<int, List<String>>();
+    for (String key in this.results.keys.toList()) {
       if (this.results[key][0].length == 1) {
         Map<int, List<String>> temp = this.results.remove(key);
-        if (this.results['Other'] == null) {
-          this.results['Other'] = new Map<int, List<String>>();
-        }
         for (int i = 0; i < temp.keys.length; i++) {
-          if (this.results['Other'][i] == null) this.results['Other'][i] = <String>[];
-          this.results['Other'][i].add(temp[i][0]);
+          if (other[i] == null) other[i] = <String>[];
+          other[i].add(temp[i][0]);
         }
       }
     }
+    this.results.addAll({'Other': other});
   }
 
   /// Returns Map with following structure [position, Map<question_number, answers>]

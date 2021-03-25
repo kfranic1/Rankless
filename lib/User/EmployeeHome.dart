@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rankless/shared/Interface.dart';
-import 'package:rankless/shared/keepAlivePage.dart';
+import 'package:rankless/shared/keepAliveThis.dart';
 import 'Company.dart';
 import 'CompanyHomeScreen.dart';
 import 'EmployeeHomeScreen.dart';
@@ -16,11 +16,11 @@ class EmployeeHome extends StatefulWidget {
 class _EmployeeHomeState extends State<EmployeeHome> {
   String message = '';
   int _currentIndex = 1;
-  PageController _controller;
+  PageController _controller = PageController();
   List<Widget> _screens = [
-    KeepAlivePage(child: CompanyHomeScreen()),
-    KeepAlivePage(child: EmployeeHomeScreen()),
-    KeepAlivePage(
+    KeepAliveThis(child: CompanyHomeScreen()),
+    KeepAliveThis(child: EmployeeHomeScreen()),
+    KeepAliveThis(
       child: Container(
         decoration: backgroundDecoration,
         child: Center(
@@ -35,7 +35,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
 
   @override
   void initState() {
-    _controller = PageController(initialPage: _currentIndex, keepPage: true);
+    _controller = PageController(initialPage: _currentIndex);
     super.initState();
   }
 
@@ -48,7 +48,6 @@ class _EmployeeHomeState extends State<EmployeeHome> {
   @override
   Widget build(BuildContext context) {
     final Employee employee = Provider.of<Employee>(context);
-    final Company company = Provider.of<Company>(context);
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         selectedLabelStyle: TextStyle(fontFamily: font, color: Colors.white),
@@ -77,15 +76,26 @@ class _EmployeeHomeState extends State<EmployeeHome> {
           _controller.animateToPage(index, duration: Duration(milliseconds: 200), curve: Curves.ease);
         }),
       ),
-      body: (employee == null || (employee.companyUid != null && company == null))
-          ? loader
-          : PageView(
-              onPageChanged: (index) => setState(() {
-                _currentIndex = index;
-              }),
-              controller: _controller,
-              children: _screens,
-            ),
+      body: Container(
+        decoration: backgroundDecoration,
+        child: (employee == null
+            ? loader
+            : StreamProvider<Company>.value(
+                updateShouldNotify: (a, b) => true,
+                value: employee.companyUid == null ? null : Company(uid: employee.companyUid).self,
+                child: PageView.builder(
+                  onPageChanged: (index) => setState(() {
+                    _currentIndex = index;
+                  }),
+                  controller: _controller,
+                  itemBuilder: (context, index) {
+                    Company temp = Provider.of<Company>(context);
+                    return (employee.companyUid != null && temp == null) ? loader : _screens[index];
+                  },
+                  itemCount: 3,
+                ),
+              )),
+      ),
     );
   }
 }

@@ -16,22 +16,26 @@ class Wrapper extends StatelessWidget {
     //Handle user/guest login
     return Scaffold(
       appBar: CustomAppBar(employee: employee),
-      body: employee.anonymus
-          ? Center(child: Text("You are anonymus"))
-          : FutureBuilder(
-              future: employee.getEmployee(true),
-              builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
-                  ? StreamProvider<Employee>.value(
-                      updateShouldNotify: (a, b) => true,
-                      value: employee.self,
-                      child: StreamProvider<Company>.value(
+      body: Container(
+        decoration: backgroundDecoration,
+        child: employee.anonymus
+            ? Center(
+                child: Text(
+                  "You are anonymus",
+                  style: titleNameStyle.copyWith(fontWeight: FontWeight.normal),
+                ),
+              )
+            : FutureBuilder(
+                future: employee.getEmployee(true),
+                builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
+                    ? StreamProvider<Employee>.value(
                         updateShouldNotify: (a, b) => true,
-                        value: Company(uid: employee.companyUid ?? null).self,
+                        value: employee.self,
                         child: EmployeeHome(),
-                      ),
-                    )
-                  : loader,
-            ),
+                      )
+                    : loader,
+              ),
+      ),
     );
   }
 }

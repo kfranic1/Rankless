@@ -92,8 +92,8 @@ class Company {
     return this;
   }
 
-  Future getEmployees() async {
-    for (Employee e in employees) await e.getEmployee(false);
+  Future getEmployees(bool withImages) async {
+    for (Employee e in employees) await e.getEmployee(withImages);
   }
 
   /// Accepts or Denies access to Company based on [accepted]

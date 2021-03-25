@@ -5,7 +5,9 @@ import 'package:rankless/Survey/Survey.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/Launch/auth.dart';
 import 'package:rankless/Launch/wrapper.dart';
+import 'package:rankless/shared/Interface.dart';
 
+import 'Survey/Results.dart';
 import 'Survey/SurveyUI.dart';
 import 'testing.dart';
 
@@ -43,7 +45,7 @@ class AppStarter extends StatelessWidget {
               ),
               title: "Rankless",
               home:
-                  test ? Testing(SurveyUI(Survey(name: 'Survey'))) : Wrapper(),
+                  test ? Testing(Results(Survey(uid: 'fRKQtId76sevJWKL7rIJ'))) : Wrapper(),
             ),
           );
         }
@@ -53,8 +55,7 @@ class AppStarter extends StatelessWidget {
           ),
           home: Scaffold(
             body: Center(
-              //TODO swap with custom loader
-              child: CircularProgressIndicator(),
+              child: loader,
             ),
           ),
         );
