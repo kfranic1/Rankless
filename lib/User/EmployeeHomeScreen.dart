@@ -334,44 +334,58 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                     employee.surveys.length > 0
                         ? FutureBuilder(
                             future: employee.handleSurveys(),
-                            builder: (context, snapshot) => snapshot
-                                        .connectionState ==
-                                    ConnectionState.active
-                                ? Center(
-                                    child: CircularProgressIndicator(),
-                                  )
-                                : Center(
-                                    child: TextButton(
-                                      onPressed: () async {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => SurveyUIFill(
-                                                employee.surveys[0], employee),
-                                          ),
-                                        );
-                                      },
-                                      child: Text(
-                                          'You have ' +
-                                              employee.surveys
-                                                  .where((element) {
-                                                    print(element.name);
-                                                    return element.status ==
-                                                        STATUS.Active;
-                                                  })
-                                                  .length
-                                                  .toString() +
-                                              ' active and ' +
-                                              employee.surveys
-                                                  .where((element) =>
-                                                      element.status ==
-                                                      STATUS.Upcoming)
-                                                  .length
-                                                  .toString() +
-                                              ' upcoming surveys',
-                                          style: inputTextStyle),
-                                    ),
-                                  ),
+                            builder: (context, snapshot) =>
+                                snapshot.connectionState != ConnectionState.done
+                                    ? loader
+                                    : Container(
+                                        height: 80,
+                                        child: ListView.separated(
+                                            scrollDirection: Axis.horizontal,
+                                            shrinkWrap: true,
+                                            itemBuilder: (context, index) {
+                                              return activeSurveys(
+                                                  employee.surveys[index],
+                                                  employee);
+                                            },
+                                            separatorBuilder:
+                                                (context, index) => SizedBox(
+                                                      width: 20,
+                                                    ),
+                                            itemCount: employee.surveys.length),
+                                      ),
+                            // Center(
+                            //     child: TextButton(
+                            //       onPressed: () async {
+                            //         Navigator.push(
+                            //           context,
+                            //           MaterialPageRoute(
+                            //             builder: (context) => SurveyUIFill(
+                            //                 employee.surveys[0], employee),
+                            //           ),
+                            //         );
+                            //       },
+                            //       child:
+                            //       Text(
+                            //           'You have ' +
+                            //               employee.surveys
+                            //                   .where((element) {
+                            //                     print(element.name);
+                            //                     return element.status ==
+                            //                         STATUS.Active;
+                            //                   })
+                            //                   .length
+                            //                   .toString() +
+                            //               ' active and ' +
+                            //               employee.surveys
+                            //                   .where((element) =>
+                            //                       element.status ==
+                            //                       STATUS.Upcoming)
+                            //                   .length
+                            //                   .toString() +
+                            //               ' upcoming surveys',
+                            //           style: inputTextStyle),
+                            //     ),
+                            //   ),
                           )
                         : Center(
                             child: Text(
@@ -383,5 +397,26 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                   ],
                 ),
         ]));
+  }
+
+  Widget activeSurveys(Survey survey, Employee employee) {
+    return Container(
+      decoration: BoxDecoration(color: Colors.black),
+      child: (TextButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                //fullscreenDialog: true,
+                builder: (context) => SurveyUIFill(survey, employee),
+              ));
+        },
+        child: Text(survey.name +
+            "\n" +
+            survey.from.toString() +
+            " - " +
+            survey.to.toString()),
+      )),
+    );
   }
 }

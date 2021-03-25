@@ -16,6 +16,19 @@ class _EmployeeHomeState extends State<EmployeeHome> {
   String message = '';
   int _currentIndex = 1;
   PageController _controller;
+  List<Widget> _screens = [
+    CompanyHomeScreen(),
+    EmployeeHomeScreen(),
+    Container(
+      decoration: backgroundDecoration,
+      child: Center(
+        child: Text(
+          "Coming soon...",
+          style: titleNameStyle.copyWith(fontWeight: FontWeight.normal),
+        ),
+      ),
+    ),
+  ];
 
   @override
   void initState() {
@@ -61,21 +74,16 @@ class _EmployeeHomeState extends State<EmployeeHome> {
               duration: Duration(milliseconds: 200), curve: Curves.ease);
         }),
       ),
-      body: (employee == null || company == null)
-          ? loader
-          : PageView(
-              onPageChanged: (index) => setState(() {
-                _currentIndex = index;
-              }),
-              controller: _controller,
-              children: [
-                CompanyHomeScreen(),
-                EmployeeHomeScreen(),
-                Center(
-                  child: Text("This is company list screen"),
+      body:
+          (employee == null || (employee.companyUid != null && company == null))
+              ? loader
+              : PageView(
+                  onPageChanged: (index) => setState(() {
+                    _currentIndex = index;
+                  }),
+                  controller: _controller,
+                  children: _screens,
                 ),
-              ],
-            ),
     );
   }
 }
