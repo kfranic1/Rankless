@@ -16,13 +16,6 @@ class _EmployeeHomeState extends State<EmployeeHome> {
   String message = '';
   int _currentIndex = 1;
   PageController _controller;
-  final List<Widget> _screens = [
-    CompanyHomeScreen(),
-    EmployeeHomeScreen(),
-    Center(
-      child: Text("This is company list screen"),
-    ),
-  ];
 
   @override
   void initState() {
@@ -46,17 +39,17 @@ class _EmployeeHomeState extends State<EmployeeHome> {
         type: BottomNavigationBarType.shifting,
         items: [
           BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.indigo,
             label: "Company",
             icon: Icon(Icons.account_balance),
           ),
           BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.indigo,
             label: 'Profile',
             icon: Icon(Icons.person),
           ),
           BottomNavigationBarItem(
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.indigo,
             label: 'Company List',
             icon: Icon(Icons.list),
           ),
@@ -68,15 +61,21 @@ class _EmployeeHomeState extends State<EmployeeHome> {
               duration: Duration(milliseconds: 200), curve: Curves.ease);
         }),
       ),
-      body:
-          (employee == null || (employee.companyUid != null && company == null))
-              ? loader
-              : PageView(
-                  onPageChanged: (index) => setState(() {
-                        _currentIndex = index;
-                      }),
-                  controller: _controller,
-                  children: _screens),
+      body: (employee == null || company == null)
+          ? loader
+          : PageView(
+              onPageChanged: (index) => setState(() {
+                _currentIndex = index;
+              }),
+              controller: _controller,
+              children: [
+                CompanyHomeScreen(),
+                EmployeeHomeScreen(),
+                Center(
+                  child: Text("This is company list screen"),
+                ),
+              ],
+            ),
     );
   }
 }
