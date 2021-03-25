@@ -7,7 +7,8 @@ import 'package:rankless/Survey/SurveyUI.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'Company.dart';
 
 class CompanyHomeScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class CompanyHomeScreen extends StatefulWidget {
 
 class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   ListView requests;
+
   bool handling = false;
   PickedFile coverImage;
   bool imageLoading = false;
@@ -29,48 +31,54 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
             child: Text('You are not in any company'),
           )
         : Scaffold(
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
             floatingActionButton: me.admin
-                ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    me.admin
-                        ? Expanded(
-                            flex: 2,
-                            child: FloatingActionButton(
-                                heroTag: 'left',
-                                backgroundColor: Colors.blue.withOpacity(0.7),
-                                child: Icon(
-                                  Icons.group_add_rounded,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                                onPressed: () {
-                                  company
-                                      .addPositionOrTags(me, addTags: ['tim1']);
-                                }),
-                          )
-                        : Container(),
-                    SizedBox(
-                      width: 210,
-                    ),
-                    Expanded(
-                      child: FloatingActionButton(
-                        heroTag: 'right',
-                        backgroundColor: Colors.blue.withOpacity(0.7),
-                        child: Icon(
-                          Icons.post_add_rounded,
-                          size: 30,
-                          color: Colors.white,
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                        me.admin
+                            ? Expanded(
+                                child: FloatingActionButton(
+                                    heroTag: 'left',
+                                    backgroundColor:
+                                        Colors.blue.withOpacity(0.7),
+                                    child: Icon(
+                                      Icons.group_add_rounded,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                    onPressed: () {
+                                      company.addPositionOrTags(me,
+                                          addTags: ['tim1']);
+                                    }),
+                              )
+                            : Container(),
+                        Expanded(
+                          child: SizedBox(
+                            width: 210,
+                          ),
                         ),
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SurveyUI(
-                              new Survey(name: 'Survey', company: company),
+                        Expanded(
+                          child: FloatingActionButton(
+                            heroTag: 'right',
+                            backgroundColor: Colors.blue.withOpacity(0.7),
+                            child: Icon(
+                              Icons.post_add_rounded,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SurveyUI(
+                                  new Survey(name: 'Survey', company: company),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ])
+                      ])
                 : Container(),
             body: Container(
               width: double.infinity,
@@ -188,7 +196,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                                               setState(() =>
                                                                   handling =
                                                                       true);
-                                                              company
+                                                              await company
                                                                   .handleRequest(
                                                                       true);
                                                               setState(() =>
@@ -362,8 +370,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                         return snapshot.connectionState != ConnectionState.done
                             ? loader
                             : Container(
-                                height: 80,
+                                height: 200,
                                 child: ListView.separated(
+                                    padding:
+                                        EdgeInsets.only(left: 20, right: 20),
                                     scrollDirection: Axis.horizontal,
                                     shrinkWrap: true,
                                     itemBuilder: (context, index) {
@@ -384,23 +394,48 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   }
 
   Widget filledSurveys(Survey survey) {
+    DateFormat _formatted = DateFormat('dd-MM-yyyy');
     return Container(
-      decoration: BoxDecoration(color: Colors.blue[50]),
-      child: (TextButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                //fullscreenDialog: true,
-                builder: (context) => Results(survey),
-              ));
-        },
-        child: Text(survey.name +
-            "\n" +
-            survey.from.toString() +
-            " - " +
-            survey.to.toString()),
-      )),
-    );
+        //height: ,
+        width: 250,
+        decoration: BoxDecoration(
+            color: Colors.blue[50],
+            borderRadius: borderRadius,
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.indigo, Colors.blue])),
+        child: (TextButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    //fullscreenDialog: true,
+                    builder: (context) => Results(survey),
+                  ));
+            },
+            child: Column(
+              children: [
+                Expanded(
+                  child: Text(
+                    survey.name + "\n" + _formatted.format(survey.to),
+                    style: TextStyle(
+                        fontFamily: font,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Icon(
+                    Icons.insert_chart_outlined_outlined,
+                    color: Colors.white.withOpacity(0.8),
+                    size: 130,
+                  ),
+                )
+              ],
+            ))));
   }
 }
