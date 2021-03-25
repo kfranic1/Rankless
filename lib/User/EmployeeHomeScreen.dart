@@ -7,6 +7,7 @@ import 'Company.dart';
 import 'CreateCompany.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'JoinCompany.dart';
+import 'package:intl/intl.dart';
 
 import 'Employee.dart';
 
@@ -173,7 +174,12 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: TextButton(
                               child: Text("Join Company",
-                                  style: TextStyle(fontFamily: font, fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+                                  style: TextStyle(
+                                    fontFamily: font,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  )),
                               onPressed: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -261,28 +267,13 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                   ));
                         },
                       ),
-                      // employee.tags.length != 0
-                      //     ? Expanded(
-                      //         child: ListView.separated(
-                      //           shrinkWrap: true,
-                      //           itemBuilder: (context, index) {
-                      //             return Text(
-                      //               employee.tags[index],
-                      //               style: inputTextStyle.copyWith(
-                      //                   fontSize: detailsSize),
-                      //             );
-                      //           },
-                      //           itemCount: employee.tags.length,
-                      //           separatorBuilder: (context, index) {
-                      //             return SizedBox(
-                      //               height: 5,
-                      //               width: 5,
-                      //             );
-                      //           },
-                      //         ),
-                      //       )
-                      //     : Text('You have no tags', style: inputTextStyle),
                     ]),
+                    SizedBox(height: 50),
+                    Container(
+                        child: Text(
+                      'Surveys',
+                      style: inputTextStyle.copyWith(fontSize: detailsSize),
+                    )),
                     SizedBox(height: 20),
                     employee.surveys.length > 0
                         ? FutureBuilder(
@@ -290,7 +281,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                             builder: (context, snapshot) => snapshot.connectionState != ConnectionState.done
                                 ? loader
                                 : Container(
-                                    height: 80,
+                                    height: 160,
                                     child: ListView.separated(
                                         scrollDirection: Axis.horizontal,
                                         shrinkWrap: true,
@@ -302,39 +293,6 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                             ),
                                         itemCount: employee.surveys.length),
                                   ),
-                            // Center(
-                            //     child: TextButton(
-                            //       onPressed: () async {
-                            //         Navigator.push(
-                            //           context,
-                            //           MaterialPageRoute(
-                            //             builder: (context) => SurveyUIFill(
-                            //                 employee.surveys[0], employee),
-                            //           ),
-                            //         );
-                            //       },
-                            //       child:
-                            //       Text(
-                            //           'You have ' +
-                            //               employee.surveys
-                            //                   .where((element) {
-                            //                     print(element.name);
-                            //                     return element.status ==
-                            //                         STATUS.Active;
-                            //                   })
-                            //                   .length
-                            //                   .toString() +
-                            //               ' active and ' +
-                            //               employee.surveys
-                            //                   .where((element) =>
-                            //                       element.status ==
-                            //                       STATUS.Upcoming)
-                            //                   .length
-                            //                   .toString() +
-                            //               ' upcoming surveys',
-                            //           style: inputTextStyle),
-                            //     ),
-                            //   ),
                           )
                         : Center(
                             child: Text(
@@ -348,8 +306,15 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   }
 
   Widget activeSurveys(Survey survey, Employee employee) {
+    DateFormat _formatted = DateFormat('dd-MM-yyyy');
     return Container(
-      decoration: BoxDecoration(color: Colors.black),
+      //height: ,
+      // width: 200,
+      decoration: BoxDecoration(
+          color: Colors.blue[50],
+          borderRadius: borderRadius,
+          gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.indigo, Colors.blue])),
+
       child: (TextButton(
         onPressed: () {
           Navigator.push(
@@ -359,7 +324,26 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 builder: (context) => SurveyUIFill(survey, employee),
               ));
         },
-        child: Text(survey.name + "\n" + survey.from.toString() + " - " + survey.to.toString()),
+        child: Column(
+          children: [
+            Expanded(
+              // flex: 5,
+              child: Text(
+                survey.name + "\n" + _formatted.format(survey.to),
+                style: TextStyle(fontFamily: font, fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Expanded(
+              // flex: 4,
+              child: Icon(
+                Icons.insert_chart_outlined_outlined,
+                color: Colors.white.withOpacity(0.8),
+                size: 70,
+              ),
+            )
+          ],
+        ),
       )),
     );
   }
