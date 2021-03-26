@@ -24,7 +24,21 @@ class _CreateCompanyState extends State<CreateCompany> {
   String category = '';
   String country = 'Hrvatska';
   bool creating = false;
-  List<String> categories = ['loading'];
+  List<String> categories = [
+    "Auto-Moto",
+    "Construction",
+    "Education",
+    "Health",
+    "Fashion",
+    "Finance",
+    "Real Estate",
+    "Science",
+    "Service activities",
+    "Sport",
+    "Technology",
+    "Tourism",
+    "Other",
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -100,28 +114,6 @@ class _CreateCompanyState extends State<CreateCompany> {
                               SizedBox(
                                 height: 30,
                               ),
-                              // Theme(
-                              //   data: ThemeData(
-                              //       textSelectionTheme: TextSelectionThemeData(
-                              //         cursorColor: Colors.white,
-                              //         selectionColor: Colors.white,
-                              //         /*selectionHandleColor: Colors.white*/
-                              //       ),
-                              //       primaryColor: Colors.white,
-                              //       selectedRowColor: Colors.white,
-                              //       canvasColor: Colors.white
-                              // splashColor: Colors.white,
-
-                              // cardColor: Colors.white,
-                              // hintColor: Colors.white,
-                              // indicatorColor: Colors.white,
-                              // backgroundColor: Colors.white,
-                              // buttonColor: Colors.white
-                              // accentColor: Colors.white,
-                              // unselectedWidgetColor: Colors.white,
-                              // focusColor: Colors.white,
-                              // ),
-                              // child:
                               CountryCodePicker(
                                 initialSelection: country,
                                 showCountryOnly: true,
@@ -135,70 +127,19 @@ class _CreateCompanyState extends State<CreateCompany> {
                                 searchStyle: inputTextStyle.copyWith(
                                   color: Colors.black,
                                 ),
-                                searchDecoration: registerInputDecoration.copyWith(
-                                    // icon: Icon(Icons.ac_unit),
-                                    // counterStyle: inputTextStyle,
-                                    // suffixStyle: inputTextStyle,
-                                    // focusColor: Colors.yellow,
-                                    // prefixStyle: inputTextStyle,
-                                    // helperStyle: inputTextStyle,
-                                    // labelStyle: inputTextStyle,
-
-                                    hintStyle: TextStyle(color: Colors.white)),
-                                // za popout
+                                searchDecoration: registerInputDecoration.copyWith(hintStyle: TextStyle(color: Colors.white)),
                                 boxDecoration: popOutDecoration,
-                                //  BoxDecoration(
-                                //     border: Border(
-                                //         bottom: BorderSide(color: Colors.white))),
                               ),
-                              // ),
                               SizedBox(
                                 height: 20,
                               ),
-                              FutureBuilder(
-                                future: categories.contains('loading')
-                                    ? categoriesReference.doc('GSM53sSt5zOWQbndHZH6').get().then((value) {
-                                        setState(() {
-                                          categories = (value.data()['categories'] as List<dynamic>).map((e) => e as String).toList();
-                                          categories.sort();
-                                          categories.add('Other');
-                                        });
-                                      })
-                                    : null,
-                                builder: (context, snapshot) {
-                                  return
-                                      // Theme(
-                                      //   data: ThemeData(
-                                      //     primaryColor: Colors.white,
-                                      //     hintColor: Colors.white,
-                                      //   ),
-                                      // child:
-                                      SearchableDropdown(
-                                    hint: 'Category',
-
-                                    // underline: BorderSide(color: Colors.white),
-                                    // searchBoxDecoration:
-                                    //     registerInputDecoration.copyWith(
-                                    //         focusColor: Colors.white,
-                                    //         icon: Icon(Icons.search,
-                                    //             color: Colors.white)),
-                                    // dropdownSearchDecoration:
-                                    //     // InputDecoration(
-                                    //     //     border: OutlineInputBorder()),
-                                    //     registerInputDecoration,
-                                    // popupBarrierColor: Colors.white,
-                                    style: inputTextStyle.copyWith(color: Colors.white),
-                                    menuBackgroundColor: Colors.blue,
-
-                                    // mode: Mode.MENU,
-                                    // showSearchBox: true,
-                                    isExpanded: true,
-                                    items: categories.map((e) => DropdownMenuItem(value: e, child: Text(e, style: inputTextStyle))).toList(),
-                                    onChanged: (index) => setState(() => category = index),
-                                  );
-                                  // );
-                                },
-                                initialData: categories,
+                              SearchableDropdown(
+                                hint: 'Category',
+                                style: inputTextStyle.copyWith(color: Colors.white),
+                                menuBackgroundColor: Colors.blue,
+                                isExpanded: true,
+                                items: categories.map((e) => DropdownMenuItem(value: e, child: Text(e, style: inputTextStyle))).toList(),
+                                onChanged: (index) => setState(() => category = index),
                               ),
                               SizedBox(
                                 height: 20,
