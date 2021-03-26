@@ -22,7 +22,7 @@ class _CreateCompanyState extends State<CreateCompany> {
   String info = '';
   String error = '';
   String category = '';
-  String country = '';
+  String country = 'Hrvatska';
   bool creating = false;
   List<String> categories = ['loading'];
 
@@ -34,7 +34,7 @@ class _CreateCompanyState extends State<CreateCompany> {
         decoration: backgroundDecoration,
         padding: EdgeInsets.all(20),
         child: creating
-            ? Center(child: CircularProgressIndicator())
+            ? loader
             : Theme(
                 data: ThemeData(
                   textSelectionTheme: TextSelectionThemeData(
@@ -126,11 +126,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                                 initialSelection: country,
                                 showCountryOnly: true,
                                 showOnlyCountryWhenClosed: true,
-                                onChanged: (value) {
-                                  setState(() {
-                                    country = value.toCountryStringOnly();
-                                  });
-                                },
+                                onChanged: (value) => setState(() => country = value.name),
                                 backgroundColor: Colors.black.withOpacity(0.7),
                                 dialogBackgroundColor: Colors.teal[200],
                                 barrierColor: Colors.transparent, //blue[900],

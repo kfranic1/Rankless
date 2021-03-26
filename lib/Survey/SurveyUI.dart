@@ -331,12 +331,28 @@ class _SurveyUIState extends State<SurveyUI> {
                   //finish creating survey
                   TextButton(
                     onPressed: () async {
-                      setState(() {
-                        loading = true;
-                      });
-                      await widget.survey.createSurvey();
+                      int error = -1;
+                      int cnt = 0;
+                      for (Question q in widget.survey.qNa) {
+                        cnt++;
+                        if (q.questionText == null || q.questionText.length == 0) error = cnt;
+                        if (q.answerType == TYPE.Text) continue;
+                        for (String ans in q.multipleAnswers) {
+                          if (ans == null || ans.length == 0) error = cnt;
+                        }
+                      }
+                      if (error != -1) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Question $error is not complete"),
+                        ));
+                      } else {
+                        setState(() {
+                          loading = true;
+                        });
+                        await widget.survey.createSurvey();
 
-                      Navigator.pop(context);
+                        Navigator.pop(context);
+                      }
                     },
                     child: Container(
                       alignment: Alignment.center,

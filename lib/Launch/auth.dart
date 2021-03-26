@@ -32,8 +32,7 @@ class AuthService {
   Future registerWithEmailAndPassword(String email, String password, String name, String surname) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      await _employeeFromFirebase(result.user, name: name, surname: surname).createEmployee();
-      return;
+      return await _employeeFromFirebase(result.user, name: name, surname: surname).createEmployee();
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
