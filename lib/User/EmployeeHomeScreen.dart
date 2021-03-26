@@ -58,7 +58,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
     });
     return Container(
         decoration: backgroundDecoration,
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(10),
         child: ListView(children: [
           Row(
             children: [
@@ -118,7 +118,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 child: Text(
                   employee.name + " " + employee.surname,
                   style: titleNameStyle,
-                  maxLines: 4,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis, // ako bude jos dulje, bit ce ...
                 ),
               ),
@@ -274,15 +274,16 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                       'Surveys',
                       style: inputTextStyle.copyWith(fontSize: detailsSize),
                     )),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
                     employee.surveys.length > 0
                         ? FutureBuilder(
                             future: employee.handleSurveys(),
                             builder: (context, snapshot) => snapshot.connectionState != ConnectionState.done
                                 ? loader
                                 : Container(
-                                    height: 160,
+                                    height: 80,
                                     child: ListView.separated(
+                                        // padding: EdgeInsets.only(left: 20, right: 20),
                                         scrollDirection: Axis.horizontal,
                                         shrinkWrap: true,
                                         itemBuilder: (context, index) {
@@ -308,6 +309,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   Widget activeSurveys(Survey survey, Employee employee) {
     DateFormat _formatted = DateFormat('dd-MM-yyyy');
     return Container(
+      // padding: ,
       //height: ,
       // width: 200,
       decoration: BoxDecoration(
@@ -315,7 +317,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
           borderRadius: borderRadius,
           gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.indigo, Colors.blue])),
 
-      child: (TextButton(
+      child: (TextButton.icon(
         onPressed: () {
           Navigator.push(
               context,
@@ -324,25 +326,15 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 builder: (context) => SurveyUIFill(survey, employee),
               ));
         },
-        child: Column(
-          children: [
-            Expanded(
-              // flex: 5,
-              child: Text(
-                survey.name + "\n" + _formatted.format(survey.to),
-                style: TextStyle(fontFamily: font, fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Expanded(
-              // flex: 4,
-              child: Icon(
-                Icons.insert_chart_outlined_outlined,
-                color: Colors.white.withOpacity(0.8),
-                size: 70,
-              ),
-            )
-          ],
+        icon: Icon(
+          (Icons.bar_chart_rounded),
+          color: Colors.greenAccent,
+          size: 50,
+        ),
+        label: Text(
+          survey.name + "\n" + "until: " + _formatted.format(survey.to),
+          style: TextStyle(fontFamily: font, fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+          textAlign: TextAlign.center,
         ),
       )),
     );
