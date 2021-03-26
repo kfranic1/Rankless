@@ -127,7 +127,7 @@ class Survey {
         }
       }
     }
-    this.results.addAll({'Other': other});
+    if (other.values.length != 0) this.results.addAll({'Other': other});
   }
 
   /// Returns Map with following structure [position, Map<question_number, answers>]
