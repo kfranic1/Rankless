@@ -83,16 +83,12 @@ class _EmployeeHomeState extends State<EmployeeHome> {
             : StreamProvider<Company>.value(
                 updateShouldNotify: (a, b) => true,
                 value: employee.companyUid == null ? null : Company(uid: employee.companyUid).self,
-                child: PageView.builder(
+                child: PageView(
                   onPageChanged: (index) => setState(() {
                     _currentIndex = index;
                   }),
                   controller: _controller,
-                  itemBuilder: (context, index) {
-                    Company temp = Provider.of<Company>(context);
-                    return (employee.companyUid != null && temp == null) ? loader : _screens[index];
-                  },
-                  itemCount: 3,
+                  children: _screens,
                 ),
               )),
       ),

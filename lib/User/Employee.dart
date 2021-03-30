@@ -10,6 +10,7 @@ import 'package:rankless/Survey/Survey.dart';
 class Employee {
   bool anonymus;
   bool hasData = false;
+  bool triedImage = false;
   String uid;
   String name;
   String surname;
@@ -163,9 +164,9 @@ class Employee {
   }
 
   Future<NetworkImage> getImage() async {
-    if (this.image != null) return this.image;
-    this.image = NetworkImage(await Uploader().getImage(this.uid + '1'));
-    return this.image;
+    if (triedImage) return this.image;
+    triedImage = true;
+    return this.image = NetworkImage(await Uploader().getImage(this.uid + '1'));
   }
 
   /// Puts newly selected [image] as profile picture for [employee]

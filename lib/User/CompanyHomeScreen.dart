@@ -22,40 +22,54 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   bool handling = false;
   PickedFile coverImage;
   bool imageLoading = false;
+  Widget surveys;
+  Widget image;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Company company = Provider.of<Company>(context);
     final Employee me = Provider.of<Employee>(context);
+    surveys = surveys == null ? getSurveys(company) : surveys;
+    image = image == null ? getImage(company) : image;
     return company == null
-        ? Center(
-            child: Text('You are not in any company'),
-          )
+        ? me == null
+            ? loader
+            : Center(
+                child: Text('You are not in any company'),
+              )
         : Scaffold(
             floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
             floatingActionButton: me.admin
                 ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     me.admin
                         ? Expanded(
-                            child: Stack(clipBehavior: Clip.none, alignment: AlignmentDirectional.topEnd, children: [
-                              FloatingActionButton(
-                                  heroTag: 'left',
-                                  backgroundColor: Colors.blue.withOpacity(0.7),
-                                  child: Icon(
-                                    Icons.group_add_rounded,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                  onPressed: () {
-                                    company.addPositionOrTags(me, addTags: ['tim1']);
-                                  }),
-                              company.requests.length != 0
-                                  ? Container()
-                                  : Container(
-                                      height: 20,
-                                      width: 20,
-                                      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              alignment: AlignmentDirectional.topEnd,
+                              children: [
+                                FloatingActionButton(
+                                    heroTag: 'left',
+                                    backgroundColor: Colors.blue.withOpacity(0.7),
+                                    child: Icon(
+                                      Icons.group_add_rounded,
+                                      color: Colors.white,
+                                      size: 30,
                                     ),
-                            ]),
+                                    onPressed: () {}),
+                                Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: company.requests.length != 0 ? Colors.red : Colors.transparent,
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         : Container(),
                     Expanded(
@@ -98,33 +112,13 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () async {
-                          setState(() => imageLoading = true);
-                          await company.changeImage();
-                          setState(() => imageLoading = false);
-                        },
-                        iconSize: 100,
-                        icon: imageLoading
-                            ? loader
-                            : FutureBuilder(
-                                future: company.getImage(),
-                                builder: (context, snapshot) {
-                                  return Container(
-                                      alignment: Alignment.topLeft,
-                                      //margin: EdgeInsets.only(left: 30),
-                                      child: CircleAvatar(
-                                          //backgroundColor: Colors.white,
-                                          radius: 50, //should be half of icon size
-                                          backgroundImage: company.image == null ? null : company.image,
-                                          child: company.image == null
-                                              ? Icon(
-                                                  Icons.camera_alt_outlined,
-                                                  size: 60,
-                                                  //color: Colors.black,
-                                                )
-                                              : null));
-                                }),
-                      ),
+                          onPressed: () async {
+                            setState(() => imageLoading = true);
+                            await company.changeImage();
+                            setState(() => imageLoading = false);
+                          },
+                          iconSize: 100,
+                          icon: imageLoading ? loader : image),
                       SizedBox(
                         width: 60,
                       ),
@@ -243,6 +237,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                       Expanded(
                         flex: 2,
                         child: Container(
+                          //padding: EdgeInsets.only(left: 70),
                           child: ListTile(
                             leading: Icon(
                               Icons.format_list_numbered_rounded,
@@ -321,29 +316,55 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   SizedBox(
                     height: 30,
                   ),
-                  FutureBuilder(
-                      future: company.getAllSurveys(true),
-                      builder: (context, snapshot) {
-                        return snapshot.connectionState != ConnectionState.done
-                            ? loader
-                            : Container(
-                                height: 80,
-                                child: ListView.separated(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      return filledSurveys(company.surveys[index]);
-                                    },
-                                    separatorBuilder: (context, index) => SizedBox(
-                                          width: 20,
-                                        ),
-                                    itemCount: company.surveys.length),
-                              );
-                      })
+                  surveys
                 ],
               ),
             ),
           );
+  }
+
+  Widget getSurveys(Company company) {
+    return FutureBuilder(
+        future: company.getAllSurveys(false),
+        builder: (context, snapshot) {
+          return snapshot.connectionState != ConnectionState.done
+              ? loader
+              : Container(
+                  height: 80,
+                  child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return filledSurveys(company.surveys[index]);
+                      },
+                      separatorBuilder: (context, index) => SizedBox(
+                            width: 20,
+                          ),
+                      itemCount: company.surveys.length),
+                );
+        });
+  }
+
+  Widget getImage(Company company) {
+    return FutureBuilder(
+      future: company.image == null ? company.getImage() : null,
+      builder: (context, snapshot) {
+        return Container(
+            alignment: Alignment.topLeft,
+            //margin: EdgeInsets.only(left: 30),
+            child: CircleAvatar(
+                //backgroundColor: Colors.white,
+                radius: 50, //should be half of icon size
+                backgroundImage: company.image == null ? null : company.image,
+                child: company.image == null
+                    ? Icon(
+                        Icons.camera_alt_outlined,
+                        size: 60,
+                        //color: Colors.black,
+                      )
+                    : null));
+      },
+    );
   }
 
   Widget filledSurveys(Survey survey) {

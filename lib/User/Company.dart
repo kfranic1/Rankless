@@ -11,6 +11,7 @@ import 'Employee.dart';
 import 'Post.dart';
 
 class Company {
+  bool triedImage = false;
   String uid;
   String name;
   String industry;
@@ -149,7 +150,8 @@ class Company {
   }
 
   Future<NetworkImage> getImage() async {
-    if (this.image != null) return this.image;
+    if (triedImage) return this.image;
+    triedImage = true;
     return this.image = NetworkImage(await Uploader().getImage(this.uid + '2'));
   }
 
