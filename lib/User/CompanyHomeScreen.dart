@@ -36,7 +36,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     me.admin
                         ? Expanded(
-                            child: Stack(clipBehavior: Clip.none, alignment: AlignmentDirectional.bottomCenter, children: [
+                            child: Stack(clipBehavior: Clip.none, alignment: AlignmentDirectional.topEnd, children: [
                               FloatingActionButton(
                                   heroTag: 'left',
                                   backgroundColor: Colors.blue.withOpacity(0.7),
@@ -48,48 +48,42 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                   onPressed: () {
                                     company.addPositionOrTags(me, addTags: ['tim1']);
                                   }),
-                              company.requests.length == 0
-                                  ? Positioned(
-                                      top: 0,
-                                      child: Container(
-                                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.transparent),
-                                      ),
-                                    )
-                                  : Positioned(
-                                      top: -5,
-                                      left: 80,
-                                      child: Container(
-                                        height: 20,
-                                        width: 20,
-                                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red),
-                                      ),
+                              company.requests.length != 0
+                                  ? Container()
+                                  : Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red),
                                     ),
                             ]),
                           )
                         : Container(),
                     Expanded(
-                      child: SizedBox(
-                        width: 210,
+                      flex: 3,
+                      child: Container(
+                        height: 0,
                       ),
                     ),
                     Expanded(
-                      child: FloatingActionButton(
-                        heroTag: 'right',
-                        backgroundColor: Colors.blue.withOpacity(0.7),
-                        child: Icon(
-                          Icons.post_add_rounded,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SurveyUI(
-                              new Survey(name: 'Survey', company: company),
+                      child: Stack(children: [
+                        FloatingActionButton(
+                          heroTag: 'right',
+                          backgroundColor: Colors.blue.withOpacity(0.7),
+                          child: Icon(
+                            Icons.post_add_rounded,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SurveyUI(
+                                new Survey(name: 'Survey', company: company),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ]),
                     ),
                   ])
                 : Container(),
@@ -232,22 +226,23 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   Row(
                     children: [
                       Expanded(
+                          flex: 3,
                           child: Container(
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.list,
-                            color: Colors.white,
-                            size: 50,
-                          ),
-                          title: Text(
-                            company.industry,
-                            style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 22),
-                          ),
-                        ),
-                      )),
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.list,
+                                color: Colors.white,
+                                size: 50,
+                              ),
+                              title: Text(
+                                company.industry,
+                                style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 22),
+                              ),
+                            ),
+                          )),
                       Expanded(
+                        flex: 2,
                         child: Container(
-                          padding: EdgeInsets.only(left: 70),
                           child: ListTile(
                             leading: Icon(
                               Icons.format_list_numbered_rounded,
