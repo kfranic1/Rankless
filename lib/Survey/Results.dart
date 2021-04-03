@@ -233,66 +233,69 @@ class _ResultsState extends State<Results> {
             ],
           ),
         ),
-        subtitle: BarChart(
-          BarChartData(
-            alignment: BarChartAlignment.spaceAround,
-            maxY: values.fold(0, (previousValue, element) => previousValue > element ? previousValue : element) * 1.2,
-            barTouchData: BarTouchData(
-              enabled: false,
-              touchTooltipData: BarTouchTooltipData(
-                tooltipBgColor: Colors.transparent,
-                tooltipPadding: const EdgeInsets.all(0),
-                tooltipMargin: 8,
-                getTooltipItem: (
-                  BarChartGroupData group,
-                  int groupIndex,
-                  BarChartRodData rod,
-                  int rodIndex,
-                ) {
-                  return BarTooltipItem(
-                    rod.y.round().toString(),
-                    TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  );
-                },
+        subtitle: Container(
+          height: 300,
+          child: BarChart(
+            BarChartData(
+              alignment: BarChartAlignment.spaceAround,
+              maxY: values.fold(0, (previousValue, element) => previousValue > element ? previousValue : element) * 1.2,
+              barTouchData: BarTouchData(
+                enabled: false,
+                touchTooltipData: BarTouchTooltipData(
+                  tooltipBgColor: Colors.transparent,
+                  tooltipPadding: const EdgeInsets.all(0),
+                  tooltipMargin: 8,
+                  getTooltipItem: (
+                    BarChartGroupData group,
+                    int groupIndex,
+                    BarChartRodData rod,
+                    int rodIndex,
+                  ) {
+                    return BarTooltipItem(
+                      rod.y.round().toString(),
+                      TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-            titlesData: FlTitlesData(
-              show: true,
-              bottomTitles: SideTitles(
-                showTitles: true,
-                getTextStyles: (value) => const TextStyle(color: Color(0xff7589a2), fontWeight: FontWeight.bold, fontSize: 14),
-                margin: 0,
-                getTitles: (double value) {
-                  return (value + 1).toInt().toString();
-                },
+              titlesData: FlTitlesData(
+                show: true,
+                bottomTitles: SideTitles(
+                  showTitles: true,
+                  getTextStyles: (value) => const TextStyle(color: Color(0xff7589a2), fontWeight: FontWeight.bold, fontSize: 14),
+                  margin: 0,
+                  getTitles: (double value) {
+                    return (value + 1).toInt().toString();
+                  },
+                ),
+                leftTitles: SideTitles(showTitles: false),
               ),
-              leftTitles: SideTitles(showTitles: false),
-            ),
-            borderData: FlBorderData(
-              show: false,
-            ),
-            barGroups: values
-                .asMap()
-                .map(
-                  (index, e) => MapEntry(
-                    index,
-                    BarChartGroupData(
-                      x: index,
-                      barRods: [
-                        BarChartRodData(
-                          y: e != 0 ? e.toDouble() : 0.000001,
-                          colors: [Colors.lightBlueAccent, Colors.greenAccent],
-                        ),
-                      ],
-                      showingTooltipIndicators: [0],
+              borderData: FlBorderData(
+                show: false,
+              ),
+              barGroups: values
+                  .asMap()
+                  .map(
+                    (index, e) => MapEntry(
+                      index,
+                      BarChartGroupData(
+                        x: index,
+                        barRods: [
+                          BarChartRodData(
+                            y: e != 0 ? e.toDouble() : 0.000001,
+                            colors: [Colors.lightBlueAccent, Colors.greenAccent],
+                          ),
+                        ],
+                        showingTooltipIndicators: [0],
+                      ),
                     ),
-                  ),
-                )
-                .values
-                .toList(),
+                  )
+                  .values
+                  .toList(),
+            ),
           ),
         ),
       ),

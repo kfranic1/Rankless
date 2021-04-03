@@ -81,6 +81,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
         child: (employee == null
             ? loader
             : StreamProvider<Company>.value(
+                initialData: null,
                 updateShouldNotify: (a, b) => true,
                 value: employee.companyUid == null ? null : Company(uid: employee.companyUid).self,
                 child: PageView(

@@ -155,11 +155,12 @@ class Employee {
     List<String> past = [];
     for (Survey s in surveys) {
       if (s.status == STATUS.Past) {
+        print(s);
         past.add(s.uid);
       }
     }
     if (past.length == 0) return;
-    this.surveys.removeWhere((element) => past.contains(element));
+    this.surveys.removeWhere((element) => past.contains(element.uid));
     await updateEmployee(newSurveys: this.surveys);
   }
 
