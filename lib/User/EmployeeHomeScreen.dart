@@ -21,12 +21,12 @@ class EmployeeHomeScreen extends StatefulWidget {
 class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   bool isCancelDisabled = false;
   bool imageLoading = false;
+  int numOfSurveys = -1;
   Widget surveys;
   Widget image;
   @override
   void initState() {
     final employee = Provider.of<Employee>(context, listen: false);
-    surveys = surveys == null ? getSurveys(employee) : surveys;
     if (employee.request != null && (employee.request.contains('accepted') || employee.request.contains('denied')))
       SchedulerBinding.instance.addPostFrameCallback(
         (_) => showDialog(
@@ -56,6 +56,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   Widget build(BuildContext context) {
     final Company company = Provider.of<Company>(context);
     final Employee employee = Provider.of<Employee>(context);
+    surveys = surveys == null || numOfSurveys != employee.surveys.length ? getSurveys(employee) : surveys;
     image = image == null ? getImage(employee) : image;
     return employee.companyUid != null && company == null
         ? loader
@@ -281,6 +282,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   }
 
   Widget getSurveys(Employee employee) {
+    setState(() => numOfSurveys = employee.surveys.length);
     return FutureBuilder(
       future: employee.handleSurveys(),
       builder: (context, snapshot) => snapshot.connectionState != ConnectionState.done
@@ -291,12 +293,8 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 // padding: EdgeInsets.only(left: 20, right: 20),
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return activeSurveys(employee.surveys[index], employee);
-                },
-                separatorBuilder: (context, index) => SizedBox(
-                  width: 20,
-                ),
+                itemBuilder: (context, index) => activeSurveys(employee.surveys[index], employee),
+                separatorBuilder: (context, index) => SizedBox(width: 20),
                 itemCount: employee.surveys.length,
               ),
             ),

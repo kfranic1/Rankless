@@ -5,8 +5,8 @@ import 'Question.dart';
 import 'package:rankless/shared/Interface.dart';
 
 class QuestionUICreate extends StatefulWidget {
-  Question _question = new Question();
-  List<TextEditingController> _controllers = [];
+  final Question _question = new Question();
+  final List<TextEditingController> _controllers = [];
 
   @override
   _QuestionUICreateState createState() => _QuestionUICreateState(_question, _controllers);
@@ -45,49 +45,24 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
   _QuestionUICreateState(this._question, this._controllers);
 
   Question _question;
-  List<TextEditingController> _controllers = [];
+  List<TextEditingController> _controllers;
 
-  List<bool> _answerTypes = List.generate(3, (_) => false); //_ == 0 tak da prvi bude true na pocetku a ostali false
+  List<bool> _answerTypes;
   Widget _proba = Text('');
   int _counter;
-  Icon _icon;
   @override
   void initState() {
-    _question.multipleAnswers = [];
-    // if (_question.controllers != null) {
-    //   _counter = _question.controllers.length;
-    // } else
-    //   _counter = 0;
-    // if (_question.multipleAnswers != null) {
-    //   _counter = _question.multipleAnswers.length;
-    //   print('if2');
-    // }
-    // if (_question.answersListView != null) _proba = _question.answersListView;
-    if (_question.answerType != null) {
-      toggleButtonsFunc(_question.getIndexForType(_question.answerType));
-      super.initState();
-    }
+    _answerTypes = List.generate(
+        3, (_) => _ == widget._question.getIndexForType(widget._question.answerType)); //_ == 0 tak da prvi bude true na pocetku a ostali false
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.getQuestion();
-
-    if (_question.controllers != null) {
-      _counter = _question.controllers.length;
-    }
-
-    // print(_question.answerType);
-    // _controllers.forEach((element) {
-    //   print(element.text);
-    // });
-    // _question.answersListView = _proba;
+    _counter = _question.controllers.length;
     _question.controllers = _controllers;
-    if (_question.answerType == TYPE.RadioButton)
-      _icon = Icon(Icons.radio_button_unchecked, color: shadedWhite);
-    else
-      _icon = Icon(Icons.check_box_outline_blank, color: shadedWhite);
     multipleChoiceAnswerWork(_counter);
+
     return Container(
       decoration: popOutDecoration,
       padding: const EdgeInsets.all(20.0),
@@ -120,45 +95,30 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
           CustomToggleButtons(
             children: [
               // TODO labels
-              Icon(
-                Icons.textsms, /*color: Colors.white70*/
-              ),
+              Icon(Icons.textsms),
               Icon(Icons.radio_button_checked),
               Icon(Icons.check_box),
             ],
-            // odredjivanje da toggle buttoni rade kak spada (kad se jedan upali da se drugi ugase)
             isSelected: _answerTypes,
-            onPressed: (int index) {
-              toggleButtonsFunc(index);
-            },
-
+            onPressed: (int index) => setState(() {
+              for (int i = 0; i < 3; i++) _answerTypes[i] = i == index;
+              _question.answerType = _question.getAnswerType(index);
+            }),
             color: Colors.white,
             selectedColor: Colors.deepPurple[900],
             fillColor: containerBackgroundColor, // lighterBlue / opacityWhite
             unselectedFillColor: containerBackgroundColor,
-            // borderWidth: 10,
-            // borderColor: Colors.white10,
             renderBorder: true,
             spacing: 30.0,
           ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: 10),
           Visibility(
             child: TextField(
               decoration: textFieldDecoration.copyWith(
-                // focusedBorder: UnderlineInputBorder(
-                //     borderSide: BorderSide(color: Colors.red)),
                 hintText: "Answer",
-                disabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                  color: Colors.blue[200],
-                )),
+                disabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue[200])),
                 enabled: false,
               ),
-              onChanged: (value) {
-                setState(() => _question.singleAnswer = value); // ovo se nikad nece dogadjat
-              },
             ),
             visible: _answerTypes[0],
           ),
@@ -168,26 +128,26 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
           ),
 
           // Prikaz radio button odgovora
-          multipleChoiceAnswer(type: 1),
+          multipleChoiceAnswer(1),
 
           // Prikaz checkbox odgovora
-          multipleChoiceAnswer(type: 2),
+          multipleChoiceAnswer(2),
         ],
       ),
     );
   }
 
 // adding an answer for multiple answers types (RadioButton and Checkbox)
-  Widget multipleChoiceAnswer({type: int}) {
+  Widget multipleChoiceAnswer(int type) {
     return Visibility(
       child: IconButton(
-        icon: Icon(Icons.add_circle_outline, color: shadedWhite),
+        icon: Icon(
+          Icons.add_circle_outline,
+          color: shadedWhite,
+        ),
         onPressed: () {
           setState(() {
             _controllers.add(new TextEditingController());
-            // _controllers[_controllers.length - 1].text = '';
-          });
-          setState(() {
             _counter++;
             multipleChoiceAnswerWork(_counter);
           });
@@ -205,23 +165,22 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
       itemCount: count,
       itemBuilder: (context, index) {
         return ListTile(
-          leading: _icon,
+          leading: Icon(
+            _question.answerType == TYPE.RadioButton ? Icons.radio_button_unchecked : Icons.check_box_outline_blank,
+            color: shadedWhite,
+          ),
           title: TextFormField(
             controller: _controllers[index],
             style: inputTextStyle,
             decoration: InputDecoration(
-              hintText: "Add text...",
-              hintStyle: TextStyle(
-                fontFamily: font,
-                fontSize: 16,
-                // color: Colors.blue[200],
-                decorationColor: Colors.white,
-              ),
-              enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                color: Colors.blue[200],
-              )),
-            ),
+                hintText: "Add text...",
+                hintStyle: TextStyle(
+                  fontFamily: font,
+                  fontSize: 16,
+                  // color: Colors.blue[200],
+                  decorationColor: Colors.white,
+                ),
+                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue[200]))),
             keyboardType: TextInputType.multiline,
             maxLines: null,
           ),
@@ -237,15 +196,5 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
         );
       },
     ));
-  }
-
-  void toggleButtonsFunc(int index) {
-    setState(() {
-      for (int i = 0; i < 3; i++) {
-        _answerTypes[i] = false;
-      }
-      _answerTypes[index] = !_answerTypes[index];
-      _question.answerType = _question.getAnswerType(index);
-    });
   }
 }

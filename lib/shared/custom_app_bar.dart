@@ -16,9 +16,7 @@ class CustomAppBar extends AppBar {
                 ? Container()
                 : employee.anonymus
                     ? TextButton.icon(
-                        onPressed: () async {
-                          await AuthService().signOut();
-                        },
+                        onPressed: () async => await AuthService().signOut(),
                         icon: Icon(
                           Icons.login,
                           color: Colors.white,
@@ -29,9 +27,7 @@ class CustomAppBar extends AppBar {
                         ),
                       )
                     : TextButton.icon(
-                        onPressed: () async {
-                          await AuthService().signOut();
-                        },
+                        onPressed: () async => await AuthService().signOut(),
                         icon: Icon(
                           Icons.logout,
                           color: Colors.white,

@@ -50,7 +50,10 @@ class _EmployeeHomeState extends State<EmployeeHome> {
     final Employee employee = Provider.of<Employee>(context);
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
-        selectedLabelStyle: TextStyle(fontFamily: font, color: Colors.white),
+        selectedLabelStyle: TextStyle(
+          fontFamily: font,
+          color: Colors.white,
+        ),
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.shifting,
         items: [
@@ -71,7 +74,6 @@ class _EmployeeHomeState extends State<EmployeeHome> {
           ),
         ],
         onTap: (index) => setState(() {
-          print(index);
           _currentIndex = index;
           _controller.animateToPage(index, duration: Duration(milliseconds: 200), curve: Curves.ease);
         }),
@@ -85,9 +87,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
                 updateShouldNotify: (a, b) => true,
                 value: employee.companyUid == null ? null : Company(uid: employee.companyUid).self,
                 child: PageView(
-                  onPageChanged: (index) => setState(() {
-                    _currentIndex = index;
-                  }),
+                  onPageChanged: (index) => setState(() => _currentIndex = index),
                   controller: _controller,
                   children: _screens,
                 ),

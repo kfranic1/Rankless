@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rankless/shared/loader.dart';
 
 const borderRadius = BorderRadius.all(Radius.circular(10));
 const font = 'Mulish';

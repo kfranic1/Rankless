@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rankless/User/Company.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/User/EmployeeHome.dart';
 import 'package:rankless/Launch/authenticate.dart';

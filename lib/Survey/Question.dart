@@ -5,14 +5,12 @@ enum TYPE { Text, RadioButton, Checkbox }
 class Question {
   String questionText;
   TYPE answerType;
-  String singleAnswer; //Teksutalni odgovor
+  String singleAnswer = ''; //Teksutalni odgovor
   int mask = 0; //Odabrani odgovor(ili vise njih ako je moguce)
   List<String> multipleAnswers = [];
   List<TextEditingController> controllers = [];
 
-  Question({this.questionText, this.answerType = TYPE.Text, this.singleAnswer, this.multipleAnswers}) {
-    singleAnswer = '';
-  }
+  Question({this.questionText, this.answerType = TYPE.Text, this.singleAnswer, this.multipleAnswers});
 
   TYPE getAnswerType(int i) {
     if (i == 0) return TYPE.Text;

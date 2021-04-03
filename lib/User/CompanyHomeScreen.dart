@@ -22,6 +22,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   bool handling = false;
   PickedFile coverImage;
   bool imageLoading = false;
+  int numOfSurveys = -1;
   Widget surveys;
   Widget image;
   @override
@@ -33,7 +34,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   Widget build(BuildContext context) {
     final Company company = Provider.of<Company>(context);
     final Employee me = Provider.of<Employee>(context);
-    surveys = surveys == null ? getSurveys(company) : surveys;
+    surveys = surveys == null || numOfSurveys != company.surveys.length ? getSurveys(company) : surveys;
     image = image == null ? getImage(company) : image;
     return company == null
         ? me == null
@@ -324,6 +325,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   }
 
   Widget getSurveys(Company company) {
+    setState(() => numOfSurveys = company.surveys.length);
     return FutureBuilder(
         future: company.getAllSurveys(false),
         builder: (context, snapshot) {
@@ -334,12 +336,8 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return filledSurveys(company.surveys[index]);
-                      },
-                      separatorBuilder: (context, index) => SizedBox(
-                            width: 20,
-                          ),
+                      itemBuilder: (context, index) => filledSurveys(company.surveys[index]),
+                      separatorBuilder: (context, index) => SizedBox(width: 20),
                       itemCount: company.surveys.length),
                 );
         });

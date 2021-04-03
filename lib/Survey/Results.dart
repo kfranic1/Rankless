@@ -18,9 +18,7 @@ class _ResultsState extends State<Results> {
 
   @override
   void initState() {
-    _future = widget.survey.getSurvey(true).whenComplete(() {
-      setState(() => results = widget.survey.getResults());
-    });
+    _future = widget.survey.getSurvey(true).whenComplete(() => setState(() => results = widget.survey.getResults()));
     super.initState();
   }
 
@@ -49,19 +47,13 @@ class _ResultsState extends State<Results> {
                         child: ListView.separated(
                           shrinkWrap: true,
                           itemCount: widget.survey.qNa.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: widget.survey.qNa[index].answerType == TYPE.Text
-                                  ? showTextQ(widget.survey.qNa[index], index)
-                                  : showGraphQ(widget.survey.qNa[index], index),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return SizedBox(
-                              height: 20,
-                            );
-                          },
+                          itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: widget.survey.qNa[index].answerType == TYPE.Text
+                                ? showTextQ(widget.survey.qNa[index], index)
+                                : showGraphQ(widget.survey.qNa[index], index),
+                          ),
+                          separatorBuilder: (context, index) => SizedBox(height: 20),
                         ),
                       ),
                       TextButton(
@@ -69,9 +61,7 @@ class _ResultsState extends State<Results> {
                           'Done',
                           style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        onPressed: () => Navigator.pop(context),
                       ),
                     ],
                   );
@@ -80,45 +70,37 @@ class _ResultsState extends State<Results> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.filter_alt_outlined),
-        onPressed: () {
-          showDialog(
-            context: context,
-            //Koristi widget.survey.results jer su results u ovom widgetu podlozni filterima
-            builder: (context) => Dialog(
-              child: Container(
-                height: 300,
-                child: ListView.builder(
-                  itemCount: widget.survey.results.length + 1,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: index < widget.survey.results.length
-                          ? TextButton(
-                              child: Text(widget.survey.results.keys.toList()[index]),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                setState(
-                                  () {
-                                    results = widget.survey.getResults(
-                                      filter: [widget.survey.results.keys.toList()[index]],
-                                    );
-                                  },
-                                );
-                              },
-                            )
-                          : TextButton(
-                              child: Text('Remove filters'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                setState(() => results = widget.survey.getResults());
-                              },
-                            ),
-                    );
-                  },
-                ),
+        onPressed: () => showDialog(
+          context: context,
+          //Koristi widget.survey.results jer su results u ovom widgetu podlozni filterima
+          builder: (context) => Dialog(
+            child: Container(
+              height: 300,
+              child: ListView.builder(
+                itemCount: widget.survey.results.length + 1,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: index < widget.survey.results.length
+                        ? TextButton(
+                            child: Text(widget.survey.results.keys.toList()[index]),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              setState(() => results = widget.survey.getResults(filter: [widget.survey.results.keys.toList()[index]]));
+                            },
+                          )
+                        : TextButton(
+                            child: Text('Remove filters'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              setState(() => results = widget.survey.getResults());
+                            },
+                          ),
+                  );
+                },
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -133,12 +115,10 @@ class _ResultsState extends State<Results> {
             Expanded(child: Text((questionNum + 1).toString() + '. ' + question.questionText)),
             TextButton(
               child: Text('See all'),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => showAllDialog(question, questionNum),
-                );
-              },
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => showAllDialog(question, questionNum),
+              ),
             ),
           ],
         ),
@@ -179,7 +159,7 @@ class _ResultsState extends State<Results> {
               child: Container(
                 child: RawScrollbar(
                   isAlwaysShown: true,
-                  thumbColor: Colors.black,
+                  thumbColor: Colors.black54,
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: results.length,
@@ -230,6 +210,12 @@ class _ResultsState extends State<Results> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
+              TextButton(
+                  onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => answers(question, questionNum),
+                      ),
+                  child: Text('Answers')),
             ],
           ),
         ),
@@ -273,9 +259,7 @@ class _ResultsState extends State<Results> {
                 ),
                 leftTitles: SideTitles(showTitles: false),
               ),
-              borderData: FlBorderData(
-                show: false,
-              ),
+              borderData: FlBorderData(show: false),
               barGroups: values
                   .asMap()
                   .map(
@@ -299,6 +283,25 @@ class _ResultsState extends State<Results> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget answers(Question question, int questionNum) {
+    return Dialog(
+      child: Container(
+          constraints: BoxConstraints(maxHeight: 300),
+          child: RawScrollbar(
+            thumbColor: Colors.black54,
+            isAlwaysShown: true,
+            child: ListView.separated(
+              itemBuilder: (context, index) => ListTile(
+                leading: Text((index + 1).toString()),
+                title: Text(question.multipleAnswers[index]),
+              ),
+              separatorBuilder: (context, index) => Divider(),
+              itemCount: question.multipleAnswers.length,
+            ),
+          )),
     );
   }
 }
