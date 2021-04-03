@@ -3,7 +3,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'package:rankless/shared/custom_app_bar.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
+import 'package:search_choices/search_choices.dart';
 import 'Company.dart';
 import 'Employee.dart';
 
@@ -133,7 +133,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                               SizedBox(
                                 height: 20,
                               ),
-                              SearchableDropdown(
+                              SearchChoices.single(
                                 hint: 'Category',
                                 style: inputTextStyle.copyWith(color: Colors.white),
                                 menuBackgroundColor: Colors.blue,

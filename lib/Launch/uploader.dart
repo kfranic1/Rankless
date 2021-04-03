@@ -10,7 +10,7 @@ class Uploader {
     try {
       await _storage.ref().child(where).putFile(file);
       return await _storage.ref().child(where).getDownloadURL();
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       return null;
     }
   }
@@ -18,8 +18,7 @@ class Uploader {
   Future<String> getImage(String where) async {
     try {
       return await _storage.ref().child(where).getDownloadURL();
-    } on FirebaseException catch (e) {
-      print(e.message);
+    } on FirebaseException {
       return null;
     }
   }

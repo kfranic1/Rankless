@@ -28,62 +28,56 @@ class _ResultsState extends State<Results> {
   Widget build(BuildContext context) {
     return Scaffold(
       //appBar: AppBar(),
-      body: FutureBuilder(
+      body: Container(
+        decoration: backgroundDecoration,
+        child: FutureBuilder(
           future: _future,
           builder: (context, snapshot) {
             return snapshot.connectionState != ConnectionState.done
                 ? loader
-                : Container(
-                    decoration: backgroundDecoration,
-                    child: FutureBuilder(
-                      future: _future,
-                      builder: (context, snapshot) {
-                        return snapshot.connectionState != ConnectionState.done
-                            ? Center(child: CircularProgressIndicator())
-                            : Column(
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      widget.survey.name,
-                                      style: titleNameStyle,
-                                    ),
-                                    alignment: Alignment.topCenter,
-                                    padding: EdgeInsets.all(20),
-                                  ),
-                                  Expanded(
-                                    child: ListView.separated(
-                                      shrinkWrap: true,
-                                      itemCount: widget.survey.qNa.length,
-                                      itemBuilder: (context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: widget.survey.qNa[index].answerType == TYPE.Text
-                                              ? showTextQ(widget.survey.qNa[index], index)
-                                              : showGraphQ(widget.survey.qNa[index], index),
-                                        );
-                                      },
-                                      separatorBuilder: (context, index) {
-                                        return SizedBox(
-                                          height: 20,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  TextButton(
-                                    child: Text(
-                                      'Done',
-                                      style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ],
-                              );
-                      },
-                    ),
+                : Column(
+                    children: [
+                      Container(
+                        child: Text(
+                          widget.survey.name,
+                          style: titleNameStyle,
+                        ),
+                        alignment: Alignment.topCenter,
+                        padding: EdgeInsets.all(20),
+                      ),
+                      Expanded(
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: widget.survey.qNa.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: widget.survey.qNa[index].answerType == TYPE.Text
+                                  ? showTextQ(widget.survey.qNa[index], index)
+                                  : showGraphQ(widget.survey.qNa[index], index),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox(
+                              height: 20,
+                            );
+                          },
+                        ),
+                      ),
+                      TextButton(
+                        child: Text(
+                          'Done',
+                          style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
                   );
-          }),
+          },
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.filter_alt_outlined),
         onPressed: () {
@@ -248,7 +242,7 @@ class _ResultsState extends State<Results> {
               touchTooltipData: BarTouchTooltipData(
                 tooltipBgColor: Colors.transparent,
                 tooltipPadding: const EdgeInsets.all(0),
-                tooltipBottomMargin: 8,
+                tooltipMargin: 8,
                 getTooltipItem: (
                   BarChartGroupData group,
                   int groupIndex,

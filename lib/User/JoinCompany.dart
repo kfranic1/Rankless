@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'package:rankless/shared/custom_app_bar.dart';
+import 'package:search_choices/search_choices.dart';
 import 'Employee.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class JoinCompany extends StatefulWidget {
   final Employee employee;
@@ -48,7 +48,7 @@ class _JoinCompanyState extends State<JoinCompany> {
                                   primaryColor: Colors.white,
                                   hintColor: Colors.white,
                                 ),
-                                child: SearchableDropdown.single(
+                                child: SearchChoices.single(
                                   displayClearIcon: false,
                                   items: companies
                                       .map(

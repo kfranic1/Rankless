@@ -5,9 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:intl/intl.dart';
 import 'package:rankless/shared/Interface.dart';
+import 'package:search_choices/search_choices.dart';
 import 'Question.dart';
 import 'QuestionUICreate.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'Survey.dart';
 
 class SurveyUI extends StatefulWidget {
@@ -149,7 +149,7 @@ class _SurveyUIState extends State<SurveyUI> {
                           width: 20,
                         ),
                         Expanded(
-                          child: SearchableDropdown.multiple(
+                          child: SearchChoices.multiple(
                             items: tags, //lista roles u klasi Company bi trebali biti DropDownMenuItem tipa
                             selectedItems: _selectedTags,
                             selectedValueWidgetFn: (item) {

@@ -9,11 +9,8 @@ import 'Survey.dart';
 class SurveyUIFill extends StatefulWidget {
   final Survey survey;
   final Employee who;
-  List<QuestionUIAnswer> qNa;
 
-  SurveyUIFill(this.survey, this.who) {
-    qNa = survey.qNa.map((e) => QuestionUIAnswer(e)).toList();
-  }
+  SurveyUIFill(this.survey, this.who);
   @override
   _SurveyUIFillState createState() => _SurveyUIFillState();
 }
@@ -23,11 +20,19 @@ BoxDecoration decorate = BoxDecoration(border: Border.all(color: Colors.transpar
 
 class _SurveyUIFillState extends State<SurveyUIFill> {
   bool finishing = false;
+  List<QuestionUIAnswer> qNa;
+
+  @override
+  void initState() {
+    qNa = widget.survey.qNa.map((e) => QuestionUIAnswer(e)).toList();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: finishing
-          ? Center(child: CircularProgressIndicator())
+          ? loader
           : Container(
               decoration: backgroundDecoration,
               child: Center(
@@ -53,7 +58,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                           physics: ClampingScrollPhysics(),
                           key: UniqueKey(),
                           shrinkWrap: true,
-                          itemCount: widget.qNa.length,
+                          itemCount: qNa.length,
                           itemBuilder: (context, index) {
                             return (ListTile(
                               leading: Text(
@@ -62,7 +67,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                               ),
                               title: Container(
                                 decoration: decorate,
-                                child: Transform.translate(offset: Offset(-15, -22), child: widget.qNa[index]),
+                                child: Transform.translate(offset: Offset(-15, -22), child: qNa[index]),
                               ),
                               minVerticalPadding: 0,
                               minLeadingWidth: 0,
@@ -85,7 +90,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                         //ovo je samo demonstraciju funkcionalnosti
                         allAnswered = true;
                         setState(() {
-                          widget.qNa = checkAnswered(widget.qNa);
+                          qNa = checkAnswered(qNa);
                         });
 
                         if (!allAnswered) {
