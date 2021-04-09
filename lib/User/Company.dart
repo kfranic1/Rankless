@@ -25,6 +25,8 @@ class Company {
   List<String> requests = [];
   List<Survey> surveys = [];
   Employee me;
+  double totalScore = 0.0;
+  int surveysDone = 0;
 
   CollectionReference companiesCollection = FirebaseFirestore.instance.collection('companies');
 
@@ -51,6 +53,8 @@ class Company {
       'requests': <String>[],
       'surveys': <String>[],
       'positions': <String>[],
+      'totalScore': this.totalScore,
+      'surveysDone': this.surveysDone,
     });
     this.uid = ref.id;
     return this;
@@ -90,6 +94,9 @@ class Company {
     this.positions = List<String>.from(ref['positions'] as List<dynamic>);
     this.employees = (employeesFromFirebase as List<dynamic>).map((e) => Employee(uid: e as String)).toList();
     this.surveys = List<String>.from(ref['surveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
+    //print(ref['surveysDone']);
+    //this.surveysDone = ref['surveysDone'];
+    //this.totalScore = ref['totalScore'];
     return this;
   }
 

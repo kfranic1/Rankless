@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rankless/Ranking/RankingScreen.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'package:rankless/shared/keepAliveThis.dart';
 import 'Company.dart';
@@ -20,17 +21,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
   List<Widget> _screens = [
     KeepAliveThis(child: CompanyHomeScreen()),
     KeepAliveThis(child: EmployeeHomeScreen()),
-    KeepAliveThis(
-      child: Container(
-        decoration: backgroundDecoration,
-        child: Center(
-          child: Text(
-            "Coming soon...",
-            style: titleNameStyle.copyWith(fontWeight: FontWeight.normal),
-          ),
-        ),
-      ),
-    ),
+    KeepAliveThis(child: RankingScreen()),
   ];
 
   @override
