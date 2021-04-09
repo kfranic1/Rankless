@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rankless/Launch/uploader.dart';
+import 'package:rankless/Ranking/RankingScreen.dart';
 import 'package:rankless/Survey/Survey.dart';
+import 'package:rankless/User/Company.dart';
+import 'package:rankless/shared/Interface.dart';
 
 class Employee {
   bool anonymus;
@@ -25,8 +28,6 @@ class Employee {
   NetworkImage image;
   //List<Komentar> comments;
   //TODO: Add error support
-
-  CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
 
   Employee({
     this.anonymus,
@@ -104,7 +105,7 @@ class Employee {
   Future getEmployee(bool withImage) async {
     if (!hasData) updateData(await userCollection.doc(this.uid).get());
     await handleSurveys();
-    if (withImage) await getImage();
+    //if (withImage) await getImage();
   }
 
   Stream<Employee> get self {
@@ -123,6 +124,17 @@ class Employee {
     this.position = ref['position'];
     this.hasData = true;
     return this;
+  }
+
+  Future leaveCompany(Company company) async {
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      List<String> employeesTemp = company.employees.map((e) => e.uid).toList();
+      employeesTemp.remove(this.uid);
+      transaction.update(companiesCollection.doc(company.uid), {
+        'employees': employeesTemp,
+      });
+    });
+    await updateEmployee(newCompanyUid: '');
   }
 
   Future sendRequestToCompany(String futureCompanyName, String futureCompanyUid) async {

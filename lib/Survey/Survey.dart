@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rankless/User/Company.dart';
 import 'package:rankless/User/Employee.dart';
+import 'package:rankless/shared/Interface.dart';
 
 import 'Question.dart';
 
@@ -17,10 +18,6 @@ class Survey {
   bool hasData = false;
 
   Survey({this.uid, this.name, this.company});
-
-  CollectionReference surveyCollection = FirebaseFirestore.instance.collection('surveys');
-
-  CollectionReference resultCollection = FirebaseFirestore.instance.collection('results');
 
   Future createSurvey() async {
     DocumentReference ref = surveyCollection.doc();

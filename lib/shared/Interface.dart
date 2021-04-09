@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 const borderRadius = BorderRadius.all(Radius.circular(10));
@@ -23,6 +24,14 @@ List<String> categories = [
   "Tourism",
   "Other",
 ];
+
+// ? #collections
+CollectionReference companiesCollection = FirebaseFirestore.instance.collection('companies');
+CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
+CollectionReference surveyCollection = FirebaseFirestore.instance.collection('surveys');
+CollectionReference resultCollection = FirebaseFirestore.instance.collection('results');
+// ? #end collections
+
 
 Decoration popOutDecoration = BoxDecoration(
     borderRadius: borderRadius,

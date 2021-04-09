@@ -6,6 +6,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rankless/Launch/uploader.dart';
 import 'package:rankless/Survey/Survey.dart';
+import 'package:rankless/shared/Interface.dart';
 
 import 'Employee.dart';
 import 'Post.dart';
@@ -27,8 +28,6 @@ class Company {
   Employee me;
   double totalScore = 0.0;
   int surveysDone = 0;
-
-  CollectionReference companiesCollection = FirebaseFirestore.instance.collection('companies');
 
   Company({
     this.uid,
@@ -94,14 +93,15 @@ class Company {
     this.positions = List<String>.from(ref['positions'] as List<dynamic>);
     this.employees = (employeesFromFirebase as List<dynamic>).map((e) => Employee(uid: e as String)).toList();
     this.surveys = List<String>.from(ref['surveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
-    //print(ref['surveysDone']);
     //this.surveysDone = ref['surveysDone'];
     //this.totalScore = ref['totalScore'];
     return this;
   }
 
   Future getEmployees(bool withImages) async {
-    Future.forEach(employees, (e) async => await e.getEmployee(withImages));
+    await Future.forEach(employees, (Employee e) async {
+      await e.getEmployee(withImages);
+    });
   }
 
   /// Accepts or Denies access to Company based on [accepted]
