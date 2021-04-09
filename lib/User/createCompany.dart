@@ -24,21 +24,6 @@ class _CreateCompanyState extends State<CreateCompany> {
   String category = '';
   String country = 'Hrvatska';
   bool creating = false;
-  List<String> categories = [
-    "Auto-Moto",
-    "Construction",
-    "Education",
-    "Health",
-    "Fashion",
-    "Finance",
-    "Real Estate",
-    "Science",
-    "Service activities",
-    "Sport",
-    "Technology",
-    "Tourism",
-    "Other",
-  ];
 
   @override
   Widget build(BuildContext context) {

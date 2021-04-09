@@ -8,6 +8,22 @@ Widget loader = Center(child: CircularProgressIndicator()) /*Loader(color: Color
 
 TextStyle inputTextStyle = TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);
 
+List<String> categories = [
+  "Auto-Moto",
+  "Construction",
+  "Education",
+  "Health",
+  "Fashion",
+  "Finance",
+  "Real Estate",
+  "Science",
+  "Service activities",
+  "Sport",
+  "Technology",
+  "Tourism",
+  "Other",
+];
+
 Decoration popOutDecoration = BoxDecoration(
     borderRadius: borderRadius,
     // color: Colors.blue[300], //Color(0xff42a5f5),

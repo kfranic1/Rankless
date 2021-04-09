@@ -39,13 +39,9 @@ class AppStarter extends StatelessWidget {
           );
         }
         return MaterialApp(
-          theme: ThemeData(
-            fontFamily: 'Mulish',
-          ),
+          theme: ThemeData(fontFamily: 'Mulish'),
           home: Scaffold(
-            body: Center(
-              child: loader,
-            ),
+            body: Center(child: loader),
           ),
         );
       },
