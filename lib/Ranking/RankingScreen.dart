@@ -19,6 +19,7 @@ class _RankingScreenState extends State<RankingScren> {
         children: [
           SearchChoices.single(
             hint: 'Category',
+            value: category,
             style: inputTextStyle.copyWith(color: Colors.white),
             menuBackgroundColor: Colors.blue,
             isExpanded: true,
@@ -50,7 +51,15 @@ Future<List<Widget>> getTopTen(String industry) async {
   if (industry == '') return ret;
   await companiesCollection.where('industry', isEqualTo: industry).orderBy('totalScore').limit(10).get().then((value) {
     value.docs.forEach((element) {
-      ret.add(Text(element.data()['name']));
+      ret.add(
+        ListTile(
+          leading: Text((ret.length + 1).toString() + "."),
+          title: Text(
+            element.data()['name'],
+          ),
+          trailing: Text(element.data()['totalScore'].toString()),
+        ),
+      );
     });
   });
   print('ret');
