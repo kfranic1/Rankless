@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'Company.dart';
+import 'Manage.dart';
 
 class CompanyHomeScreen extends StatefulWidget {
   @override
@@ -60,7 +61,9 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                                       color: Colors.white,
                                       size: 30,
                                     ),
-                                    onPressed: () {}),
+                                    onPressed: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => Manage(company)));
+                                    }),
                                 Container(
                                   height: 20,
                                   width: 20,
