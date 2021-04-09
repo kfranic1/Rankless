@@ -5,38 +5,46 @@ import 'package:search_choices/search_choices.dart';
 
 CollectionReference companiesCollection = FirebaseFirestore.instance.collection('companies');
 
-class RankingScren extends StatefulWidget {
+class RankingScreen extends StatefulWidget {
+  final String category;
+  RankingScreen(this.category);
   @override
-  _RankingScreenState createState() => _RankingScreenState();
+  _RankingScreenState createState() => _RankingScreenState(category);
 }
 
-class _RankingScreenState extends State<RankingScren> {
-  String category = '';
+class _RankingScreenState extends State<RankingScreen> {
+  _RankingScreenState(this.category);
+  String category;
+
   @override
   Widget build(BuildContext context) {
+    print('RankScr: $category');
     return Scaffold(
       body: ListView(
         children: [
-          SearchChoices.single(
-            hint: 'Category',
-            value: category,
-            style: inputTextStyle.copyWith(color: Colors.white),
-            menuBackgroundColor: Colors.blue,
-            isExpanded: true,
-            items: categories.map((e) => DropdownMenuItem(value: e, child: Text(e, style: inputTextStyle))).toList(),
-            onChanged: (index) => setState(() => category = index),
-          ),
+          // SearchChoices.single(
+          //   hint: 'Category',
+          //   value: category,
+          //   style: inputTextStyle.copyWith(color: Colors.white),
+          //   menuBackgroundColor: Colors.blue,
+          //   isExpanded: true,
+          //   items: categories.map((e) => DropdownMenuItem(value: e, child: Text(e, style: inputTextStyle))).toList(),
+          //   onChanged: (index) => setState(() => category = index),
+          // ),
           FutureBuilder(
             future: getTopTen(category),
             builder: (context, snapshot) => snapshot.connectionState != ConnectionState.done
                 ? loader
                 : snapshot.hasData && (snapshot.data as List<Widget>).length != 0
-                    ? ListView.separated(
-                        shrinkWrap: true,
-                        physics: ClampingScrollPhysics(),
-                        itemCount: (snapshot.data as List<Widget>).length,
-                        itemBuilder: (context, index) => (snapshot.data as List<Widget>)[index],
-                        separatorBuilder: (context, index) => Divider(),
+                    ? Container(
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          itemCount: (snapshot.data as List<Widget>).length,
+                          itemBuilder: (context, index) => (snapshot.data as List<Widget>)[index],
+                          separatorBuilder: (context, index) => Divider(),
+                        ),
+                        decoration: backgroundDecoration,
                       )
                     : Container(),
           ),
@@ -48,7 +56,6 @@ class _RankingScreenState extends State<RankingScren> {
 
 Future<List<Widget>> getTopTen(String industry) async {
   List<Widget> ret = [];
-  if (industry == '') return ret;
   await companiesCollection.where('industry', isEqualTo: industry).orderBy('totalScore').limit(10).get().then((value) {
     value.docs.forEach((element) {
       ret.add(
