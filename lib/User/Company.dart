@@ -105,18 +105,18 @@ class Company {
   }
 
   /// Accepts or Denies access to Company based on [accepted]
-  Future handleRequest(bool accpeted) async {
+  Future handleRequest(bool accepted) async {
     String e = requests[0];
     String uidTemp = e.substring(0, e.indexOf('%'));
 
-    await FirebaseFirestore.instance.collection('users').doc(uidTemp).update({
-      'request': (accpeted ? "accepted" : 'denied') + '%' + this.name,
-      'companyUid': this.uid,
+    await userCollection.doc(uidTemp).update({
+      'request': (accepted ? "accepted" : 'denied') + '%' + this.name,
+      'companyUid': accepted ? this.uid : null,
     });
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       this.requests.removeAt(0);
       List<String> employeesTemp = this.employees.map((e) => e.uid).toList();
-      employeesTemp.add(uidTemp);
+      if (accepted) employeesTemp.add(uidTemp);
       transaction.update(companiesCollection.doc(this.uid), {
         'requests': this.requests,
         'employees': employeesTemp,

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rankless/Launch/uploader.dart';
-import 'package:rankless/Ranking/RankingScreen.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'package:rankless/User/Company.dart';
 import 'package:rankless/shared/Interface.dart';

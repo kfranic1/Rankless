@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rankless/Ranking/CategoryScreen.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/User/EmployeeHome.dart';
 import 'package:rankless/Launch/authenticate.dart';
@@ -18,12 +19,7 @@ class Wrapper extends StatelessWidget {
       body: Container(
         decoration: backgroundDecoration,
         child: employee.anonymus
-            ? Center(
-                child: Text(
-                  "You are anonymus",
-                  style: titleNameStyle.copyWith(fontWeight: FontWeight.normal),
-                ),
-              )
+            ? CategoryScreen()
             : FutureBuilder(
                 future: employee.getEmployee(true),
                 builder: (context, snapshot) => snapshot.connectionState == ConnectionState.done
