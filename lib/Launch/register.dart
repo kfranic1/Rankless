@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rankless/Launch/auth.dart';
 import 'package:rankless/shared/Interface.dart';
+import 'package:rankless/shared/custom_app_bar.dart';
 
 // TextStyle inputTextStyle =
 //     TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);
@@ -18,8 +19,6 @@ import 'package:rankless/shared/Interface.dart';
 // );
 
 class Register extends StatefulWidget {
-  final Function toogleView;
-  Register({this.toogleView});
   @override
   _RegisterState createState() => _RegisterState();
 }
@@ -40,15 +39,17 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: backgroundDecoration,
-      padding: EdgeInsets.all(15),
-      child: loading
-          ? Center(
-              child: loader,
-            )
-          : Center(
-              child: ListView(
+    return Scaffold(
+      appBar: CustomAppBar(
+        titleText: 'Register',
+      ),
+      body: Container(
+        height: double.infinity,
+        decoration: backgroundDecoration,
+        padding: EdgeInsets.all(15),
+        child: loading
+            ? loader
+            : ListView(
                 shrinkWrap: true,
                 children: [
                   Form(
@@ -180,6 +181,8 @@ class _RegisterState extends State<Register> {
                                   error = result;
                                   loading = false;
                                 });
+                              } else {
+                                Navigator.pop(context);
                               }
                               //automatic homescreen from stream
                             }
@@ -188,13 +191,6 @@ class _RegisterState extends State<Register> {
                         ),
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  TextButton(
-                    child: Text("Already have an acount? Log in here.", style: inputTextStyle),
-                    onPressed: widget.toogleView,
                   ),
                   SizedBox(
                     height: 20,
@@ -214,7 +210,7 @@ class _RegisterState extends State<Register> {
                   ),
                 ],
               ),
-            ),
+      ),
     );
   }
 }

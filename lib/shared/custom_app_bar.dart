@@ -14,29 +14,17 @@ class CustomAppBar extends AppBar {
           actions: [
             employee == null
                 ? Container()
-                : employee.anonymus
-                    ? TextButton.icon(
-                        onPressed: () async => await AuthService().signOut(),
-                        icon: Icon(
-                          Icons.login,
-                          color: Colors.white,
-                        ),
-                        label: Text(
-                          "register",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )
-                    : TextButton.icon(
-                        onPressed: () async => await AuthService().signOut(),
-                        icon: Icon(
-                          Icons.logout,
-                          color: Colors.white,
-                        ),
-                        label: Text(
-                          "logout",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
+                : TextButton.icon(
+                    onPressed: () async => await AuthService().signOut(),
+                    icon: Icon(
+                      employee.anonymus ? Icons.login : Icons.logout,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      employee.anonymus ? "login" : 'logout',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
           ],
           backgroundColor: Colors.black,
         );

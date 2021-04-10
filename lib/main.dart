@@ -1,3 +1,5 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -26,9 +28,13 @@ class AppStarter extends StatelessWidget {
         }
         if (snapshot.connectionState == ConnectionState.done) {
           return StreamProvider<Employee>.value(
+            updateShouldNotify: (previous, current) => true,
             initialData: null,
             value: AuthService().employee,
             child: MaterialApp(
+              //locale: DevicePreview.locale(context), // Add the locale here
+              //builder: DevicePreview.appBuilder, // Add the builder here
+
               theme: ThemeData(
                 fontFamily: 'Muilsh',
                 highlightColor: Colors.white,
