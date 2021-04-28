@@ -14,15 +14,11 @@ class CustomAppBar extends AppBar {
           actions: [
             employee == null
                 ? Container()
-                : TextButton.icon(
+                : IconButton(
                     onPressed: () async => await AuthService().signOut(),
                     icon: Icon(
                       employee.anonymus ? Icons.login : Icons.logout,
                       color: Colors.white,
-                    ),
-                    label: Text(
-                      employee.anonymus ? "login" : 'logout',
-                      style: TextStyle(color: Colors.white),
                     ),
                   )
           ],

@@ -21,7 +21,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
   List<Widget> _screens = [
     KeepAliveThis(child: CompanyHomeScreen()),
     KeepAliveThis(child: EmployeeHomeScreen()),
-    KeepAliveThis(child: CategoryScreen()),
+    CategoryScreen(),
   ];
 
   @override
@@ -66,7 +66,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
         ],
         onTap: (index) => setState(() {
           _currentIndex = index;
-          _controller.animateToPage(index, duration: Duration(milliseconds: 200), curve: Curves.ease);
+          _controller.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
         }),
       ),
       body: Container(
