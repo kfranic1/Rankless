@@ -71,9 +71,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
       ),
       body: Container(
         decoration: backgroundDecoration,
-        child: (employee == null
-            ? loader
-            : StreamProvider<Company>.value(
+        child: StreamProvider<Company>.value(
                 initialData: null,
                 updateShouldNotify: (a, b) => true,
                 value: employee.companyUid == null ? null : Company(uid: employee.companyUid).self,
@@ -82,7 +80,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
                   controller: _controller,
                   children: _screens,
                 ),
-              )),
+              ),
       ),
     );
   }

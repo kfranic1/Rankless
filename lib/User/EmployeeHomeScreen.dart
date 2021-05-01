@@ -23,41 +23,12 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   bool imageLoading = false;
   int numOfSurveys = -1;
   Widget surveys;
-  Widget image;
-  @override
-  void initState() {
-    final employee = Provider.of<Employee>(context, listen: false);
-    if (employee.request != null && (employee.request.contains('accepted') || employee.request.contains('denied')))
-      SchedulerBinding.instance.addPostFrameCallback(
-        (_) => showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  title: Text(
-                    'You were ' +
-                        ((employee.request.contains('accepted') ? 'accepted to ' : 'denied from ') +
-                            employee.request.substring(employee.request.indexOf('%') + 1)),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () async {
-                        Navigator.of(context).pop();
-                        await employee.updateEmployee(newRequest: '');
-                      },
-                      child: Text('OK'),
-                    ),
-                  ],
-                ),
-            useRootNavigator: false),
-      );
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     final Company company = Provider.of<Company>(context);
     final Employee employee = Provider.of<Employee>(context);
     surveys = surveys == null || numOfSurveys != employee.surveys.length ? getSurveys(employee) : surveys;
-    image = image == null ? getImage(employee) : image;
     return employee.companyUid != null && company == null
         ? loader
         : Container(
@@ -75,7 +46,16 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                               alignment: Alignment.topLeft,
                               // padding: EdgeInsets.all(10),
 
-                              child: image),
+                              child: CircleAvatar(
+                                radius: 50, //should be half of icon size
+                                backgroundImage: employee.image == null ? null : employee.image,
+                                child: employee.image == null
+                                    ? Text(
+                                        (employee.name[0] + employee.surname[0]).toUpperCase(),
+                                        style: TextStyle(fontSize: 25, fontFamily: font, letterSpacing: 2.0),
+                                      )
+                                    : null,
+                              )),
                       onPressed: () async {
                         setState(() => imageLoading = true);
                         await employee.changeImage();
@@ -119,7 +99,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 ),
                 SizedBox(height: 20),
                 employee.companyUid == null
-                    ? employee.request != ''
+                    ? employee.request != '' && employee.request != 'denied'
                         ? Column(
                             children: [
                               Text("You sent request to " + employee.request.substring(employee.request.indexOf('%') + 1), style: inputTextStyle),
@@ -139,6 +119,8 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                           )
                         : Row(
                             children: [
+                              //TODO stilizirat ovaj text ispod jer je nedavno dodan
+                              if (employee.request == 'denied') Text('Your last request was denied.'),
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -298,24 +280,6 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 itemCount: employee.surveys.length,
               ),
             ),
-    );
-  }
-
-  Widget getImage(Employee employee) {
-    return FutureBuilder(
-      future: employee.image == null ? employee.getImage() : null,
-      builder: (context, snapshot) {
-        return CircleAvatar(
-          radius: 50, //should be half of icon size
-          backgroundImage: employee.image == null ? null : employee.image,
-          child: employee.image == null
-              ? Text(
-                  (employee.name[0] + employee.surname[0]).toUpperCase(),
-                  style: TextStyle(fontSize: 25, fontFamily: font, letterSpacing: 2.0),
-                )
-              : null,
-        );
-      },
     );
   }
 

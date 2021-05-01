@@ -25,7 +25,6 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   bool imageLoading = false;
   int numOfSurveys = -1;
   Widget surveys;
-  Widget image;
   @override
   void initState() {
     super.initState();
@@ -36,7 +35,6 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     final Company company = Provider.of<Company>(context);
     final Employee me = Provider.of<Employee>(context);
     surveys = surveys == null || numOfSurveys != company.surveys.length ? getSurveys(company) : surveys;
-    image = image == null ? getImage(company) : image;
     return company == null
         ? me == null
             ? loader
@@ -96,7 +94,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => SurveyUI(
-                                new Survey(name: 'Survey', company: company),
+                                new Survey(name: '', company: company),
                               ),
                             ),
                           ),
@@ -116,13 +114,27 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   Row(
                     children: [
                       IconButton(
-                          onPressed: () async {
-                            setState(() => imageLoading = true);
-                            await company.changeImage();
-                            setState(() => imageLoading = false);
-                          },
-                          iconSize: 100,
-                          icon: imageLoading ? loader : image),
+                        onPressed: () async {
+                          setState(() => imageLoading = true);
+                          await company.changeImage();
+                          setState(() => imageLoading = false);
+                        },
+                        iconSize: 100,
+                        icon: imageLoading
+                            ? loader
+                            : CircleAvatar(
+                                //backgroundColor: Colors.white,
+                                radius: 50, //should be half of icon size
+                                backgroundImage: company.image == null ? null : company.image,
+                                child: company.image == null
+                                    ? Icon(
+                                        Icons.camera_alt_outlined,
+                                        size: 60,
+                                        //color: Colors.black,
+                                      )
+                                    : null,
+                              ),
+                      ),
                       SizedBox(
                         width: 60,
                       ),
@@ -139,7 +151,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                       child: Align(
                         alignment: Alignment.topCenter,
                         child: handling
-                            ? Center(child: CircularProgressIndicator())
+                            ? loader
                             : Stack(
                                 children: company.requests
                                     .map(
@@ -346,54 +358,34 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         });
   }
 
-  Widget getImage(Company company) {
-    return FutureBuilder(
-      future: company.image == null ? company.getImage() : null,
-      builder: (context, snapshot) {
-        return Container(
-            alignment: Alignment.topLeft,
-            //margin: EdgeInsets.only(left: 30),
-            child: CircleAvatar(
-                //backgroundColor: Colors.white,
-                radius: 50, //should be half of icon size
-                backgroundImage: company.image == null ? null : company.image,
-                child: company.image == null
-                    ? Icon(
-                        Icons.camera_alt_outlined,
-                        size: 60,
-                        //color: Colors.black,
-                      )
-                    : null));
-      },
-    );
-  }
-
   Widget filledSurveys(Survey survey) {
     DateFormat _formatted = DateFormat('dd-MM-yyyy');
     return Container(
-        //width: 250,
-        decoration: BoxDecoration(
-            color: Colors.blue[50],
-            borderRadius: borderRadius,
-            gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.indigo, Colors.blue])),
-        child: (TextButton.icon(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    //fullscreenDialog: true,
-                    builder: (context) => Results(survey),
-                  ));
-            },
-            icon: Icon(
-              (Icons.bar_chart_rounded),
-              color: Colors.greenAccent,
-              size: 50,
-            ),
-            label: Text(
-              survey.name + "\n" + (survey.status == STATUS.Active ? "active until: " : "ended") + _formatted.format(survey.to),
-              style: TextStyle(fontFamily: font, fontSize: 22, color: Colors.white),
-              textAlign: TextAlign.center,
-            ))));
+      //width: 250,
+      decoration: BoxDecoration(
+          color: Colors.blue[50],
+          borderRadius: borderRadius,
+          gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.indigo, Colors.blue])),
+      child: TextButton.icon(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                //fullscreenDialog: true,
+                builder: (context) => Results(survey),
+              ));
+        },
+        icon: Icon(
+          Icons.bar_chart_rounded,
+          color: Colors.greenAccent,
+          size: 50,
+        ),
+        label: Text(
+          survey.name + "\n" + (survey.status == STATUS.Active ? "active until: " : "ended") + _formatted.format(survey.to),
+          style: TextStyle(fontFamily: font, fontSize: 22, color: Colors.white),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
   }
 }

@@ -38,7 +38,9 @@ class Company {
     this.description,
     this.me,
     this.country,
-  });
+  }) {
+    this.getImage();
+  }
 
   Future createCompany() async {
     List<String> employeeUids = employees.map((e) => e.uid).toList();
@@ -108,12 +110,16 @@ class Company {
   }
 
   /// Accepts or Denies access to Company based on [accepted]
-  Future handleRequest(bool accepted) async {
+  /// 
+  /// Pass [position] and/or [tags] only when [accepted == true]
+  Future handleRequest(bool accepted,{String position = '', List<String> tags = const []}) async {
     String e = requests[0];
     String uidTemp = e.substring(0, e.indexOf('%'));
 
     await userCollection.doc(uidTemp).update({
-      'request': (accepted ? "accepted" : 'denied') + '%' + this.name,
+      'position': position,
+      'tags': tags,
+      'request': accepted ? '' : 'denied',
       'companyUid': accepted ? this.uid : null,
     });
     await FirebaseFirestore.instance.runTransaction((transaction) async {

@@ -34,7 +34,9 @@ class Employee {
     this.name,
     this.surname,
     this.email,
-  });
+  }) {
+    getImage();
+  }
 
   Future createEmployee() async {
     return await userCollection.doc(this.uid).set({
@@ -104,7 +106,7 @@ class Employee {
   Future getEmployee(bool withImage) async {
     if (!hasData) updateData(await userCollection.doc(this.uid).get());
     await handleSurveys();
-    //if (withImage) await getImage();
+    if (withImage) await getImage();
   }
 
   Stream<Employee> get self {
@@ -133,12 +135,16 @@ class Employee {
         'employees': employeesTemp,
       });
     });
-    await updateEmployee(newCompanyUid: '');
+    await updateEmployee(
+      newCompanyUid: '',
+      newPosition: '',
+      newTags: [],
+      newAdmin: false,
+    );
   }
 
   Future sendRequestToCompany(String futureCompanyName, String futureCompanyUid) async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
-      print(futureCompanyName + ' ' + futureCompanyUid);
       DocumentReference ref = FirebaseFirestore.instance.collection('companies').doc(futureCompanyUid);
       List<String> req = ((await ref.get())['requests'] as List).map((e) => e.toString()).toList();
       req.add(this.uid + '%' + this.name + '%' + this.surname);
@@ -165,10 +171,7 @@ class Employee {
     await Future.wait(this.surveys.map((e) async => await e.getSurvey(false)).toList());
     List<String> past = [];
     for (Survey s in surveys) {
-      if (s.status == STATUS.Past) {
-        print(s);
-        past.add(s.uid);
-      }
+      if (s.status == STATUS.Past) past.add(s.uid);
     }
     if (past.length == 0) return;
     this.surveys.removeWhere((element) => past.contains(element.uid));
