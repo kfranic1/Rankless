@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rankless/Launch/auth.dart';
+import 'package:rankless/Launch/register.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'package:rankless/shared/custom_app_bar.dart';
 
@@ -77,7 +78,7 @@ class _LogInState extends State<LogIn> {
                           SizedBox(
                             height: 20,
                           ),
-                          ElevatedButton(
+                          TextButton(
                             child: Text("Log In", style: inputTextStyle),
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
@@ -96,6 +97,14 @@ class _LogInState extends State<LogIn> {
                             },
                             style: textButtonStyleRegister,
                           ),
+                          SizedBox(height: 20),
+                          TextButton(
+                              child: RichText(
+                                  text: new TextSpan(style: inputTextStyle, children: <TextSpan>[
+                                new TextSpan(text: 'Don\'t have an acount? '),
+                                new TextSpan(text: 'Register', style: TextStyle(fontWeight: FontWeight.bold))
+                              ])),
+                              onPressed: () => Navigator.pop(context)),
                         ],
                       ),
                     ),

@@ -32,7 +32,6 @@ CollectionReference surveyCollection = FirebaseFirestore.instance.collection('su
 CollectionReference resultCollection = FirebaseFirestore.instance.collection('results');
 // ? #end collections
 
-
 Decoration popOutDecoration = BoxDecoration(
     borderRadius: borderRadius,
     // color: Colors.blue[300], //Color(0xff42a5f5),
@@ -40,8 +39,7 @@ Decoration popOutDecoration = BoxDecoration(
 
 const gradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, const Color(0xff3f51b5)]);
 
-Decoration backgroundDecoration =
-    BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, const Color(0xff3f51b5)]));
+Decoration backgroundDecoration = BoxDecoration(gradient: gradient);
 
 TextStyle titleNameStyle = TextStyle(
   color: Colors.white,
@@ -69,12 +67,14 @@ InputDecoration registerInputDecoration = textFieldDecoration.copyWith(
 Color buttonColor = Colors.blue.withOpacity(0.7);
 
 ButtonStyle textButtonStyleRegister = ButtonStyle(
-  // elevation: MaterialStateProperty.all<double>(5.0),
-  backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
-  shape: MaterialStateProperty.all<OutlinedBorder>(
-    RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(20)),
+    // elevation: MaterialStateProperty.all<double>(5.0),
+    backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent),
+    shape: MaterialStateProperty.all<OutlinedBorder>(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
     ),
-  ),
-  // minimumSize: MaterialStateProperty.all<Size>(Size(30, 8)),
-);
+    // side: MaterialStateProperty.all<BorderSide>(BorderSide(width: 1, color: Colors.white)),
+    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15))
+    // minimumSize: MaterialStateProperty.all<Size>(Size(30, 8)),
+    );

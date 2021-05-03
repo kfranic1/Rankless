@@ -1,22 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rankless/Launch/auth.dart';
+import 'package:rankless/Launch/log_in.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'package:rankless/shared/custom_app_bar.dart';
-
-// TextStyle inputTextStyle =
-//     TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);
-
-// InputDecoration registerInputDecoration = textFieldDecoration.copyWith(
-//   enabledBorder:
-//       UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-//   focusedBorder:
-//       UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-//   errorStyle: TextStyle(fontFamily: font, color: Colors.blue, fontSize: 13),
-//   errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
-//   focusedErrorBorder:
-//       UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
-//   labelStyle: TextStyle(fontSize: 18, fontFamily: font, color: Colors.white),
-// );
 
 class Register extends StatefulWidget {
   @override
@@ -114,15 +100,6 @@ class _RegisterState extends State<Register> {
                               setState(() => password = value);
                             },
                           ),
-                          // trailing: IconButton(          // ako zelimo 2 gumba
-                          //   icon:
-                          //       Icon(Icons.remove_red_eye, color: Colors.white),
-                          //   onPressed: () {
-                          //     setState(() {
-                          //       obscureText = !obscureText;
-                          //     });
-                          //   },
-                          // ),
                         ),
                         SizedBox(
                           height: 10,
@@ -133,10 +110,6 @@ class _RegisterState extends State<Register> {
                             initialValue: confPass,
                             decoration: registerInputDecoration.copyWith(
                               labelText: 'confirm password',
-                              // errorStyle: TextStyle(color: Colors.yellow),
-                              // errorBorder: UnderlineInputBorder(
-                              //     borderSide:
-                              //         BorderSide(color: Colors.yellow))
                             ),
                             style: inputTextStyle,
                             obscureText: obscureText,
@@ -167,7 +140,7 @@ class _RegisterState extends State<Register> {
                         SizedBox(
                           height: 10,
                         ),
-                        ElevatedButton(
+                        TextButton(
                           child: Text(
                             "Register",
                             style: inputTextStyle,
@@ -192,21 +165,19 @@ class _RegisterState extends State<Register> {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  SizedBox(height: 20),
                   TextButton(
-                    child: Text("Continue as guest", style: inputTextStyle),
-                    onPressed: () async {
-                      setState(() => loading = true);
-                      dynamic result = await _auth.signInAnonymus();
-                      if (result is String) {
-                        setState(() {
-                          error = result;
-                          loading = false;
-                        });
-                      }
-                    },
+                    child: RichText(
+                        text: new TextSpan(style: inputTextStyle, children: <TextSpan>[
+                      new TextSpan(text: 'Already have an acount? '),
+                      new TextSpan(text: 'Log in', style: TextStyle(fontWeight: FontWeight.bold))
+                    ])),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LogIn(),
+                      ),
+                    ),
                   ),
                 ],
               ),
