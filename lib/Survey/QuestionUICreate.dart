@@ -92,24 +92,31 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
             style: header,
           ),
           SizedBox(height: 15),
-          CustomToggleButtons(
-            children: [
-              // TODO labels
-              Icon(Icons.textsms),
-              Icon(Icons.radio_button_checked),
-              Icon(Icons.check_box),
-            ],
-            isSelected: _answerTypes,
-            onPressed: (int index) => setState(() {
-              for (int i = 0; i < 3; i++) _answerTypes[i] = i == index;
-              _question.answerType = _question.getAnswerType(index);
-            }),
-            color: Colors.white,
-            selectedColor: Colors.deepPurple[900],
-            fillColor: containerBackgroundColor, // lighterBlue / opacityWhite
-            unselectedFillColor: containerBackgroundColor,
-            renderBorder: true,
-            spacing: 30.0,
+          Container(
+            child: LayoutBuilder(
+              builder: (context, constraints) => ToggleButtons(
+                constraints: BoxConstraints.expand(width: constraints.maxWidth / 3, height: 40),
+                children: [
+                  // TODO labels
+                  Icon(Icons.textsms),
+                  Icon(Icons.radio_button_checked),
+                  Icon(Icons.check_box),
+                ],
+                isSelected: _answerTypes,
+                onPressed: (int index) => setState(() {
+                  for (int i = 0; i < 3; i++) _answerTypes[i] = i == index;
+                  _question.answerType = _question.getAnswerType(index);
+                }),
+                color: Colors.white,
+                selectedColor: Colors.deepPurple[900],
+                //fillColor: containerBackgroundColor, // lighterBlue / opacityWhite
+                //unselectedFillColor: containerBackgroundColor,
+                fillColor: Colors.white.withOpacity(0.4),
+                borderRadius: borderRadius,
+                renderBorder: false,
+                //spacing: 30.0,
+              ),
+            ),
           ),
           SizedBox(height: 10),
           Visibility(

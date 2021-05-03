@@ -404,7 +404,7 @@ class _SurveyUIState extends State<SurveyUI> {
                 style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
               ),
               content: const Text(
-                "Are you sure you wish to delete this question?",
+                "Are you sure you want to delete this question?",
                 style: TextStyle(fontFamily: font),
               ),
               actions: <Widget>[
