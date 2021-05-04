@@ -69,13 +69,11 @@ TextStyle titleNameStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
-TextStyle mainTextStyle = TextStyle(
-  color: Colors.white,
+TextStyle inputTextStyle = TextStyle(
   fontFamily: font,
+  color: Colors.white,
   fontSize: 18,
 );
-
-TextStyle inputTextStyle = TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);
 
 RoundedRectangleBorder dialogShape = RoundedRectangleBorder(borderRadius: borderRadius);
 

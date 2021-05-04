@@ -144,9 +144,9 @@ class _ResultsState extends State<Results> {
 
   Widget showAllDialog(Question question, int questionNum) {
     return Dialog(
+      shape: dialogShape,
+      backgroundColor: primaryBlue,
       child: Container(
-        // decoration: popOutDecoration,
-        color: Colors.blueAccent,
         constraints: BoxConstraints(maxHeight: 300),
         child: Column(
           children: [
@@ -156,7 +156,7 @@ class _ResultsState extends State<Results> {
                 children: [
                   Text(
                     (questionNum + 1).toString() + '. ' + question.questionText,
-                    style: mainTextStyle,
+                    style: inputTextStyle,
                   )
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -180,12 +180,12 @@ class _ResultsState extends State<Results> {
                                 padding: const EdgeInsets.only(bottom: 10.0),
                                 child: Text(
                                   position,
-                                  style: mainTextStyle,
+                                  style: inputTextStyle,
                                 ),
                               ),
                               subtitle: Text(
                                 results[position][questionNum][index2],
-                                style: mainTextStyle.copyWith(fontSize: 15),
+                                style: inputTextStyle.copyWith(fontSize: 15),
                               )),
                           itemCount: results[position][questionNum].length,
                           separatorBuilder: (context, index) => Divider());
@@ -304,9 +304,8 @@ class _ResultsState extends State<Results> {
   Widget answers(Question question, int questionNum) {
     return Dialog(
       shape: dialogShape,
+      backgroundColor: primaryBlue,
       child: Container(
-          decoration: borderDecoration.copyWith(color: primaryBlue),
-          // color: Colors.blueAccent,
           constraints: BoxConstraints(maxHeight: 300),
           child: RawScrollbar(
             thumbColor: Colors.black54,
@@ -315,11 +314,11 @@ class _ResultsState extends State<Results> {
               itemBuilder: (context, index) => ListTile(
                 leading: Text(
                   (index + 1).toString(),
-                  style: mainTextStyle,
+                  style: inputTextStyle,
                 ),
                 title: Text(
                   question.multipleAnswers[index],
-                  style: mainTextStyle,
+                  style: inputTextStyle,
                 ),
               ),
               separatorBuilder: (context, index) => Divider(),

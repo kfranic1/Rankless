@@ -41,7 +41,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                         children: [
                           FloatingActionButton(
                               heroTag: 'left',
-                              backgroundColor: Colors.blue.withOpacity(0.7),
+                              backgroundColor: buttonColor,
                               child: Icon(
                                 Icons.group_add_rounded,
                                 color: Colors.white,
@@ -72,7 +72,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 child: Stack(children: [
                   FloatingActionButton(
                     heroTag: 'right',
-                    backgroundColor: Colors.blue.withOpacity(0.7),
+                    backgroundColor: buttonColor,
                     child: Icon(
                       Icons.post_add_rounded,
                       size: 30,
