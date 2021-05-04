@@ -145,13 +145,20 @@ class _ResultsState extends State<Results> {
   Widget showAllDialog(Question question, int questionNum) {
     return Dialog(
       child: Container(
+        // decoration: popOutDecoration,
+        color: Colors.blueAccent,
         constraints: BoxConstraints(maxHeight: 300),
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                children: [Text((questionNum + 1).toString() + '. ' + question.questionText)],
+                children: [
+                  Text(
+                    (questionNum + 1).toString() + '. ' + question.questionText,
+                    style: mainTextStyle,
+                  )
+                ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
             ),
@@ -171,9 +178,15 @@ class _ResultsState extends State<Results> {
                           itemBuilder: (context, index2) => ListTile(
                               title: Padding(
                                 padding: const EdgeInsets.only(bottom: 10.0),
-                                child: Text(position),
+                                child: Text(
+                                  position,
+                                  style: mainTextStyle,
+                                ),
                               ),
-                              subtitle: Text(results[position][questionNum][index2])),
+                              subtitle: Text(
+                                results[position][questionNum][index2],
+                                style: mainTextStyle.copyWith(fontSize: 15),
+                              )),
                           itemCount: results[position][questionNum].length,
                           separatorBuilder: (context, index) => Divider());
                     },
@@ -198,6 +211,8 @@ class _ResultsState extends State<Results> {
     }
     return Container(
       color: const Color(0xff2c4260),
+      // color: Colors.blue[900],
+      // color: Colors.indigo[800], // 800?
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         title: Padding(
@@ -288,15 +303,24 @@ class _ResultsState extends State<Results> {
 
   Widget answers(Question question, int questionNum) {
     return Dialog(
+      shape: dialogShape,
       child: Container(
+          decoration: borderDecoration.copyWith(color: primaryBlue),
+          // color: Colors.blueAccent,
           constraints: BoxConstraints(maxHeight: 300),
           child: RawScrollbar(
             thumbColor: Colors.black54,
             isAlwaysShown: true,
             child: ListView.separated(
               itemBuilder: (context, index) => ListTile(
-                leading: Text((index + 1).toString()),
-                title: Text(question.multipleAnswers[index]),
+                leading: Text(
+                  (index + 1).toString(),
+                  style: mainTextStyle,
+                ),
+                title: Text(
+                  question.multipleAnswers[index],
+                  style: mainTextStyle,
+                ),
               ),
               separatorBuilder: (context, index) => Divider(),
               itemCount: question.multipleAnswers.length,

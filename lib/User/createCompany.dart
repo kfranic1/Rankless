@@ -120,8 +120,9 @@ class _CreateCompanyState extends State<CreateCompany> {
                               ),
                               SearchChoices.single(
                                 hint: 'Category',
+                                value: category,
                                 style: inputTextStyle.copyWith(color: Colors.white),
-                                menuBackgroundColor: Colors.blue,
+                                menuBackgroundColor: Colors.blueAccent,
                                 isExpanded: true,
                                 items: categories.map((e) => DropdownMenuItem(value: e, child: Text(e, style: inputTextStyle))).toList(),
                                 onChanged: (index) => setState(() => category = index),
@@ -200,7 +201,6 @@ class _CreateCompanyState extends State<CreateCompany> {
       employees: [widget.employee],
       description: this.info,
       country: this.country,
-      me: widget.employee,
     );
     dynamic result = await company.createCompany();
     if (result is String) return result;

@@ -7,8 +7,6 @@ const font = 'Mulish';
 
 Widget loader = Center(child: CircularProgressIndicator()) /*Loader(color: Colors.blue, allowAnimation: false)*/;
 
-TextStyle inputTextStyle = TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);
-
 List<String> categories = [
   "Auto-Moto",
   "Construction",
@@ -30,23 +28,24 @@ CollectionReference companiesCollection = FirebaseFirestore.instance.collection(
 CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
 CollectionReference surveyCollection = FirebaseFirestore.instance.collection('surveys');
 CollectionReference resultCollection = FirebaseFirestore.instance.collection('results');
+CollectionReference publicCollection = FirebaseFirestore.instance.collection('public');
 // ? #end collections
 
+// COLORS
+const gradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, const Color(0xff3f51b5)]);
+const primaryBlue = Colors.blue;
+const secondaryBlue = Colors.blueAccent;
+Color buttonColor = Colors.blue.withOpacity(0.7);
+
+// DECORATIONS
 Decoration popOutDecoration = BoxDecoration(
     borderRadius: borderRadius,
     // color: Colors.blue[300], //Color(0xff42a5f5),
     gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, const Color(0xff3f51b5)]));
 
-const gradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, const Color(0xff3f51b5)]);
-
 Decoration backgroundDecoration = BoxDecoration(gradient: gradient);
 
-TextStyle titleNameStyle = TextStyle(
-  color: Colors.white,
-  fontFamily: 'Mulish',
-  fontSize: 25,
-  fontWeight: FontWeight.bold,
-);
+BoxDecoration borderDecoration = BoxDecoration(borderRadius: borderRadius);
 
 InputDecoration textFieldDecoration = InputDecoration(
   // border: InputBorder.none,
@@ -62,13 +61,28 @@ InputDecoration registerInputDecoration = textFieldDecoration.copyWith(
   labelStyle: TextStyle(fontSize: 18, fontFamily: font, color: Colors.white),
 );
 
+// STYLES
+TextStyle titleNameStyle = TextStyle(
+  color: Colors.white,
+  fontFamily: 'Mulish',
+  fontSize: 25,
+  fontWeight: FontWeight.bold,
+);
+
+TextStyle mainTextStyle = TextStyle(
+  color: Colors.white,
+  fontFamily: font,
+  fontSize: 18,
+);
+
+TextStyle inputTextStyle = TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);
+
+RoundedRectangleBorder dialogShape = RoundedRectangleBorder(borderRadius: borderRadius);
+
 // BUTTONS
-
-Color buttonColor = Colors.blue.withOpacity(0.7);
-
 ButtonStyle textButtonStyleRegister = ButtonStyle(
     // elevation: MaterialStateProperty.all<double>(5.0),
-    backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent),
+    backgroundColor: MaterialStateProperty.all<Color>(buttonColor),
     shape: MaterialStateProperty.all<OutlinedBorder>(
       RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
