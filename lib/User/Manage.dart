@@ -27,7 +27,7 @@ class _ManageState extends State<Manage> {
 
   @override
   void initState() {
-    widget.company.getEmployees(true).then((value) {
+    widget.company.getEmployees().then((value) {
       widget.company.employees.forEach((element) {
         String temp = element.name + " " + element.surname;
         this.searchEmployees.add(
