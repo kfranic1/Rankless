@@ -26,8 +26,8 @@ class AppStarter extends StatelessWidget {
         }
         if (snapshot.connectionState == ConnectionState.done) {
           return StreamProvider<Employee>.value(
-            updateShouldNotify: (previous, current) => true,
-            initialData: null,
+            updateShouldNotify: (previous, current) => previous != current,
+            initialData: Employee(dummy: true),
             value: AuthService().employee,
             child: MaterialApp(
               theme: ThemeData(
@@ -39,12 +39,7 @@ class AppStarter extends StatelessWidget {
             ),
           );
         }
-        return MaterialApp(
-          theme: ThemeData(fontFamily: 'Mulish'),
-          home: Scaffold(
-            body: Center(child: loader),
-          ),
-        );
+        return MaterialApp(theme: ThemeData(fontFamily: 'Mulish'), home: loader);
       },
     );
   }

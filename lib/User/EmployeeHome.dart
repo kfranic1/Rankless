@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rankless/Ranking/CategoryScreen.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'package:rankless/shared/keepAliveThis.dart';
-import 'Company.dart';
 import 'CompanyHomeScreen.dart';
 import 'EmployeeHomeScreen.dart';
-
-import 'Employee.dart';
 
 class EmployeeHome extends StatefulWidget {
   @override
@@ -21,7 +16,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
   List<Widget> _screens = [
     KeepAliveThis(child: CompanyHomeScreen()),
     KeepAliveThis(child: EmployeeHomeScreen()),
-    CategoryScreen(),
+    Center(),
   ];
 
   @override
@@ -38,7 +33,6 @@ class _EmployeeHomeState extends State<EmployeeHome> {
 
   @override
   Widget build(BuildContext context) {
-    final Employee employee = Provider.of<Employee>(context);
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         selectedLabelStyle: TextStyle(
@@ -69,19 +63,11 @@ class _EmployeeHomeState extends State<EmployeeHome> {
           _controller.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
         }),
       ),
-      body: Container(
-        decoration: backgroundDecoration,
-        child: StreamProvider<Company>.value(
-                initialData: null,
-                updateShouldNotify: (a, b) => true,
-                value: employee.companyUid == null ? null : Company(uid: employee.companyUid).self,
-                child: PageView(
-                  onPageChanged: (index) => setState(() => _currentIndex = index),
-                  controller: _controller,
-                  children: _screens,
-                ),
-              ),
-      ),
+      body: PageView.builder(
+              onPageChanged: (index) => setState(() => _currentIndex = index),
+              controller: _controller,
+              itemBuilder: (context, index) => _screens[index],
+            ),
     );
   }
 }

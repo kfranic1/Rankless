@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:rankless/Survey/SurveyUIFill.dart';
 import 'package:rankless/shared/Interface.dart';
@@ -29,7 +28,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
     final Company company = Provider.of<Company>(context);
     final Employee employee = Provider.of<Employee>(context);
     surveys = surveys == null || numOfSurveys != employee.surveys.length ? getSurveys(employee) : surveys;
-    return employee.companyUid != null && company == null
+    return employee.dummy || (employee.companyUid != null && company.dummy)
         ? loader
         : Container(
             decoration: backgroundDecoration,
@@ -43,46 +42,27 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                       icon: imageLoading
                           ? loader
                           : Container(
-                              alignment: Alignment.topLeft,
-                              // padding: EdgeInsets.all(10),
-
                               child: CircleAvatar(
                                 radius: 50, //should be half of icon size
-                                backgroundImage: employee.image == null ? null : employee.image,
+                                backgroundColor: Colors.transparent,
+                                backgroundImage: employee.image,
                                 child: employee.image == null
-                                    ? Text(
-                                        (employee.name[0] + employee.surname[0]).toUpperCase(),
-                                        style: TextStyle(fontSize: 25, fontFamily: font, letterSpacing: 2.0),
+                                    ? Container(
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 50,
+                                        ),
                                       )
                                     : null,
-                              )),
+                              ),
+                            ),
                       onPressed: () async {
                         setState(() => imageLoading = true);
                         await employee.changeImage();
                         setState(() => imageLoading = false);
                       },
                     ),
-                    // Container(
-                    // padding: EdgeInsets.only(left: 20.0),
-                    // width: 230,
-                    // child:
-                    // Column(
-                    //     children: [
-                    //       Text(
-                    //         employee.name,
-                    //         style: surveyNameStyle,
-                    //         // inputTextStyle.copyWith(
-                    //         // fontWeight: FontWeight.bold, ),
-                    //       ),
-                    //       Text(
-                    //         employee.surname,
-                    //         style: surveyNameStyle,
-                    //       )
-                    //     ],
-                    //     mainAxisAlignment: MainAxisAlignment.center,
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //   ),
-                    // ),
+                    
                     SizedBox(width: 20),
                     Expanded(
                       // flex: 2,
@@ -93,9 +73,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                         overflow: TextOverflow.ellipsis, // ako bude jos dulje, bit ce ...
                       ),
                     ),
-                    // ),
                   ],
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,     // htjela sam umjesto SizedBoxa, ali ne radi
                 ),
                 SizedBox(height: 20),
                 employee.companyUid == null

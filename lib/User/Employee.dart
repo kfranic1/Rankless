@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -25,18 +24,18 @@ class Employee {
   List<String> tags = [];
   List<Survey> surveys = [];
   NetworkImage image;
+  bool dummy;
   //List<Komentar> comments;
   //TODO: Add error support
 
   Employee({
-    this.anonymus,
+    this.anonymus = false,
     this.uid,
     this.name,
     this.surname,
     this.email,
-  }) {
-    getImage();
-  }
+    this.dummy = false,
+  });
 
   Future createEmployee() async {
     return await userCollection.doc(this.uid).set({
@@ -110,6 +109,7 @@ class Employee {
   }
 
   Stream<Employee> get self {
+    if (this.uid == null || this.dummy) return null;
     return userCollection.doc(this.uid).snapshots().map((event) => updateData(event));
   }
 
@@ -179,14 +179,14 @@ class Employee {
   }
 
   Future<NetworkImage> getImage() async {
-    if (triedImage) return this.image;
-    triedImage = true;
+    if (this.triedImage || dummy) return this.image;
+    this.triedImage = true;
     return this.image = NetworkImage(await Uploader().getImage(this.uid + '1'));
   }
 
   /// Puts newly selected [image] as profile picture for [employee]
   Future changeImage() async {
-    PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery);
+    PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery, imageQuality: 15);
     if (image == null) return;
     File cropped = await ImageCropper.cropImage(sourcePath: image.path);
     await updateEmployee(newImage: cropped ?? File(image.path));

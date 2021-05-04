@@ -12,7 +12,7 @@ class Survey {
   List<Question> qNa = [];
   List<String> tags = [];
   DateTime from = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-  DateTime to = DateTime(DateTime.now().year, DateTime.now().add(Duration(days: 7)).month, DateTime.now().add(Duration(days: 7)).day);
+  DateTime to = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).add(Duration(days: 7));
   STATUS status;
   Map<String, Map<int, List<String>>> results = new Map<String, Map<int, List<String>>>();
   bool hasData = false;

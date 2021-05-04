@@ -17,7 +17,7 @@ class CustomAppBar extends AppBar {
                 : IconButton(
                     onPressed: () async => await AuthService().signOut(),
                     icon: Icon(
-                      employee.anonymus ? Icons.login : Icons.logout,
+                      Icons.logout,
                       color: Colors.white,
                     ),
                   )

@@ -26,9 +26,9 @@ class Company {
   List<String> requests = [];
   List<Survey> surveys = [];
   List<Survey> publicSurveys = [];
-  Employee me;
   double totalScore = 0.0;
   int surveysDone = 0;
+  bool dummy;
 
   Company({
     this.uid,
@@ -36,11 +36,9 @@ class Company {
     this.industry,
     this.employees,
     this.description,
-    this.me,
     this.country,
-  }) {
-    this.getImage();
-  }
+    this.dummy = false,
+  });
 
   Future createCompany() async {
     List<String> employeeUids = employees.map((e) => e.uid).toList();
@@ -66,23 +64,32 @@ class Company {
   Future updateCompany({
     String newDescription,
     Survey newSurvey,
+    List<String> newPosition,
     File newImage,
   }) async {
-    if (newDescription != null) {
-      this.description = newDescription;
-      await companiesCollection.doc(this.uid).update({'description': this.description});
-    }
-    if (newSurvey != null) {
-      this.surveys.add(newSurvey);
-      await companiesCollection.doc(this.uid).update({'surveys': this.surveys.map((e) => e.uid).toList()});
-    }
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      Map<String, dynamic> run = {};
+      if (newDescription != null) {
+        this.description = newDescription;
+        run['description'] = this.description;
+      }
+      if (newSurvey != null) {
+        this.surveys.add(newSurvey);
+        run['surveys'] = this.surveys.map((e) => e.uid).toList();
+      }
+      if (newPosition != null) {
+        this.positions.addAll(newPosition);
+        run['positions'] = this.positions;
+      }
+      transaction.update(companiesCollection.doc(this.uid), run);
+    });
     if (newImage != null) {
       this.image = NetworkImage(await Uploader().uploadImage(newImage.path, this.uid + '2'));
     }
   }
 
   Stream<Company> get self {
-    if (uid == null) return null;
+    if (uid == null || dummy) return null;
     return companiesCollection.doc(this.uid).snapshots().map((event) => updateData(event));
   }
 
@@ -110,9 +117,9 @@ class Company {
   }
 
   /// Accepts or Denies access to Company based on [accepted]
-  /// 
+  ///
   /// Pass [position] and/or [tags] only when [accepted == true]
-  Future handleRequest(bool accepted,{String position = '', List<String> tags = const []}) async {
+  Future handleRequest(bool accepted, {String position = '', List<String> tags = const []}) async {
     String e = requests[0];
     String uidTemp = e.substring(0, e.indexOf('%'));
 
@@ -138,7 +145,7 @@ class Company {
   ///
   /// Either [position] or [addTags] or [removeTags] should have value. Otherwise nothing will happen.
   Future addPositionOrTags(Employee who, {String position, List<String> addTags, List<String> removeTags}) async {
-    if (position == null && addTags == null && removeTags != null) return;
+    if (position == null && addTags == null && removeTags == null) return;
     await getAllSurveys(false);
     List<String> allTags;
     allTags.addAll(who.tags);
@@ -168,14 +175,14 @@ class Company {
   }
 
   Future<NetworkImage> getImage() async {
-    if (triedImage) return this.image;
+    if (triedImage || dummy) return this.image;
     triedImage = true;
     return this.image = NetworkImage(await Uploader().getImage(this.uid + '2'));
   }
 
   /// Puts newly selected [image] as profile picture for [company]
   Future changeImage() async {
-    PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery);
+    PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery, imageQuality: 15);
     if (image == null) return;
     File cropped = await ImageCropper.cropImage(sourcePath: image.path);
     await updateCompany(newImage: cropped ?? File(image.path));
