@@ -19,7 +19,6 @@ class EmployeeHomeScreen extends StatefulWidget {
 
 class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   bool isCancelDisabled = false;
-  bool imageLoading = false;
   int numOfSurveys = -1;
   Widget surveys;
 
@@ -35,45 +34,11 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
             padding: EdgeInsets.all(10),
             child: ListView(
               children: [
-                Row(
-                  children: [
-                    IconButton(
-                      iconSize: 100,
-                      icon: imageLoading
-                          ? loader
-                          : Container(
-                              child: CircleAvatar(
-                                radius: 50, //should be half of icon size
-                                backgroundColor: Colors.transparent,
-                                backgroundImage: employee.image,
-                                child: employee.image == null
-                                    ? Container(
-                                        child: Icon(
-                                          Icons.person,
-                                          size: 50,
-                                        ),
-                                      )
-                                    : null,
-                              ),
-                            ),
-                      onPressed: () async {
-                        setState(() => imageLoading = true);
-                        await employee.changeImage();
-                        setState(() => imageLoading = false);
-                      },
-                    ),
-                    
-                    SizedBox(width: 20),
-                    Expanded(
-                      // flex: 2,
-                      child: Text(
-                        employee.name + " " + employee.surname,
-                        style: titleNameStyle,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis, // ako bude jos dulje, bit ce ...
-                      ),
-                    ),
-                  ],
+                Text(
+                  employee.name + " " + employee.surname,
+                  style: titleNameStyle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis, // ako bude jos dulje, bit ce ...
                 ),
                 SizedBox(height: 20),
                 employee.companyUid == null

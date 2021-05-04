@@ -1,9 +1,4 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:rankless/Launch/uploader.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'package:rankless/User/Company.dart';
 import 'package:rankless/shared/Interface.dart';
@@ -23,7 +18,6 @@ class Employee {
   bool admin = false;
   List<String> tags = [];
   List<Survey> surveys = [];
-  NetworkImage image;
   bool dummy;
   //List<Komentar> comments;
   //TODO: Add error support
@@ -51,16 +45,16 @@ class Employee {
     });
   }
 
-  Future updateEmployee(
-      {String newName,
-      String newSurname,
-      List<String> newTags,
-      String newCompanyUid,
-      String newRequest,
-      List<Survey> newSurveys,
-      bool newAdmin,
-      String newPosition,
-      File newImage}) async {
+  Future updateEmployee({
+    String newName,
+    String newSurname,
+    List<String> newTags,
+    String newCompanyUid,
+    String newRequest,
+    List<Survey> newSurveys,
+    bool newAdmin,
+    String newPosition,
+  }) async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       Map<String, dynamic> run = {};
       if (newName != null) {
@@ -97,15 +91,11 @@ class Employee {
       }
       transaction.update(userCollection.doc(this.uid), run);
     });
-    if (newImage != null) {
-      this.image = NetworkImage(await Uploader().uploadImage(newImage.path, this.uid + '1'));
-    }
   }
 
-  Future getEmployee(bool withImage) async {
+  Future getEmployee() async {
     if (!hasData) updateData(await userCollection.doc(this.uid).get());
     await handleSurveys();
-    if (withImage) await getImage();
   }
 
   Stream<Employee> get self {
@@ -178,7 +168,7 @@ class Employee {
     await updateEmployee(newSurveys: this.surveys);
   }
 
-  Future<NetworkImage> getImage() async {
+  /*Future<NetworkImage> getImage() async {
     if (this.triedImage || dummy) return this.image;
     this.triedImage = true;
     return this.image = NetworkImage(await Uploader().getImage(this.uid + '1'));
@@ -190,5 +180,5 @@ class Employee {
     if (image == null) return;
     File cropped = await ImageCropper.cropImage(sourcePath: image.path);
     await updateEmployee(newImage: cropped ?? File(image.path));
-  }
+  }*/
 }

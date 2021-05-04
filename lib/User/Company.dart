@@ -1,10 +1,4 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:rankless/Launch/uploader.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'package:rankless/shared/Interface.dart';
 
@@ -16,7 +10,6 @@ class Company {
   String uid;
   String name;
   String industry;
-  NetworkImage image;
   String description;
   String country;
   List<Employee> employees = [];
@@ -65,7 +58,6 @@ class Company {
     String newDescription,
     Survey newSurvey,
     List<String> newPosition,
-    File newImage,
   }) async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       Map<String, dynamic> run = {};
@@ -83,9 +75,6 @@ class Company {
       }
       transaction.update(companiesCollection.doc(this.uid), run);
     });
-    if (newImage != null) {
-      this.image = NetworkImage(await Uploader().uploadImage(newImage.path, this.uid + '2'));
-    }
   }
 
   Stream<Company> get self {
@@ -110,9 +99,9 @@ class Company {
     return this;
   }
 
-  Future getEmployees(bool withImages) async {
+  Future getEmployees() async {
     await Future.forEach(employees, (Employee e) async {
-      await e.getEmployee(withImages);
+      await e.getEmployee();
     });
   }
 
@@ -174,7 +163,7 @@ class Company {
     return this.surveys;
   }
 
-  Future<NetworkImage> getImage() async {
+  /*Future<NetworkImage> getImage() async {
     if (triedImage || dummy) return this.image;
     triedImage = true;
     return this.image = NetworkImage(await Uploader().getImage(this.uid + '2'));
@@ -186,5 +175,5 @@ class Company {
     if (image == null) return;
     File cropped = await ImageCropper.cropImage(sourcePath: image.path);
     await updateCompany(newImage: cropped ?? File(image.path));
-  }
+  }*/
 }

@@ -103,38 +103,15 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () async {
-                          setState(() => imageLoading = true);
-                          await company.changeImage();
-                          setState(() => imageLoading = false);
-                        },
-                        iconSize: 100,
-                        icon: imageLoading
-                            ? loader
-                            : CircleAvatar(
-                                //backgroundColor: Colors.white,
-                                radius: 50, //should be half of icon size
-                                backgroundColor: Colors.transparent,
-                                backgroundImage: company.image,
-                                child: company.image == null
-                                    ? Icon(
-                                        Icons.camera_alt_outlined,
-                                        size: 50,
-                                      )
-                                    : Container(),
-                              ),
-                      ),
-                      SizedBox(
-                        width: 60,
-                      ),
-                      Text(
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
                         company.name,
                         style: titleNameStyle,
-                      )
-                    ],
+                      ),
+                    ),
                   ),
                   Row(
                     children: [

@@ -24,10 +24,7 @@ class Wrapper extends StatelessWidget {
                     updateShouldNotify: (a, b) => true,
                     value: employee.self,
                     builder: (context, child) {
-                      employee.getImage();
                       final Employee temp = Provider.of<Employee>(context);
-                      print(temp.companyUid);
-                      print(employee.uid);
                       //if (temp.companyUid == null && !company.dummy)
                       //company = new Company(dummy: true);
                       //else if (company.uid != temp.companyUid) company = new Company(uid: temp.uid);
@@ -41,7 +38,7 @@ class Wrapper extends StatelessWidget {
                           updateShouldNotify: (a, b) => true,
                           value: company.self,
                           builder: (context, child) {
-                            company.getImage();
+                            print('rebuilding');
                             return EmployeeHome();
                           });
                     }),

@@ -16,6 +16,7 @@ class Survey {
   STATUS status;
   Map<String, Map<int, List<String>>> results = new Map<String, Map<int, List<String>>>();
   bool hasData = false;
+  bool isPublic = false;
 
   Survey({this.uid, this.name, this.company});
 
@@ -27,10 +28,11 @@ class Survey {
       'from': this.from.toString(),
       'to': this.to.toString(),
       'tags': this.tags,
+      'public': false,
     });
     this.uid = ref.id;
     await company.updateCompany(newSurvey: this);
-    await company.getEmployees(false);
+    await company.getEmployees();
     await Future.forEach(
       company.employees,
       (Employee employee) async {
@@ -81,6 +83,7 @@ class Survey {
     this.qNa = (questions as List<dynamic>).map((e) => e as Map<String, dynamic>).map((e) => Question().fromMap(e)).toList();
     this.tags = List<String>.from(ref['tags'] as List<dynamic>);
     this.status = _getStatus();
+    //TODO this.isPublic = ref['public'];
     return this;
   }
 
@@ -90,15 +93,18 @@ class Survey {
   Future submitSurvey(Employee who) async {
     who.surveys.remove(this);
     await who.updateEmployee(newSurveys: who.surveys);
-    await resultCollection.doc(this.uid).set({
-      who.uid: {
-        'pos': who.position,
-        'ans': qNa.map((e) {
-          if (e.answerType == TYPE.Text) return e.singleAnswer;
-          return e.mask.toString();
-        }).toList()
-      }
-    }, SetOptions(merge: true));
+    if (isPublic) {
+      //publicCollection.doc(this.uid).collection(who.companyUid).set({}, SetOptions(merge: true));
+    } else
+      await resultCollection.doc(this.uid).set({
+        who.uid: {
+          'pos': who.position,
+          'ans': qNa.map((e) {
+            if (e.answerType == TYPE.Text) return e.singleAnswer;
+            return e.mask.toString();
+          }).toList()
+        }
+      }, SetOptions(merge: true));
   }
 
   Future _getResults() async {

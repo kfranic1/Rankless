@@ -341,7 +341,11 @@ class _SurveyUIState extends State<SurveyUI> {
                           if (ans == null || ans.length == 0) error = cnt;
                         }
                       }
-                      if (error != -1) {
+                      if (widget.survey.qNa.length == 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Survey is empty"),
+                        ));
+                      } else if (error != -1) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text("Question $error is not complete"),
                         ));
