@@ -95,23 +95,30 @@ class Survey {
     if (isPublic) {
       FirebaseFirestore.instance.runTransaction((transaction) async {
         await publicCollection.doc(this.uid).collection('results').doc(who.companyUid).get().then((mapa) async {
-          Map<String, dynamic> add = mapa.data() ??
-              {
-                'total': 0,
-                'sum': 0,
-                'country' : country,
-                'industry' : industry,
-              };
-          for (int i = 0; i < 5; i++) {
-            add['sum' + 1.toString()] = int.parse(add['sum'] + 1.toString()) + getFromMask(qNa[i].mask);
+          Map<String, dynamic> add = mapa.data().length != 0
+              ? mapa.data()
+              : {
+                  'total': 0,
+                  'sum0': 0,
+                  'sum1': 0,
+                  'sum2': 0,
+                  'sum3': 0,
+                  'sum4': 0,
+                  'country': country,
+                  'industry': industry,
+                };
+          for (int i = 0; i < qNa.length; i++) {
+            add['sum' + i.toString()] += getFromMask(qNa[i].mask) + 1;
           }
-          add['total'] = int.parse(add['total']) + 1;
+          add['total'] += 1;
+          print(add);
           transaction.set(
             publicCollection.doc(this.uid).collection('results').doc(who.companyUid),
             add,
           );
         });
       }).onError((error, stackTrace) {
+        print(error);
         failed = true;
       });
     } else
@@ -125,7 +132,7 @@ class Survey {
         }
       }, SetOptions(merge: true)).onError((error, stackTrace) => failed = true);
     if (failed) return;
-    who.surveys.remove(this);
+    //TODO who.surveys.remove(this);
     await who.updateEmployee(newSurveys: who.surveys);
   }
 
