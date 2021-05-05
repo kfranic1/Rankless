@@ -72,7 +72,7 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
                                 ),
                                 value: e,
                                 groupValue:
-                                    widget.question.mask == 0 ? null : widget.question.multipleAnswers[(log(widget.question.mask) / log(2)).round()],
+                                    widget.question.mask == 0 ? null : widget.question.multipleAnswers[getFromMask(widget.question.mask)],
                                 onChanged: (String value) {
                                   setState(() => widget.question.mask = (1 << widget.question.multipleAnswers.indexOf(value)));
                                 },

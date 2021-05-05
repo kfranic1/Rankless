@@ -1,4 +1,3 @@
-import 'package:customtogglebuttons/customtogglebuttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'Question.dart';
@@ -95,12 +94,27 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
           Container(
             child: LayoutBuilder(
               builder: (context, constraints) => ToggleButtons(
-                constraints: BoxConstraints.expand(width: constraints.maxWidth / 3, height: 40),
+                constraints: BoxConstraints.expand(width: constraints.maxWidth / 3, height: 60),
                 children: [
                   // TODO labels
-                  Icon(Icons.textsms),
-                  Icon(Icons.radio_button_checked),
-                  Icon(Icons.check_box),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.textsms),
+                      Text('Text', style: inputTextStyle),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Icon(Icons.radio_button_checked), Text('Radio', style: inputTextStyle)],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.check_box),
+                      Text('Checkbox', style: inputTextStyle),
+                    ],
+                  ),
                 ],
                 isSelected: _answerTypes,
                 onPressed: (int index) => setState(() {

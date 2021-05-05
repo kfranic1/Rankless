@@ -26,10 +26,16 @@ class _SurveyUIState extends State<SurveyUI> {
   List<QuestionUICreate> _questions = [];
   List<ListTile> _suggestedQ = [];
   List<DropdownMenuItem> tags = [];
+  final TextEditingController nameEditing = TextEditingController();
   bool loading = false;
 
   @override
   initState() {
+    // nameEditing.addListener(() {
+    //   setState(() {
+    //
+    //   });
+    // });
     widget.survey.company.tags.forEach((element) {
       this.tags.add(DropdownMenuItem(child: Text(element), value: element));
     });
@@ -37,6 +43,12 @@ class _SurveyUIState extends State<SurveyUI> {
       this.tags.add(DropdownMenuItem(child: Text(element), value: element));
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameEditing.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,8 +69,8 @@ class _SurveyUIState extends State<SurveyUI> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    child: TextFormField(
-                      initialValue: widget.survey.name,
+                    child: TextField(
+                      controller: nameEditing,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: 'input survey name',
@@ -76,9 +88,6 @@ class _SurveyUIState extends State<SurveyUI> {
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
                       ),
-                      onFieldSubmitted: (value) {
-                        setState(() => widget.survey.name = value);
-                      },
                     ),
                     alignment: Alignment.topCenter,
                     padding: EdgeInsets.all(20),
@@ -353,6 +362,7 @@ class _SurveyUIState extends State<SurveyUI> {
                         setState(() {
                           loading = true;
                         });
+                        widget.survey.name = nameEditing.text;
                         await widget.survey.createSurvey();
 
                         Navigator.pop(context);

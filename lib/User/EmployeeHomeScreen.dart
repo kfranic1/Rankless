@@ -26,13 +26,13 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
   Widget build(BuildContext context) {
     final Company company = Provider.of<Company>(context);
     final Employee employee = Provider.of<Employee>(context);
-    surveys = surveys == null || numOfSurveys != employee.surveys.length ? getSurveys(employee) : surveys;
-    return employee.dummy || (employee.companyUid != null && company.dummy)
-        ? loader
-        : Container(
-            decoration: backgroundDecoration,
-            padding: EdgeInsets.all(10),
-            child: ListView(
+    surveys = surveys == null || numOfSurveys != employee.surveys.length ? getSurveys(employee, company.industry, company.country) : surveys;
+    return Container(
+      decoration: backgroundDecoration,
+      padding: EdgeInsets.all(10),
+      child: employee.dummy || (employee.companyUid != null && company.dummy)
+          ? loader
+          : ListView(
               children: [
                 Text(
                   employee.name + " " + employee.surname,
@@ -109,81 +109,85 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                           )
                     : Column(
                         children: [
-                          // sve sto treba biti ispod slike i imena kad si u firmi
-                          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Row(children: [
-                                Icon(
-                                  Icons.house_outlined,
-                                  color: Colors.white,
-                                  size: 50,
-                                ),
-                                SizedBox(width: 10),
-                                Text(company.name, style: inputTextStyle.copyWith(fontSize: detailsSize)),
-                              ]),
-                              Row(
-                                children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                Row(children: [
                                   Icon(
-                                    Icons.home_repair_service_outlined,
+                                    Icons.house_outlined,
                                     color: Colors.white,
                                     size: 50,
                                   ),
                                   SizedBox(width: 10),
-                                  Text(
-                                    employee.position == '' ? 'Position' : employee.position,
-                                    style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                  )
-                                ],
+                                  Text(company.name, style: inputTextStyle.copyWith(fontSize: detailsSize)),
+                                ]),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.home_repair_service_outlined,
+                                      color: Colors.white,
+                                      size: 50,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      employee.position == '' ? 'Position' : employee.position,
+                                      style: inputTextStyle.copyWith(fontSize: detailsSize),
+                                    )
+                                  ],
+                                ),
+                              ]),
+                              // RichText(
+                              //     text: TextSpan(children: [
+                              //   WidgetSpan(
+                              //       child: Icon(
+                              //     Icons.home_repair_service_outlined,
+                              //     color: Colors.white,
+                              //   )),
+                              //   TextSpan(
+                              //       text: 'pos' /*employee.position*/,
+                              //       style: inputTextStyle)
+                              // ])),
+                              SizedBox(
+                                width: 35,
                               ),
-                            ]),
-                            // RichText(
-                            //     text: TextSpan(children: [
-                            //   WidgetSpan(
-                            //       child: Icon(
-                            //     Icons.home_repair_service_outlined,
-                            //     color: Colors.white,
-                            //   )),
-                            //   TextSpan(
-                            //       text: 'pos' /*employee.position*/,
-                            //       style: inputTextStyle)
-                            // ])),
-                            SizedBox(
-                              width: 35,
-                            ),
-                            TextButton(
-                              style: textButtonStyleRegister,
-                              child: Text(
-                                'My tags',
-                                style: inputTextStyle.copyWith(fontSize: detailsSize),
-                              ),
-                              onPressed: () {
-                                showDialog(
+                              TextButton(
+                                style: textButtonStyleRegister,
+                                child: Text(
+                                  'My tags',
+                                  style: inputTextStyle.copyWith(fontSize: detailsSize),
+                                ),
+                                onPressed: () {
+                                  showDialog(
                                     context: context,
                                     //Koristi widget.survey.results jer su results u ovom widgetu podlozni filterima
                                     builder: (context) => Dialog(
-                                          child: Container(
-                                              padding: EdgeInsets.all(25),
-                                              height: 300,
-                                              color: Colors.blue,
-                                              child: employee.tags.isNotEmpty
-                                                  ? ListView.separated(
-                                                      itemBuilder: (context, index) {
-                                                        return Text(
-                                                          employee.tags[index],
-                                                          style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                                        );
-                                                      },
-                                                      itemCount: employee.tags.length,
-                                                      separatorBuilder: (context, index) => SizedBox(height: 20),
-                                                    )
-                                                  : Text(
-                                                      'You don\'t have any tags',
-                                                      style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                                    )),
-                                        ));
-                              },
-                            ),
-                          ]),
+                                      child: Container(
+                                        padding: EdgeInsets.all(25),
+                                        height: 300,
+                                        color: Colors.blue,
+                                        child: employee.tags.isNotEmpty
+                                            ? ListView.separated(
+                                                itemBuilder: (context, index) {
+                                                  return Text(
+                                                    employee.tags[index],
+                                                    style: inputTextStyle.copyWith(fontSize: detailsSize),
+                                                  );
+                                                },
+                                                itemCount: employee.tags.length,
+                                                separatorBuilder: (context, index) => SizedBox(height: 20),
+                                              )
+                                            : Text(
+                                                'You don\'t have any tags',
+                                                style: inputTextStyle.copyWith(fontSize: detailsSize),
+                                              ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                           SizedBox(height: 50),
                           Container(
                               child: Text(
@@ -203,10 +207,10 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                       ),
               ],
             ),
-          );
+    );
   }
 
-  Widget getSurveys(Employee employee) {
+  Widget getSurveys(Employee employee, String industry, String country) {
     setState(() => numOfSurveys = employee.surveys.length);
     return FutureBuilder(
       future: employee.handleSurveys(),
@@ -218,7 +222,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 // padding: EdgeInsets.only(left: 20, right: 20),
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
-                itemBuilder: (context, index) => activeSurveys(employee.surveys[index], employee),
+                itemBuilder: (context, index) => activeSurveys(employee.surveys[index], employee, industry, country),
                 separatorBuilder: (context, index) => SizedBox(width: 20),
                 itemCount: employee.surveys.length,
               ),
@@ -226,28 +230,37 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
     );
   }
 
-  Widget activeSurveys(Survey survey, Employee employee) {
+  Widget activeSurveys(Survey survey, Employee employee, String industry, String country) {
     DateFormat _formatted = DateFormat('dd-MM-yyyy');
     return Container(
       // padding: ,
       //height: ,
       // width: 200,
       decoration: BoxDecoration(
-          color: Colors.blue[50],
-          borderRadius: borderRadius,
-          gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.indigo, Colors.blue])),
-
-      child: (TextButton.icon(
+        color: Colors.blue[50],
+        borderRadius: borderRadius,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.indigo, Colors.blue],
+        ),
+      ),
+      child: TextButton.icon(
         onPressed: () {
           Navigator.push(
               context,
               MaterialPageRoute(
                 //fullscreenDialog: true,
-                builder: (context) => SurveyUIFill(survey, employee),
+                builder: (context) => SurveyUIFill(
+                  survey,
+                  employee,
+                  industry: industry,
+                  country: country,
+                ),
               ));
         },
         icon: Icon(
-          (Icons.bar_chart_rounded),
+          Icons.bar_chart_rounded,
           color: Colors.greenAccent,
           size: 50,
         ),
@@ -256,7 +269,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
           style: TextStyle(fontFamily: font, fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
           textAlign: TextAlign.center,
         ),
-      )),
+      ),
     );
   }
 }

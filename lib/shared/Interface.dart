@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +9,7 @@ const font = 'Mulish';
 
 Widget loader = Center(child: CircularProgressIndicator()) /*Loader(color: Colors.blue, allowAnimation: false)*/;
 
-List<String> categories = [
+List<String> industries = [
   "Auto-Moto",
   "Construction",
   "Education",
@@ -32,20 +34,26 @@ CollectionReference publicCollection = FirebaseFirestore.instance.collection('pu
 // ? #end collections
 
 // COLORS
-const gradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, const Color(0xff3f51b5)]);
+const primaryGradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, const Color(0xff3f51b5)]);
+const secondaryGradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, const Color(0xff3f51b5)]);
 const primaryBlue = Colors.blue;
 const secondaryBlue = Colors.blueAccent;
 Color buttonColor = Colors.blue.withOpacity(0.7);
 
 // DECORATIONS
-Decoration popOutDecoration = BoxDecoration(
-    borderRadius: borderRadius,
-    // color: Colors.blue[300], //Color(0xff42a5f5),
-    gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, const Color(0xff3f51b5)]));
+Decoration secondaryGradientDecoration = BoxDecoration(
+  borderRadius: borderRadius,
+  gradient: secondaryGradient,
+);
 
-Decoration backgroundDecoration = BoxDecoration(gradient: gradient);
+BoxDecoration popOutDecoration = BoxDecoration(
+  borderRadius: borderRadius,
+  color: primaryBlue,
+);
 
-BoxDecoration borderDecoration = BoxDecoration(borderRadius: borderRadius);
+Decoration backgroundDecoration = BoxDecoration(gradient: primaryGradient);
+
+// BoxDecoration borderDecoration = BoxDecoration(borderRadius: borderRadius);
 
 InputDecoration textFieldDecoration = InputDecoration(
   // border: InputBorder.none,
@@ -69,13 +77,11 @@ TextStyle titleNameStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
-TextStyle mainTextStyle = TextStyle(
-  color: Colors.white,
+TextStyle inputTextStyle = TextStyle(
   fontFamily: font,
+  color: Colors.white,
   fontSize: 18,
 );
-
-TextStyle inputTextStyle = TextStyle(fontFamily: font, color: Colors.white, fontSize: 18);
 
 RoundedRectangleBorder dialogShape = RoundedRectangleBorder(borderRadius: borderRadius);
 
@@ -92,3 +98,7 @@ ButtonStyle textButtonStyleRegister = ButtonStyle(
     padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15))
     // minimumSize: MaterialStateProperty.all<Size>(Size(30, 8)),
     );
+
+int getFromMask(int mask) {
+  return (log(mask) / log(2)).round();
+}
