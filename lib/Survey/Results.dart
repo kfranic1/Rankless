@@ -74,22 +74,32 @@ class _ResultsState extends State<Results> {
           context: context,
           //Koristi widget.survey.results jer su results u ovom widgetu podlozni filterima
           builder: (context) => Dialog(
+            shape: dialogShape,
+            backgroundColor: primaryBlue,
             child: Container(
               height: 300,
               child: ListView.builder(
                 itemCount: widget.survey.results.length + 1,
                 itemBuilder: (context, index) {
-                  return Card(
+                  return Container(
                     child: index < widget.survey.results.length
                         ? TextButton(
-                            child: Text(widget.survey.results.keys.toList()[index]),
+                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(primaryBlue)),
+                            child: Text(
+                              widget.survey.results.keys.toList()[index],
+                              style: inputTextStyle,
+                            ),
                             onPressed: () {
                               Navigator.pop(context);
                               setState(() => results = widget.survey.getResults(filter: [widget.survey.results.keys.toList()[index]]));
                             },
                           )
                         : TextButton(
-                            child: Text('Remove filters'),
+                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                            child: Text(
+                              'Remove filters',
+                              style: inputTextStyle,
+                            ),
                             onPressed: () {
                               Navigator.pop(context);
                               setState(() => results = widget.survey.getResults());

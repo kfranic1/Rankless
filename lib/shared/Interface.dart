@@ -32,20 +32,26 @@ CollectionReference publicCollection = FirebaseFirestore.instance.collection('pu
 // ? #end collections
 
 // COLORS
-const gradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, const Color(0xff3f51b5)]);
+const primaryGradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black, const Color(0xff3f51b5)]);
+const secondaryGradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, const Color(0xff3f51b5)]);
 const primaryBlue = Colors.blue;
 const secondaryBlue = Colors.blueAccent;
 Color buttonColor = Colors.blue.withOpacity(0.7);
 
 // DECORATIONS
-Decoration popOutDecoration = BoxDecoration(
-    borderRadius: borderRadius,
-    // color: Colors.blue[300], //Color(0xff42a5f5),
-    gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.blue, const Color(0xff3f51b5)]));
+Decoration secondaryGradientDecoration = BoxDecoration(
+  borderRadius: borderRadius,
+  gradient: secondaryGradient,
+);
 
-Decoration backgroundDecoration = BoxDecoration(gradient: gradient);
+BoxDecoration popOutDecoration = BoxDecoration(
+  borderRadius: borderRadius,
+  color: primaryBlue,
+);
 
-BoxDecoration borderDecoration = BoxDecoration(borderRadius: borderRadius);
+Decoration backgroundDecoration = BoxDecoration(gradient: primaryGradient);
+
+// BoxDecoration borderDecoration = BoxDecoration(borderRadius: borderRadius);
 
 InputDecoration textFieldDecoration = InputDecoration(
   // border: InputBorder.none,
