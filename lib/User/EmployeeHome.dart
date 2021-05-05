@@ -3,6 +3,7 @@ import 'package:rankless/shared/Interface.dart';
 import 'package:rankless/shared/keepAliveThis.dart';
 import 'CompanyHomeScreen.dart';
 import 'EmployeeHomeScreen.dart';
+import 'package:rankless/Review/ReviewScreen.dart';
 
 class EmployeeHome extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
   List<Widget> _screens = [
     KeepAliveThis(child: CompanyHomeScreen()),
     KeepAliveThis(child: EmployeeHomeScreen()),
-    Center(),
+    ReviewScreen(),
   ];
 
   @override
@@ -64,10 +65,10 @@ class _EmployeeHomeState extends State<EmployeeHome> {
         }),
       ),
       body: PageView.builder(
-              onPageChanged: (index) => setState(() => _currentIndex = index),
-              controller: _controller,
-              itemBuilder: (context, index) => _screens[index],
-            ),
+        onPageChanged: (index) => setState(() => _currentIndex = index),
+        controller: _controller,
+        itemBuilder: (context, index) => _screens[index],
+      ),
     );
   }
 }
