@@ -135,8 +135,8 @@ class Company {
   /// Either [position] or [addTags] or [removeTags] should have value. Otherwise nothing will happen.
   Future addPositionOrTags(Employee who, {String position, List<String> addTags, List<String> removeTags}) async {
     if (position == null && addTags == null && removeTags == null) return;
-    await getAllSurveys(false);
-    List<String> allTags;
+    //await getAllSurveys(false);
+    List<String> allTags = [];
     allTags.addAll(who.tags);
     if (addTags != null) allTags.addAll(addTags);
     if (removeTags != null) allTags.removeWhere((element) => removeTags.contains(element));
@@ -152,6 +152,7 @@ class Company {
       ..addAll(newSurveys)
       ..toSet()
       ..toList();
+
     await who.updateEmployee(newPosition: position, newTags: allTags, newSurveys: who.surveys);
   }
 
