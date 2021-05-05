@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +9,7 @@ const font = 'Mulish';
 
 Widget loader = Center(child: CircularProgressIndicator()) /*Loader(color: Colors.blue, allowAnimation: false)*/;
 
-List<String> categories = [
+List<String> industries = [
   "Auto-Moto",
   "Construction",
   "Education",
@@ -96,3 +98,7 @@ ButtonStyle textButtonStyleRegister = ButtonStyle(
     padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15))
     // minimumSize: MaterialStateProperty.all<Size>(Size(30, 8)),
     );
+
+int getFromMask(int mask) {
+  return (log(mask) / log(2)).round();
+}

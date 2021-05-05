@@ -10,6 +10,7 @@ import 'package:rankless/shared/custom_app_bar.dart';
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    //TODO izvuci StreamProvidere u posebne widgete da se ne zove new Widget svaki put
     final Employee employee = Provider.of<Employee>(context);
     Company company = Company(dummy: true);
     //Return to register screen implicitly by creating new instance of Authenticate
@@ -17,31 +18,31 @@ class Wrapper extends StatelessWidget {
         ? Register()
         : Scaffold(
             appBar: CustomAppBar(employee: employee),
-            body: employee.dummy
-                ? loader
-                : StreamProvider<Employee>.value(
-                    initialData: Employee(dummy: true),
-                    updateShouldNotify: (a, b) => true,
-                    value: employee.self,
-                    builder: (context, child) {
-                      final Employee temp = Provider.of<Employee>(context);
-                      //if (temp.companyUid == null && !company.dummy)
-                      //company = new Company(dummy: true);
-                      //else if (company.uid != temp.companyUid) company = new Company(uid: temp.uid);
-                      company = temp.companyUid == null
-                          ? Company(dummy: true)
-                          : company.uid != temp.companyUid
-                              ? Company(uid: temp.companyUid)
-                              : company;
-                      return StreamProvider<Company>.value(
-                          initialData: company,
-                          updateShouldNotify: (a, b) => true,
-                          value: company.self,
-                          builder: (context, child) {
-                            print('rebuilding');
-                            return EmployeeHome();
-                          });
-                    }),
+            body: Container(
+              decoration: backgroundDecoration,
+              child: employee.dummy
+                  ? loader
+                  : StreamProvider<Employee>.value(
+                      initialData: Employee(dummy: true),
+                      updateShouldNotify: (a, b) => true,
+                      value: employee.self,
+                      builder: (context, child) {
+                        final Employee temp = Provider.of<Employee>(context);
+                        company = temp.companyUid == null
+                            ? Company(dummy: true)
+                            : company.uid != temp.companyUid
+                                ? Company(uid: temp.companyUid)
+                                : company;
+                        return StreamProvider<Company>.value(
+                            initialData: company,
+                            updateShouldNotify: (a, b) => true,
+                            value: company.self,
+                            builder: (context, child) {
+                              print('rebuilding');
+                              return EmployeeHome();
+                            });
+                      }),
+            ),
           );
   }
 }

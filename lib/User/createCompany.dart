@@ -16,12 +16,12 @@ class CreateCompany extends StatefulWidget {
 
 class _CreateCompanyState extends State<CreateCompany> {
   final _formKey = GlobalKey<FormState>();
-  CollectionReference categoriesReference = FirebaseFirestore.instance.collection('categories');
+  CollectionReference industriesReference = FirebaseFirestore.instance.collection('industries');
 
   String name = '';
   String info = '';
   String error = '';
-  String category = '';
+  String industry = '';
   String country = 'Hrvatska';
   bool creating = false;
 
@@ -119,13 +119,13 @@ class _CreateCompanyState extends State<CreateCompany> {
                                 height: 20,
                               ),
                               SearchChoices.single(
-                                hint: 'Category',
-                                value: category,
+                                hint: 'industry',
+                                value: industry,
                                 style: inputTextStyle.copyWith(color: Colors.white),
                                 menuBackgroundColor: Colors.blueAccent,
                                 isExpanded: true,
-                                items: categories.map((e) => DropdownMenuItem(value: e, child: Text(e, style: inputTextStyle))).toList(),
-                                onChanged: (index) => setState(() => category = index),
+                                items: industries.map((e) => DropdownMenuItem(value: e, child: Text(e, style: inputTextStyle))).toList(),
+                                onChanged: (index) => setState(() => industry = index),
                               ),
                               SizedBox(
                                 height: 20,
@@ -197,7 +197,7 @@ class _CreateCompanyState extends State<CreateCompany> {
     if (ret != '') return ret;
     Company company = Company(
       name: this.name,
-      industry: this.category,
+      industry: this.industry,
       employees: [widget.employee],
       description: this.info,
       country: this.country,

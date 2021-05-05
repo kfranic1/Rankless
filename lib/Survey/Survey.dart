@@ -16,7 +16,7 @@ class Survey {
   STATUS status;
   Map<String, Map<int, List<String>>> results = new Map<String, Map<int, List<String>>>();
   bool hasData = false;
-  bool isPublic = false;
+  bool isPublic = true; //TODO treba bit false
 
   Survey({this.uid, this.name, this.company});
 
@@ -28,7 +28,7 @@ class Survey {
       'from': this.from.toString(),
       'to': this.to.toString(),
       'tags': this.tags,
-      'public': false,
+      'public': true, //TODO treba bit false
     });
     this.uid = ref.id;
     await company.updateCompany(newSurvey: this);
@@ -83,18 +83,37 @@ class Survey {
     this.qNa = (questions as List<dynamic>).map((e) => e as Map<String, dynamic>).map((e) => Question().fromMap(e)).toList();
     this.tags = List<String>.from(ref['tags'] as List<dynamic>);
     this.status = _getStatus();
-    //TODO this.isPublic = ref['public'];
+    this.isPublic = ref['public'];
     return this;
   }
 
   /// Must recieve [Provied.of<Employee>(context)] in other words [me]
   ///
   /// Submits [this] survey done by [me]
-  Future submitSurvey(Employee who) async {
-    who.surveys.remove(this);
-    await who.updateEmployee(newSurveys: who.surveys);
+  Future submitSurvey(Employee who, {String industry, String country}) async {
+    bool failed = false;
     if (isPublic) {
-      //publicCollection.doc(this.uid).collection(who.companyUid).set({}, SetOptions(merge: true));
+      FirebaseFirestore.instance.runTransaction((transaction) async {
+        await publicCollection.doc(this.uid).collection('results').doc(who.companyUid).get().then((mapa) async {
+          Map<String, dynamic> add = mapa.data() ??
+              {
+                'total': 0,
+                'sum': 0,
+                'country' : country,
+                'industry' : industry,
+              };
+          for (int i = 0; i < 5; i++) {
+            add['sum' + 1.toString()] = int.parse(add['sum'] + 1.toString()) + getFromMask(qNa[i].mask);
+          }
+          add['total'] = int.parse(add['total']) + 1;
+          transaction.set(
+            publicCollection.doc(this.uid).collection('results').doc(who.companyUid),
+            add,
+          );
+        });
+      }).onError((error, stackTrace) {
+        failed = true;
+      });
     } else
       await resultCollection.doc(this.uid).set({
         who.uid: {
@@ -104,7 +123,10 @@ class Survey {
             return e.mask.toString();
           }).toList()
         }
-      }, SetOptions(merge: true));
+      }, SetOptions(merge: true)).onError((error, stackTrace) => failed = true);
+    if (failed) return;
+    who.surveys.remove(this);
+    await who.updateEmployee(newSurveys: who.surveys);
   }
 
   Future _getResults() async {

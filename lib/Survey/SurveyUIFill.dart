@@ -9,8 +9,10 @@ import 'Survey.dart';
 class SurveyUIFill extends StatefulWidget {
   final Survey survey;
   final Employee who;
+  final String industry;
+  final String country;
 
-  SurveyUIFill(this.survey, this.who);
+  SurveyUIFill(this.survey, this.who, {this.industry, this.country});
   @override
   _SurveyUIFillState createState() => _SurveyUIFillState();
 }
@@ -31,11 +33,11 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: finishing
-          ? loader
-          : Container(
-              decoration: backgroundDecoration,
-              child: Center(
+      body: Container(
+        decoration: backgroundDecoration,
+        child: finishing
+            ? loader
+            : Center(
                 child: Column(
                   children: <Widget>[
                     Container(
@@ -119,7 +121,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                   ],
                 ),
               ),
-            ),
+      ),
     );
   }
 
@@ -187,9 +189,8 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
         setState(() {
           finishing = true;
         });
-        await widget.survey.submitSurvey(widget.who);
         Navigator.pop(context); //Close alert
-        Navigator.pop(context); //Close survey
+        await widget.survey.submitSurvey(widget.who, industry: widget.industry, country: widget.country).whenComplete(() => Navigator.pop(context));
         //ovdje bi trebala ići neka radnja da se izlazi iz surveya i ulazi u izbornik anketa
       },
     );

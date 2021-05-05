@@ -19,7 +19,7 @@ class Company {
   List<String> requests = [];
   List<Survey> surveys = [];
   List<Survey> publicSurveys = [];
-  double totalScore = 0.0;
+  double percentage = 0.0;
   int surveysDone = 0;
   bool dummy;
 
@@ -47,7 +47,7 @@ class Company {
       'surveys': <String>[],
       'publicSurveys': <String>[],
       'positions': <String>[],
-      'totalScore': this.totalScore,
+      'totalScore': this.percentage,
       'surveysDone': this.surveysDone,
     });
     this.uid = ref.id;
@@ -57,7 +57,8 @@ class Company {
   Future updateCompany({
     String newDescription,
     Survey newSurvey,
-    List<String> newPosition,
+    String newPosition,
+    bool addPosition = true,
   }) async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       Map<String, dynamic> run = {};
@@ -70,7 +71,10 @@ class Company {
         run['surveys'] = this.surveys.map((e) => e.uid).toList();
       }
       if (newPosition != null) {
-        this.positions.addAll(newPosition);
+        if(addPosition)
+          this.positions.add(newPosition);
+        else 
+          this.positions.remove(newPosition);
         run['positions'] = this.positions;
       }
       transaction.update(companiesCollection.doc(this.uid), run);
@@ -95,7 +99,7 @@ class Company {
     this.surveys = List<String>.from(ref['surveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
     this.publicSurveys = List<String>.from(ref['publicSurveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
     //this.surveysDone = ref['surveysDone'];
-    //this.totalScore = ref['totalScore'];
+    //this.percentage = ref['percentage'];
     return this;
   }
 
