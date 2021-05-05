@@ -71,9 +71,9 @@ class Company {
         run['surveys'] = this.surveys.map((e) => e.uid).toList();
       }
       if (newPosition != null) {
-        if(addPosition)
+        if (addPosition)
           this.positions.add(newPosition);
-        else 
+        else
           this.positions.remove(newPosition);
         run['positions'] = this.positions;
       }
@@ -137,27 +137,28 @@ class Company {
   /// If [remove == true] then newTags will be removed from tags.
   ///
   /// Either [position] or [addTags] or [removeTags] should have value. Otherwise nothing will happen.
-  Future addPositionOrTags(Employee who, {String position, List<String> addTags, List<String> removeTags}) async {
-    if (position == null && addTags == null && removeTags == null) return;
+  Future addPositionOrTags(Employee who, {String position, List<String> addTags}) async {
+    if (position == null && addTags == null) return;
     //await getAllSurveys(false);
-    List<String> allTags = [];
-    allTags.addAll(who.tags);
-    if (addTags != null) allTags.addAll(addTags);
-    if (removeTags != null) allTags.removeWhere((element) => removeTags.contains(element));
-    List<Survey> newSurveys = surveys
-        .where((e) {
-          if (position != null && e.tags.contains(position)) return true;
-          if (allTags != null) for (String tag in allTags) if (e.tags.contains(tag)) return true;
-          return false;
-        })
-        .where((e) => e.status == STATUS.Upcoming)
-        .toList();
-    who.surveys
-      ..addAll(newSurveys)
-      ..toSet()
-      ..toList();
+    if (addTags != null) who.tags = addTags;
+    if (position != null) who.position = position;
 
-    await who.updateEmployee(newPosition: position, newTags: allTags, newSurveys: who.surveys);
+    //TODO provjera surveya
+
+    // List<Survey> newSurveys = surveys
+    //     .where((e) {
+    //       if (position != null && e.tags.contains(position)) return true;
+    //       if (allTags != null) for (String tag in allTags) if (e.tags.contains(tag)) return true;
+    //       return false;
+    //     })
+    //     .where((e) => e.status == STATUS.Upcoming)
+    //     .toList();
+    // who.surveys
+    //   ..addAll(newSurveys)
+    //   ..toSet()
+    //   ..toList();
+
+    await who.updateEmployee(newPosition: who.position, newTags: who.tags, newSurveys: who.surveys);
   }
 
   ///Returns [List] of [surveys] without [results]

@@ -348,7 +348,7 @@ class _ManageState extends State<Manage> {
       child: Container(
         padding: EdgeInsets.all(5),
         margin: EdgeInsets.only(bottom: 10),
-        decoration: popOutDecoration,
+        decoration: secondaryGradientDecoration,
         child: (ListTile(
           title: Text(
             widget.company.employees[index].name + ' ' + widget.company.employees[index].surname,
@@ -485,7 +485,6 @@ class _ManageState extends State<Manage> {
                                 value.forEach((element) => list.add(widget.company.tags[element]));
                                 await widget.company.addPositionOrTags(widget.company.employees[index], addTags: list);
                                 setState(() {
-                                  //value.forEach((element) => widget.company.employees[index].tags.add(widget.company.tags[element]));
                                   loading = false;
                                 });
                               },
@@ -539,7 +538,7 @@ class _ManageState extends State<Manage> {
   Widget buildPosTile(int index) {
     return Container(
       padding: EdgeInsets.all(20),
-      decoration: popOutDecoration,
+      decoration: secondaryGradientDecoration,
       child: Text(
         widget.company.positions[index],
         style: inputTextStyle,
@@ -551,7 +550,7 @@ class _ManageState extends State<Manage> {
   Widget buildTagTile(int index) {
     return Container(
       padding: EdgeInsets.all(20),
-      decoration: popOutDecoration,
+      decoration: secondaryGradientDecoration,
       child: Text(
         widget.company.tags[index],
         style: inputTextStyle,
