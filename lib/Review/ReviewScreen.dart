@@ -12,15 +12,27 @@ class ReviewScreen extends StatefulWidget {
 
 class _ReviewScreenState extends State<ReviewScreen> {
   List<DropdownMenuItem<String>> searchCountries;
-  DropdownMenuItem selectedCountry;
+  String selectedCountry;
   List<DropdownMenuItem<String>> searchCategories;
   bool loading = false;
+  Company company;
+  Analysis analysis;
+  Future _future;
+  @override
+  void initState() {
+    company = Provider.of<Company>(context, listen: false);
+    analysis = Analysis(company.uid);
+    _future = analysis.getData().whenComplete(() => searchCountries = analysis.activeCountries.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Company company = Provider.of<Company>(context);
-    Analysis analysis = Analysis(company.uid);
-
     // searchCategories = categories.map<DropdownMenuItem<String>>((String value) {
     //   return DropdownMenuItem<String>(value: value, child: Text(value));
     // }).toList();
@@ -30,22 +42,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
         decoration: backgroundDecoration,
         height: double.infinity,
         width: double.infinity,
-        // TODO pozivaj future jednom
         child: FutureBuilder(
-            future: analysis.getData(),
+            future: _future,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.active) return loader;
-              // else
-              searchCountries = analysis.activeCountries.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList();
-
-              searchCountries.forEach((element) {
-                print('el ${element.value}');
-              });
+              if (snapshot.connectionState != ConnectionState.done) return loader;
               return Column(
                 // shrinkWrap: true,
                 children: [
@@ -64,30 +64,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           )
                         : selectedCountry,
                     searchHint: 'search hint',
-                    displayItem: (item, selected) {
-                      return Column(children: [
-                        SizedBox(height: 20),
-                        Row(children: [
-                          selected
-                              ? Icon(
-                                  Icons.check,
-                                  color: Colors.green,
-                                )
-                              : Icon(
-                                  Icons.check_box_outline_blank,
-                                  color: Colors.grey,
-                                ),
-                          SizedBox(width: 7),
-                          Expanded(
-                            child: Text(
-                              item.value,
-                              style: inputTextStyle,
-                            ),
-                          ),
-                        ]),
-                      ]);
-                    },
                     isExpanded: true,
+                    onChanged: (value) {
+                      print(value);
+                      setState(() {
+                        selectedCountry = value;
+                      });
+                    },
                   ),
                 ],
               );
