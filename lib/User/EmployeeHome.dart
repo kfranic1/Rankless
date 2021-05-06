@@ -65,6 +65,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
         }),
       ),
       body: PageView.builder(
+        itemCount: 3,
         onPageChanged: (index) => setState(() => _currentIndex = index),
         controller: _controller,
         itemBuilder: (context, index) => _screens[index],
