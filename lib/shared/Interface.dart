@@ -25,6 +25,13 @@ List<String> industries = [
   "Other",
 ];
 
+List<String> categories = [
+  "Engagement",
+  "Performance",
+  "Satisfaction",
+  "Prospects",
+];
+
 // ? #collections
 CollectionReference companiesCollection = FirebaseFirestore.instance.collection('companies');
 CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
