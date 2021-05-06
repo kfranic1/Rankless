@@ -60,13 +60,11 @@ class _SurveyUIState extends State<SurveyUI> {
 
     return Scaffold(
       key: _scaffoldKey,
-      body: loading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Container(
-              decoration: backgroundDecoration,
-              child: Column(
+      body: Container(
+        decoration: backgroundDecoration,
+        child: loading
+            ? loader
+            : Column(
                 children: <Widget>[
                   Container(
                     child: TextField(
@@ -151,7 +149,7 @@ class _SurveyUIState extends State<SurveyUI> {
                     child: Row(
                       children: [
                         Text(
-                          'For(' + widget.survey.getCountBasedOnTags().toString() + ')',
+                          'For: ',
                           style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'Mulish'),
                         ),
                         SizedBox(
@@ -385,7 +383,7 @@ class _SurveyUIState extends State<SurveyUI> {
                   )
                 ],
               ),
-            ),
+      ),
     );
   }
 

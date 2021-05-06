@@ -32,6 +32,21 @@ List<String> categories = [
   "Prospects",
 ];
 
+List<String> months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
 // ? #collections
 CollectionReference companiesCollection = FirebaseFirestore.instance.collection('companies');
 CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
