@@ -55,8 +55,8 @@ class _EmployeeHomeState extends State<EmployeeHome> {
           ),
           BottomNavigationBarItem(
             backgroundColor: Colors.indigo,
-            label: 'Company List',
-            icon: Icon(Icons.list),
+            label: 'Review',
+            icon: Icon(Icons.score),
           ),
         ],
         onTap: (index) => setState(() {
