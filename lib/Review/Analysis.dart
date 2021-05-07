@@ -42,7 +42,6 @@ class Analysis {
                     industry,
                     ocjene,
                   ));
-                  print(index);
                   if (c == _companyUid) _myScore[index] = ocjene;
                 });
               });
@@ -73,9 +72,6 @@ class Analysis {
   }
 
   double getMyScore(int index, int category) {
-    print(_myScore);
-    print(index);
-    print(category);
     return _myScore[index][category];
   }
 
@@ -89,11 +85,39 @@ class Analysis {
       if (_data[index][i].score[category] > _myScore[index][category]) better++;
       count++;
     }
-    return ((better / count) * 100).round();
+    return ((better / count) * 100).round() + 1;
   }
 
   int getNumOfSurveys() {
     return _surveys.length;
+  }
+
+  String getMessage(int category, {String country, String industry}) {
+    int index = _surveys.length - 1;
+    int requiredPercentage = getPosition(category, country: country, industry: industry);
+    int upgrade = requiredPercentage > 5 ? 5 : requiredPercentage;
+    requiredPercentage += upgrade;
+    double ans = _myScore[index][category];
+    for (; ans <= 5; ans += 0.1) {
+      int better = 0;
+      int count = 0;
+      for (int i = 0; i < _data[index].length; i++) {
+        if (country != null && country != _data[index][i].country) continue;
+        if (industry != null && industry != _data[index][i].industry) continue;
+        if (_data[index][i].score[category] < ans - e) better++;
+        count++;
+      }
+      if (better / count * 100 > requiredPercentage) break;
+    }
+    int actualPosition = getPosition(category, country: country, industry: industry);
+    double actualScore = _myScore[index][category];
+    _myScore[index][category] = ans;
+    int fakePosition = getPosition(category, country: country, industry: industry);
+    _myScore[index][category] = actualScore;
+    int actualUpgrade = actualPosition - fakePosition;
+    ans -= _myScore[index][category];
+
+    return "To get $actualUpgrade% better score your score need to improve by " + ans.toStringAsFixed(1);
   }
 }
 

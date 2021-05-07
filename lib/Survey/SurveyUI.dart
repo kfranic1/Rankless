@@ -71,7 +71,7 @@ class _SurveyUIState extends State<SurveyUI> {
                       controller: nameEditing,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'input survey name',
+                        hintText: 'Name',
                         hintStyle: TextStyle(
                           fontFamily: 'Mulish',
                           color: Colors.grey[600],
@@ -348,7 +348,11 @@ class _SurveyUIState extends State<SurveyUI> {
                           if (ans == null || ans.length == 0) error = cnt;
                         }
                       }
-                      if (widget.survey.qNa.length == 0) {
+                      if (widget.survey.name == null || widget.survey.name.length == 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Survey doesn't have a name"),
+                        ));
+                      } else if (widget.survey.qNa.length == 0) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text("Survey is empty"),
                         ));
