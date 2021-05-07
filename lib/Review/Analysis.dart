@@ -50,8 +50,7 @@ class Analysis {
             }));
   }
 
-  double getMaxScore(int category, {String country, String industry}) {
-    int index = _surveys.length - 1;
+  double getMaxScore(int index, int category, {String country, String industry}) {
     double ret = 0;
     for (int i = 0; i < _data[index].length; i++) {
       if (country != null && country != _data[index][i].country) continue;
@@ -80,7 +79,8 @@ class Analysis {
     return _myScore[index][category];
   }
 
-  int getPosition(int index, int category, {String country, String industry}) {
+  int getPosition(int category, {String country, String industry}) {
+    int index = _surveys.length - 1;
     int better = 0;
     int count = 0;
     for (int i = 0; i < _data[index].length; i++) {
