@@ -128,16 +128,26 @@ class Employee {
       transaction.update(companiesCollection.doc(company.uid), {
         'employees': employeesTemp,
       });
-    });
-    await updateEmployee(
-      newCompanyUid: '',
-      newPosition: '',
-      newTags: [],
-      newAdmin: false,
-    );
+    }).whenComplete(() async => await updateEmployee(
+          newCompanyUid: null,
+          newPosition: '',
+          newTags: [],
+          newAdmin: false,
+        ));
   }
 
-  Future sendRequestToCompany(String futureCompanyName, String futureCompanyUid) async {
+  Future joinCompany(String companyUid) async {
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentReference ref = companiesCollection.doc(companyUid);
+      List<String> employees = ((await ref.get())['employees'] as List).map((e) => e.toString()).toList();
+      employees.add(this.uid);
+      transaction.update(ref, {
+        'employees': employees,
+      });
+    }).whenComplete(() async => await updateEmployee(newCompanyUid: companyUid));
+  }
+
+  /*Future sendRequestToCompany(String futureCompanyName, String futureCompanyUid) async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       DocumentReference ref = FirebaseFirestore.instance.collection('companies').doc(futureCompanyUid);
       List<String> req = ((await ref.get())['requests'] as List).map((e) => e.toString()).toList();
@@ -145,8 +155,7 @@ class Employee {
       transaction.update(ref, {
         'requests': req,
       });
-    });
-    await updateEmployee(newRequest: futureCompanyUid + '%' + futureCompanyName);
+    }).whenComplete(() async => await updateEmployee(newRequest: futureCompanyUid + '%' + futureCompanyName));
   }
 
   Future cancelRequestToCompany() async {
@@ -157,9 +166,8 @@ class Employee {
       transaction.update(ref, {
         'requests': req,
       });
-    });
-    await updateEmployee(newRequest: '');
-  }
+    }).whenComplete(() async => await updateEmployee(newRequest: ''));
+  }*/
 
   Future handleSurveys() async {
     await Future.wait(this.surveys.map((e) async => await e.getSurvey(false)).toList());
