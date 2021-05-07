@@ -29,9 +29,36 @@ class _ManageState extends State<Manage> {
   List<DropdownMenuItem<String>> tags = [];
   List<int> _selectedTags = [];
   bool loading = false;
+  var _searchview = new TextEditingController();
+  List<Employee> _filterListEmp = [];
+  List<String> _filterListPos = [];
+  List<String> _filterListTag = [];
+  bool _firstSearch = true;
+  String _query = "";
+  int filterListCnt = 0;
+  int itemCnt = 0;
+
+  _ManageState() {
+    //Register a closure to be called when the object changes.
+    _searchview.addListener(() {
+      if (_searchview.text.isEmpty) {
+        //Notify the framework that the internal state of this object has changed.
+        setState(() {
+          _firstSearch = true;
+          _query = "";
+        });
+      } else {
+        setState(() {
+          _firstSearch = false;
+          _query = _searchview.text;
+        });
+      }
+    });
+  }
 
   @override
   void initState() {
+    _filterListEmp = widget.company.employees;
     positions = widget.company.positions.map<DropdownMenuItem<String>>((String value) {
       return DropdownMenuItem<String>(
         value: value,
@@ -68,7 +95,7 @@ class _ManageState extends State<Manage> {
     final Employee me = Provider.of<Employee>(context);
     return Scaffold(
       floatingActionButton:
-          isSelected[1] == true || isSelected[2] == true ? FloatingActionButton(child: Icon(Icons.add), onPressed: () => addPosOrTag()) : Container(),
+          isSelected[1] || isSelected[2] ? FloatingActionButton(child: Icon(Icons.add), onPressed: () => addPosOrTag()) : Container(),
       body: Container(
         padding: EdgeInsets.all(10),
         height: double.infinity,
@@ -224,81 +251,8 @@ class _ManageState extends State<Manage> {
                         },
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 20),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(border: Border.all(color: Colors.white), borderRadius: BorderRadius.all(Radius.circular(30))),
-                      child: SearchChoices.single(
-                        items: searchEmployees,
-                        value: foundEmployee,
-                        style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 18),
-                        hint: Text(
-                          "Search employees",
-                          style: TextStyle(fontFamily: font, color: Colors.white.withOpacity(0.5), fontSize: 18),
-                          textAlign: TextAlign.left,
-                        ),
-                        underline: Container(),
-                        searchHint: "Search employees",
-                        onChanged: (value) {
-                          setState(() {
-                            foundEmployee = value;
-                          });
-                        },
-                        icon: Container(),
-                        isExpanded: true,
-                        selectedValueWidgetFn: (item) {
-                          return Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              item,
-                              textAlign: TextAlign.start,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    Visibility(
-                      visible: isSelected[0],
-                      child: Container(
-                        child: ListView.separated(
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return buildEmpTile(index);
-                            },
-                            separatorBuilder: (context, index) => SizedBox(
-                                  height: 20,
-                                ),
-                            itemCount: widget.company.employees.length),
-                      ),
-                    ),
-                    Visibility(
-                      visible: isSelected[1],
-                      child: Container(
-                        child: ListView.separated(
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return buildPosTile(index);
-                            },
-                            separatorBuilder: (context, index) => SizedBox(
-                                  height: 20,
-                                ),
-                            itemCount: widget.company.positions.length),
-                      ),
-                    ),
-                    Visibility(
-                      visible: isSelected[2],
-                      child: Container(
-                        child: ListView.separated(
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return buildTagTile(index);
-                            },
-                            separatorBuilder: (context, index) => SizedBox(
-                                  height: 20,
-                                ),
-                            itemCount: widget.company.tags.length),
-                      ),
-                    ),
+                    _createSearchView(),
+                    _firstSearch ? _createListView(selectedIdx(true)) : _performSearch(selectedIdx(false)),
                   ],
                 ),
               ),
@@ -306,7 +260,140 @@ class _ManageState extends State<Manage> {
     );
   }
 
-  Widget buildEmpTile(int index) {
+  Widget _createSearchView() {
+    return new Container(
+      margin: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(left: 20),
+      decoration: BoxDecoration(
+          border: Border.all(
+            width: 1.0,
+            color: primaryBlue,
+          ),
+          borderRadius: borderRadius),
+      child: new TextField(
+        controller: _searchview,
+        style: inputTextStyle,
+        decoration: InputDecoration(
+          hintText: "Search",
+          border: InputBorder.none,
+          hintStyle: inputTextStyle.copyWith(color: Colors.white.withOpacity(0.5)),
+        ),
+        textAlign: TextAlign.left,
+      ),
+    );
+  }
+
+  Widget _createListView(int i) {
+    return Visibility(
+      visible: isSelected[i],
+      child: Container(
+        child: ListView.separated(
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              if (i == 0) {
+                return buildEmpTile(index, true);
+              }
+              if (i == 1) {
+                return buildPosTile(index, true);
+              }
+              return buildTagTile(index, true);
+            },
+            separatorBuilder: (context, index) => i == 1 || i == 2
+                ? SizedBox(
+                    child: Divider(
+                      color: Colors.white,
+                    ),
+                    height: 15,
+                  )
+                : SizedBox(
+                    height: 20,
+                  ),
+            itemCount: itemCnt),
+      ),
+    );
+  }
+
+  Widget _performSearch(int i) {
+    if (i == 0) {
+      _filterListEmp = [];
+      for (int i = 0; i < widget.company.employees.length; i++) {
+        Employee emp = widget.company.employees[i];
+        String name = emp.name + ' ' + emp.surname;
+
+        if (name.toLowerCase().contains(_query.toLowerCase())) {
+          _filterListEmp.add(emp);
+        }
+      }
+    }
+    if (i == 1) {
+      _filterListPos = [];
+      for (int i = 0; i < widget.company.positions.length; i++) {
+        String inputPosition = widget.company.positions[i];
+
+        if (inputPosition.toLowerCase().contains(_query.toLowerCase())) {
+          _filterListPos.add(inputPosition);
+        }
+      }
+    }
+    if (i == 2) {
+      _filterListTag = [];
+      for (int i = 0; i < widget.company.tags.length; i++) {
+        String inputTag = widget.company.tags[i];
+
+        if (inputTag.toLowerCase().contains(_query.toLowerCase())) {
+          _filterListTag.add(inputTag);
+        }
+      }
+    }
+    return _createFilteredListView(i);
+  }
+
+  Widget _createFilteredListView(int i) {
+    return Visibility(
+      visible: isSelected[i],
+      child: Container(
+        child: ListView.separated(
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              if (i == 0) {
+                return buildEmpTile(index, false);
+              }
+              if (i == 1) {
+                return buildPosTile(index, false);
+              }
+              return buildTagTile(index, false);
+            },
+            separatorBuilder: (context, index) => i == 1 || i == 2
+                ? SizedBox(
+                    child: Divider(
+                      color: Colors.white,
+                    ),
+                    height: 15,
+                  )
+                : SizedBox(
+                    height: 20,
+                  ),
+            itemCount: filterListCnt),
+      ),
+    );
+  }
+
+  int selectedIdx(bool flag) {
+    if (isSelected[0]) {
+      flag ? itemCnt = widget.company.employees.length : filterListCnt = _filterListEmp.length;
+      return 0;
+    }
+
+    if (isSelected[1]) {
+      flag ? itemCnt = widget.company.positions.length : filterListCnt = _filterListPos.length;
+      return 1;
+    }
+    flag ? itemCnt = widget.company.tags.length : filterListCnt = _filterListTag.length;
+
+    return 2;
+  }
+
+  Widget buildEmpTile(int index, bool flag) {
     return Dismissible(
       direction: DismissDirection.endToStart,
       background: Container(
@@ -351,12 +438,20 @@ class _ManageState extends State<Manage> {
         decoration: secondaryGradientDecoration,
         child: (ListTile(
           title: Text(
-            widget.company.employees[index].name + ' ' + widget.company.employees[index].surname,
+            flag
+                ? widget.company.employees[index].name + ' ' + widget.company.employees[index].surname
+                : _filterListEmp[index].name + ' ' + _filterListEmp[index].surname,
             style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
             textAlign: TextAlign.left,
           ),
           trailing: Text(
-            widget.company.employees[index].position == "" ? 'No position' : widget.company.employees[index].position,
+            flag
+                ? widget.company.employees[index].position == ""
+                    ? 'No position'
+                    : widget.company.employees[index].position
+                : _filterListEmp[index].position == ""
+                    ? 'No position'
+                    : _filterListEmp[index].position,
             style: inputTextStyle.copyWith(fontSize: 16),
           ),
           onTap: () {
@@ -535,26 +630,117 @@ class _ManageState extends State<Manage> {
     );
   }
 
-  Widget buildPosTile(int index) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: secondaryGradientDecoration,
-      child: Text(
-        widget.company.positions[index],
-        style: inputTextStyle,
-        textAlign: TextAlign.center,
+  Widget buildPosTile(int index, bool flag) {
+    return Dismissible(
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 20),
+        child: Icon(Icons.delete),
+        color: Colors.red,
+      ),
+      key: UniqueKey(),
+      onDismissed: (direction) {
+        setState(() {
+          widget.company.positions.removeAt(index);
+        });
+      },
+      confirmDismiss: (DismissDirection direction) async {
+        return await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            if (hasPosition(widget.company.positions[index], widget.company.employees)) {
+              return AlertDialog(
+                content: Text('You can not remove position because there are still employees with this position'),
+              );
+            }
+            return AlertDialog(
+              title: const Text(
+                "Confirm",
+                style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
+              ),
+              content: const Text(
+                "Are you sure you want to remove this position from your company?",
+                style: TextStyle(fontFamily: font),
+              ),
+              actions: <Widget>[
+                TextButton(onPressed: () => Navigator.of(context).pop(true), child: const Text("DELETE", style: TextStyle(fontFamily: font))),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("CANCEL", style: TextStyle(fontFamily: font)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Container(
+        // decoration: BoxDecoration(
+        //     borderRadius: borderRadius,
+        //     gradient: LinearGradient(begin: Alignment.centerLeft, end: Alignment.centerRight, colors: [Colors.indigo, Colors.transparent])),
+        padding: EdgeInsets.all(20),
+        child: Text(
+          flag ? widget.company.positions[index] : _filterListPos[index],
+          style: inputTextStyle,
+          textAlign: TextAlign.center,
+        ),
+        alignment: Alignment.center,
       ),
     );
   }
 
-  Widget buildTagTile(int index) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: secondaryGradientDecoration,
-      child: Text(
-        widget.company.tags[index],
-        style: inputTextStyle,
-        textAlign: TextAlign.center,
+  Widget buildTagTile(int index, bool flag) {
+    return Dismissible(
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 20),
+        child: Icon(Icons.delete),
+        color: Colors.red,
+      ),
+      key: UniqueKey(),
+      onDismissed: (direction) {
+        setState(() {
+          widget.company.positions.removeAt(index);
+        });
+      },
+      confirmDismiss: (DismissDirection direction) async {
+        return await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            if (hasTag(widget.company.tags[index], widget.company.employees)) {
+              return AlertDialog(
+                content: Text('You can not remove position because there are still employees with this position'),
+              );
+            }
+            return AlertDialog(
+              title: const Text(
+                "Confirm",
+                style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
+              ),
+              content: const Text(
+                "Are you sure you want to remove this position from your company?",
+                style: TextStyle(fontFamily: font),
+              ),
+              actions: <Widget>[
+                TextButton(onPressed: () => Navigator.of(context).pop(true), child: const Text("DELETE", style: TextStyle(fontFamily: font))),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("CANCEL", style: TextStyle(fontFamily: font)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(20),
+        child: Text(
+          flag ? widget.company.tags[index] : _filterListTag[index],
+          style: inputTextStyle,
+          textAlign: TextAlign.center,
+        ),
+        alignment: Alignment.center,
       ),
     );
   }
@@ -607,5 +793,23 @@ class _ManageState extends State<Manage> {
       }
     });
     return list;
+  }
+
+  bool hasPosition(String position, List<Employee> listEmp) {
+    bool result = false;
+    listEmp.forEach((element) {
+      if (element.position == position) result = true;
+    });
+    return result;
+  }
+
+  bool hasTag(String tag, List<Employee> listEmp) {
+    bool result = false;
+    listEmp.forEach((element) {
+      element.tags.forEach((element) {
+        if (element == tag) result = true;
+      });
+    });
+    return result;
   }
 }
