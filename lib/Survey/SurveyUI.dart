@@ -73,7 +73,7 @@ class _SurveyUIState extends State<SurveyUI> {
                         border: InputBorder.none,
                         hintText: 'Name',
                         hintStyle: TextStyle(
-                          fontFamily: 'Mulish',
+                          fontFamily: font,
                           color: Colors.grey[600],
                           fontSize: 25,
                           //fontWeight: FontWeight.bold,
@@ -82,7 +82,7 @@ class _SurveyUIState extends State<SurveyUI> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
-                        fontFamily: 'Mulish',
+                        fontFamily: font,
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
                       ),
@@ -94,7 +94,7 @@ class _SurveyUIState extends State<SurveyUI> {
                     child: Row(
                       children: <Widget>[
                         //date
-                        Text('Date', style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'Mulish')),
+                        Text('Date', style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: font)),
                         SizedBox(
                           width: 20,
                         ),
@@ -108,7 +108,7 @@ class _SurveyUIState extends State<SurveyUI> {
                             child: TextButton(
                               child: Text(
                                 _formatted.format(widget.survey.from),
-                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontFamily: 'Mulish', color: Colors.white),
+                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, fontFamily: font, color: Colors.white),
                               ),
                               onPressed: () => _selectFrom(context),
                             ),
@@ -133,7 +133,7 @@ class _SurveyUIState extends State<SurveyUI> {
                             child: TextButton(
                               child: Text(
                                 _formatted.format(widget.survey.to),
-                                style: TextStyle(fontFamily: 'Mulish', fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                                style: TextStyle(fontFamily: font, fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
                               ),
                               onPressed: () => _selectTo(context),
                             ),
@@ -150,7 +150,7 @@ class _SurveyUIState extends State<SurveyUI> {
                       children: [
                         Text(
                           'For: ',
-                          style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'Mulish'),
+                          style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: font),
                         ),
                         SizedBox(
                           width: 20,
@@ -190,7 +190,7 @@ class _SurveyUIState extends State<SurveyUI> {
                                   Expanded(
                                     child: Text(
                                       item.value,
-                                      style: TextStyle(fontFamily: 'Mulish', fontSize: 17),
+                                      style: TextStyle(fontFamily: font, fontSize: 17),
                                     ),
                                   ),
                                 ])),
@@ -205,7 +205,7 @@ class _SurveyUIState extends State<SurveyUI> {
 
                             searchHint: Text(
                               'Who should get the survey',
-                              style: TextStyle(fontFamily: 'Mulish', fontWeight: FontWeight.bold, fontSize: 18),
+                              style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                             isExpanded: false,
                             displayClearIcon: false,
@@ -226,7 +226,7 @@ class _SurveyUIState extends State<SurveyUI> {
                                 key: Key(index.toString()),
                                 index: index,
                                 title: item,
-                                textStyle: const TextStyle(fontFamily: 'Mulish', fontSize: 17),
+                                textStyle: const TextStyle(fontFamily: font, fontSize: 17),
                                 pressEnabled: false,
                                 singleItem: false,
                                 activeColor: Colors.blue,
@@ -273,7 +273,7 @@ class _SurveyUIState extends State<SurveyUI> {
                                   },
                                   child: Text(
                                     'Add',
-                                    style: TextStyle(color: Colors.white, fontFamily: 'Mulish', fontSize: 20),
+                                    style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
                                   ),
                                 ),
                               ],
@@ -290,7 +290,7 @@ class _SurveyUIState extends State<SurveyUI> {
                     ),
                     label: Text(
                       "Add question",
-                      style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'Mulish'),
+                      style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: font),
                     ),
                   ),
                   Expanded(
@@ -350,15 +350,24 @@ class _SurveyUIState extends State<SurveyUI> {
                       }
                       if (widget.survey.name == null || widget.survey.name.length == 0) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("Survey doesn't have a name"),
+                          content: Text(
+                            "Survey doesn't have a name",
+                            style: inputTextStyle.copyWith(fontSize: snackFontSize),
+                          ),
                         ));
                       } else if (widget.survey.qNa.length == 0) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("Survey is empty"),
+                          content: Text(
+                            "Survey is empty",
+                            style: inputTextStyle.copyWith(fontSize: snackFontSize),
+                          ),
                         ));
                       } else if (error != -1) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("Question $error is not complete"),
+                          content: Text(
+                            "Question $error is not complete",
+                            style: inputTextStyle.copyWith(fontSize: snackFontSize),
+                          ),
                         ));
                       } else {
                         setState(() {
@@ -380,7 +389,7 @@ class _SurveyUIState extends State<SurveyUI> {
                         style: TextStyle(
                             //fontWeight: FontWeight.bold,
                             color: Colors.white,
-                            fontFamily: 'Mulish',
+                            fontFamily: font,
                             fontSize: 22),
                       ),
                     ),
@@ -437,7 +446,7 @@ class _SurveyUIState extends State<SurveyUI> {
       child: (ListTile(
         leading: Text(
           (index + 1).toString(),
-          style: TextStyle(color: Colors.white, fontFamily: 'Mulish', fontSize: 20),
+          style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
         ),
         title: Container(
           constraints: BoxConstraints(
@@ -447,7 +456,7 @@ class _SurveyUIState extends State<SurveyUI> {
           padding: EdgeInsets.only(left: 10, right: 10),
           child: Text(
             question.questionText,
-            style: TextStyle(color: Colors.white, fontFamily: 'Mulish', fontSize: 20),
+            style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
             textAlign: TextAlign.left,
           ),
           decoration: BoxDecoration(

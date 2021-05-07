@@ -43,7 +43,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                     Container(
                       child: Text(widget.survey.name,
                           style: TextStyle(
-                            fontFamily: 'Mulish',
+                            fontFamily: font,
                             color: Colors.white,
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
@@ -65,7 +65,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                             return (ListTile(
                               leading: Text(
                                 (index + 1).toString(),
-                                style: TextStyle(color: Colors.white, fontFamily: 'Mulish', fontSize: 18),
+                                style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 18),
                               ),
                               title: Container(
                                 decoration: decorate,
@@ -114,7 +114,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                             style: TextStyle(
                                 //fontWeight: FontWeight.bold,
                                 color: Colors.white,
-                                fontFamily: 'Mulish',
+                                fontFamily: font,
                                 fontSize: 22),
                           )),
                     )
@@ -164,7 +164,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
       duration: Duration(seconds: 2),
       content: Text(
         'You must answer on all of the questions',
-        style: TextStyle(fontFamily: font, fontSize: 20),
+        style: inputTextStyle.copyWith(fontSize: snackFontSize),
       ),
     ));
   }

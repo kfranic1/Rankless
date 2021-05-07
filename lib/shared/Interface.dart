@@ -110,6 +110,8 @@ TextStyle inputTextStyle = TextStyle(
   fontSize: 18,
 );
 
+const double snackFontSize = 18;
+
 RoundedRectangleBorder dialogShape = RoundedRectangleBorder(borderRadius: borderRadius);
 
 // BUTTONS
