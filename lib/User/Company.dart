@@ -59,6 +59,8 @@ class Company {
     Survey newSurvey,
     String newPosition,
     bool addPosition = true,
+    String newTag,
+    bool addTag = true,
   }) async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       Map<String, dynamic> run = {};
@@ -76,6 +78,13 @@ class Company {
         else
           this.positions.remove(newPosition);
         run['positions'] = this.positions;
+      }
+      if (newTag != null) {
+        if (addTag)
+          this.tags.add(newTag);
+        else
+          this.tags.remove(newTag);
+        run['tags'] = this.tags;
       }
       transaction.update(companiesCollection.doc(this.uid), run);
     });

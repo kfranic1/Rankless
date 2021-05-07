@@ -9,6 +9,10 @@ const font = 'Mulish';
 
 Widget loader = Center(child: CircularProgressIndicator()) /*Loader(color: Colors.blue, allowAnimation: false)*/;
 
+//VARIABLES
+
+const double e = 1e-9;
+
 List<String> industries = [
   "Auto-Moto",
   "Construction",
@@ -30,6 +34,7 @@ List<String> categories = [
   "Performance",
   "Satisfaction",
   "Prospects",
+  'Other',
 ];
 
 List<String> months = [
