@@ -172,8 +172,8 @@ class Company {
 
   ///Returns [List] of [surveys] without [results]
   Future<List<Survey>> getAllSurveys(bool withResults) async {
-    await Future.wait(publicSurveys.map((e) async => await e.getSurvey(withResults)).toList());
-    await Future.wait(surveys.map((e) async => await e.getSurvey(withResults)).toList());
+    await Future.wait(publicSurveys.map((e) async => await e.getSurvey(withResults)).toList())
+        .whenComplete(() async => await Future.wait(surveys.map((e) async => await e.getSurvey(withResults)).toList()));
     this.surveys.addAll(publicSurveys);
     return this.surveys;
   }

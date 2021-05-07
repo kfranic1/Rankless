@@ -91,16 +91,19 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
               ),
             ])
           : Container(),
-      body: company.dummy
-          ? Center(
-              child: Text('You are not in any company'),
-            )
-          : Container(
-              padding: EdgeInsets.all(10),
-              width: double.infinity,
-              height: double.infinity,
-              decoration: backgroundDecoration,
-              child: ListView(
+      body: Container(
+        padding: EdgeInsets.all(10),
+        width: double.infinity,
+        height: double.infinity,
+        decoration: backgroundDecoration,
+        child: company.dummy
+            ? Center(
+                child: Text(
+                  'You are not in any company',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            : ListView(
                 shrinkWrap: true,
                 children: [
                   Align(
@@ -215,7 +218,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   surveys
                 ],
               ),
-            ),
+      ),
     );
   }
 

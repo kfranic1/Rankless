@@ -7,6 +7,7 @@ import 'CreateCompany.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'JoinCompany.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 import 'Employee.dart';
 
@@ -18,9 +19,17 @@ class EmployeeHomeScreen extends StatefulWidget {
 }
 
 class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
-  bool isCancelDisabled = false;
+  //bool isCancelDisabled = false;
+  TextEditingController joinController = new TextEditingController();
   int numOfSurveys = -1;
   Widget surveys;
+  bool loading = false;
+
+  @override
+  void dispose() {
+    joinController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +39,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
     return Container(
       decoration: backgroundDecoration,
       padding: EdgeInsets.all(10),
-      child: employee.dummy || (employee.companyUid != null && company.dummy)
+      child: loading || (employee.dummy || (employee.companyUid != null && company.dummy))
           ? loader
           : ListView(
               children: [
@@ -42,7 +51,32 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 ),
                 SizedBox(height: 20),
                 employee.companyUid == null
-                    ? employee.request != '' && employee.request != 'denied'
+                    ? Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: joinController,
+                            ),
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.copy,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () async {
+                                joinController.text = (await Clipboard.getData('text/plain')).text;
+                              }),
+                          TextButton(
+                            onPressed: () {
+                              setState(() => loading = true);
+                              joinController.text = 'Je4QaC1JnMeceBqixAWb';
+                              employee.joinCompany(joinController.text).whenComplete(() => setState(() => loading = false));
+                            },
+                            child: Text('Join'),
+                          ),
+                        ],
+                      )
+                    /*employee.request != '' && employee.request != 'denied'
                         ? Column(
                             children: [
                               Text("You sent request to " + employee.request.substring(employee.request.indexOf('%') + 1), style: inputTextStyle),
@@ -106,7 +140,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                 ),
                               ),
                             ],
-                          )
+                          )*/
                     : Column(
                         children: [
                           Row(

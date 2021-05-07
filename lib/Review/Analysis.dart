@@ -34,8 +34,9 @@ class Analysis {
                   List<double> ocjene = List<double>.filled(6, 0);
                   for (int i = 0; i < 5; i++) {
                     ocjene[i] = value.data()['sum' + i.toString()] / value.data()['total'];
-                    ocjene[5] += ocjene[i] / 5;
+                    ocjene[5] += ocjene[i];
                   }
+                  ocjene[5] /= 5;
                   if (_data[index] == null) _data[index] = [];
                   _data[index].add(Scores(
                     country,
@@ -46,6 +47,12 @@ class Analysis {
                 });
               });
               index++;
+            }))
+        .whenComplete(() => _data.forEach((key, value) {
+              print(key);
+              value.forEach((element) {
+                print(element.score);
+              });
             }));
   }
 
@@ -54,7 +61,7 @@ class Analysis {
     for (int i = 0; i < _data[index].length; i++) {
       if (country != null && country != _data[index][i].country) continue;
       if (industry != null && industry != _data[index][i].industry) continue;
-      if (_data[index][i].score[index] > ret) ret = _data[index][i].score[category];
+      if (_data[index][i].score[category] > ret) ret = _data[index][i].score[category];
     }
     return ret;
   }
