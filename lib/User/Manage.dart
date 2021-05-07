@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
 import 'package:rankless/Survey/Results.dart';
@@ -103,158 +104,76 @@ class _ManageState extends State<Manage> {
         decoration: backgroundDecoration,
         child: loading
             ? loader
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 30),
-                      child: Text(
-                        "Manage",
-                        style: titleNameStyle,
-                      ),
+            : Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 30),
+                    child: Text(
+                      "Manage",
+                      style: titleNameStyle,
                     ),
-                    Visibility(
-                      visible: (me.admin && widget.company.requests.length != 0),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: handling
-                              ? Center(child: CircularProgressIndicator())
-                              : Stack(
-                                  children: widget.company.requests
-                                      .map(
-                                        (e) {
-                                          String nameTemp = e.substring(e.indexOf('%') + 1, e.lastIndexOf('%'));
-                                          String surnameTemp = e.substring(e.lastIndexOf('%') + 1);
-                                          return Dismissible(
-                                            dragStartBehavior: DragStartBehavior.down,
-                                            resizeDuration: Duration(microseconds: 100),
-                                            key: UniqueKey(),
-                                            onDismissed: (direction) => {
-                                              if (direction == DismissDirection.endToStart)
-                                                setState(() {
-                                                  widget.company.requests.add(widget.company.requests[0]);
-                                                  widget.company.requests.removeAt(0);
-                                                })
-                                              else
-                                                {
-                                                  setState(() {
-                                                    widget.company.requests.insert(0, widget.company.requests.last);
-                                                    widget.company.requests.removeLast();
-                                                  })
-                                                }
-                                            },
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  color: Colors.blue[50],
-                                                  borderRadius: borderRadius,
-                                                  gradient: LinearGradient(
-                                                      begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.indigo, Colors.blue])),
-                                              margin: EdgeInsets.only(top: 40),
-                                              child: Column(
-                                                children: [
-                                                  Text('Requested to join your company',
-                                                      style: TextStyle(
-                                                          color: Colors.white, fontFamily: font, fontSize: 15, fontWeight: FontWeight.bold)),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 3,
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(left: 30.0),
-                                                          child: Text(
-                                                            nameTemp + ' ' + surnameTemp,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontFamily: font,
-                                                              fontSize: 18,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(left: 3.0),
-                                                          child: IconButton(
-                                                            color: Colors.green,
-                                                            iconSize: 35,
-                                                            icon: Icon(Icons.check),
-                                                            onPressed: () async {
-                                                              setState(() => handling = true);
-                                                              await widget.company.handleRequest(true);
-                                                              setState(() => handling = false);
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(8.0),
-                                                          child: IconButton(
-                                                            color: Colors.redAccent[700],
-                                                            iconSize: 35,
-                                                            icon: Icon(Icons.cancel_outlined),
-                                                            onPressed: () async {
-                                                              setState(() {
-                                                                handling = true;
-                                                              });
-                                                              widget.company.handleRequest(false);
-                                                              setState(() => handling = false);
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      )
-                                      .toList()
-                                      .reversed
-                                      .toList(),
-                                ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(top: 30),
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return ToggleButtons(
-                            color: Colors.white,
-                            textStyle: TextStyle(fontSize: 18, fontFamily: font),
-                            renderBorder: false,
-                            constraints: BoxConstraints.expand(width: constraints.maxWidth / 3, height: 50),
-                            borderRadius: borderRadius,
-                            children: <Widget>[
-                              Text("Employees"),
-                              Text("Positions"),
-                              Text("Tags"),
-                            ],
-                            onPressed: (int index) {
-                              setState(() {
-                                for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
-                                  if (buttonIndex == index) {
-                                    isSelected[buttonIndex] = true;
-                                  } else {
-                                    isSelected[buttonIndex] = false;
-                                  }
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(top: 30),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return ToggleButtons(
+                          color: Colors.white,
+                          textStyle: TextStyle(fontSize: 18, fontFamily: font),
+                          renderBorder: false,
+                          constraints: BoxConstraints.expand(width: constraints.maxWidth / 3, height: 50),
+                          borderRadius: borderRadius,
+                          children: <Widget>[
+                            Text("Employees"),
+                            Text("Positions"),
+                            Text("Tags"),
+                          ],
+                          onPressed: (int index) {
+                            setState(() {
+                              for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
+                                if (buttonIndex == index) {
+                                  isSelected[buttonIndex] = true;
+                                } else {
+                                  isSelected[buttonIndex] = false;
                                 }
-                              });
-                            },
-                            isSelected: isSelected,
-                          );
-                        },
-                      ),
+                              }
+                            });
+                          },
+                          isSelected: isSelected,
+                        );
+                      },
                     ),
-                    _createSearchView(),
-                    _firstSearch ? _createListView(selectedIdx(true)) : _performSearch(selectedIdx(false)),
-                  ],
-                ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Code: " + widget.company.uid,
+                          style: inputTextStyle,
+                        ),
+                        IconButton(
+                            padding: EdgeInsets.only(left: 40),
+                            icon: Icon(
+                              Icons.copy,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: widget.company.uid))
+                                  .whenComplete(() => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Copied to clipboard",
+                                          style: TextStyle(fontFamily: font),
+                                        ),
+                                        duration: Duration(seconds: 1),
+                                      )));
+                            })
+                      ],
+                    ),
+                  ),
+                  _createSearchView(),
+                  _firstSearch ? _createListView(selectedIdx(true)) : _performSearch(selectedIdx(false)),
+                ],
               ),
       ),
     );
@@ -286,29 +205,33 @@ class _ManageState extends State<Manage> {
   Widget _createListView(int i) {
     return Visibility(
       visible: isSelected[i],
-      child: Container(
-        child: ListView.separated(
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              if (i == 0) {
-                return buildEmpTile(index, true);
-              }
-              if (i == 1) {
-                return buildPosTile(index, true);
-              }
-              return buildTagTile(index, true);
-            },
-            separatorBuilder: (context, index) => i == 1 || i == 2
-                ? SizedBox(
-                    child: Divider(
-                      color: Colors.white,
+      child: Expanded(
+        child: Container(
+          child: ListView.separated(
+              //physics: AlwaysScrollableScrollPhysics(),
+              //controller: controller,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                if (i == 0) {
+                  return buildEmpTile(index, true);
+                }
+                if (i == 1) {
+                  return buildPosTile(index, true);
+                }
+                return buildTagTile(index, true);
+              },
+              separatorBuilder: (context, index) => i == 1 || i == 2
+                  ? SizedBox(
+                      child: Divider(
+                        color: Colors.white,
+                      ),
+                      height: 15,
+                    )
+                  : SizedBox(
+                      height: 20,
                     ),
-                    height: 15,
-                  )
-                : SizedBox(
-                    height: 20,
-                  ),
-            itemCount: itemCnt),
+              itemCount: itemCnt),
+        ),
       ),
     );
   }
@@ -351,29 +274,33 @@ class _ManageState extends State<Manage> {
   Widget _createFilteredListView(int i) {
     return Visibility(
       visible: isSelected[i],
-      child: Container(
-        child: ListView.separated(
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              if (i == 0) {
-                return buildEmpTile(index, false);
-              }
-              if (i == 1) {
-                return buildPosTile(index, false);
-              }
-              return buildTagTile(index, false);
-            },
-            separatorBuilder: (context, index) => i == 1 || i == 2
-                ? SizedBox(
-                    child: Divider(
-                      color: Colors.white,
+      child: Expanded(
+        child: Container(
+          child: ListView.separated(
+              //physics: AlwaysScrollableScrollPhysics(),
+              //controller: controller,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                if (i == 0) {
+                  return buildEmpTile(index, false);
+                }
+                if (i == 1) {
+                  return buildPosTile(index, false);
+                }
+                return buildTagTile(index, false);
+              },
+              separatorBuilder: (context, index) => i == 1 || i == 2
+                  ? SizedBox(
+                      child: Divider(
+                        color: Colors.white,
+                      ),
+                      height: 15,
+                    )
+                  : SizedBox(
+                      height: 20,
                     ),
-                    height: 15,
-                  )
-                : SizedBox(
-                    height: 20,
-                  ),
-            itemCount: filterListCnt),
+              itemCount: filterListCnt),
+        ),
       ),
     );
   }
@@ -403,9 +330,14 @@ class _ManageState extends State<Manage> {
         color: Colors.red,
       ),
       key: UniqueKey(),
-      onDismissed: (direction) {
+      onDismissed: (direction) async {
         setState(() {
-          widget.company.employees.removeAt(index);
+          loading = true;
+        });
+
+        await widget.company.employees[index].leaveCompany(widget.company);
+        setState(() {
+          loading = false;
         });
       },
       confirmDismiss: (DismissDirection direction) async {
@@ -583,16 +515,6 @@ class _ManageState extends State<Manage> {
                                   loading = false;
                                 });
                               },
-                              // onClear: () async {
-                              //   setState(() {
-                              //     loading = true;
-                              //   });
-                              //   await widget.company.addPositionOrTags(widget.company.employees[index], removeTags: true);
-                              //   setState(() {
-                              //     loading = false;
-                              //   });
-                              //   Navigator.of(context).pop();
-                              // },
                               displayItem: (item, selected) {
                                 return Column(children: [
                                   SizedBox(
@@ -640,9 +562,13 @@ class _ManageState extends State<Manage> {
         color: Colors.red,
       ),
       key: UniqueKey(),
-      onDismissed: (direction) {
+      onDismissed: (direction) async {
         setState(() {
-          widget.company.positions.removeAt(index);
+          loading = true;
+        });
+        await widget.company.updateCompany(newPosition: widget.company.positions[index], addPosition: false);
+        setState(() {
+          loading = false;
         });
       },
       confirmDismiss: (DismissDirection direction) async {
@@ -651,7 +577,10 @@ class _ManageState extends State<Manage> {
           builder: (BuildContext context) {
             if (hasPosition(widget.company.positions[index], widget.company.employees)) {
               return AlertDialog(
-                content: Text('You can not remove position because there are still employees with this position'),
+                content: Text(
+                  'You can not remove position because there are still employees with this position',
+                  style: TextStyle(fontFamily: font),
+                ),
               );
             }
             return AlertDialog(
@@ -675,9 +604,6 @@ class _ManageState extends State<Manage> {
         );
       },
       child: Container(
-        // decoration: BoxDecoration(
-        //     borderRadius: borderRadius,
-        //     gradient: LinearGradient(begin: Alignment.centerLeft, end: Alignment.centerRight, colors: [Colors.indigo, Colors.transparent])),
         padding: EdgeInsets.all(20),
         child: Text(
           flag ? widget.company.positions[index] : _filterListPos[index],
@@ -699,9 +625,13 @@ class _ManageState extends State<Manage> {
         color: Colors.red,
       ),
       key: UniqueKey(),
-      onDismissed: (direction) {
+      onDismissed: (direction) async {
         setState(() {
-          widget.company.positions.removeAt(index);
+          loading = true;
+        });
+        await widget.company.updateCompany(newTag: widget.company.tags[index], addTag: false);
+        setState(() {
+          loading = false;
         });
       },
       confirmDismiss: (DismissDirection direction) async {
@@ -710,7 +640,10 @@ class _ManageState extends State<Manage> {
           builder: (BuildContext context) {
             if (hasTag(widget.company.tags[index], widget.company.employees)) {
               return AlertDialog(
-                content: Text('You can not remove position because there are still employees with this position'),
+                content: Text(
+                  'You can not remove tag because there are still employees with this position',
+                  style: TextStyle(fontFamily: font),
+                ),
               );
             }
             return AlertDialog(
@@ -751,15 +684,23 @@ class _ManageState extends State<Manage> {
             context: context,
             builder: (BuildContext context) {
               return Dialog(
-                backgroundColor: Colors.white.withOpacity(0.2),
+                backgroundColor: buttonColor,
                 child: Container(
                   child: TextFormField(
+                    style: inputTextStyle,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Add position',
-                        hintStyle: inputTextStyle.copyWith(color: Colors.black.withOpacity(0.6))),
-                    onFieldSubmitted: (value) {
-                      setState(() => widget.company.positions.add(value));
+                        border: OutlineInputBorder(), hintText: 'Add position', hintStyle: inputTextStyle.copyWith(color: Colors.grey)),
+                    onFieldSubmitted: (value) async {
+                      if (value != "") {
+                        setState(() {
+                          loading = true;
+                        });
+                        await widget.company.updateCompany(newPosition: value, addPosition: true);
+                        setState(() {
+                          loading = false;
+                        });
+                      }
+                      Navigator.of(context).pop();
                     },
                   ),
                 ),
@@ -769,13 +710,23 @@ class _ManageState extends State<Manage> {
             context: context,
             builder: (BuildContext context) {
               return Dialog(
-                backgroundColor: Colors.white.withOpacity(0.2),
+                backgroundColor: buttonColor,
                 child: Container(
                   child: TextFormField(
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(), hintText: 'Add tag', hintStyle: inputTextStyle.copyWith(color: Colors.black.withOpacity(0.6))),
-                    onFieldSubmitted: (value) {
-                      setState(() => widget.company.tags.add(value));
+                    style: inputTextStyle,
+                    decoration:
+                        InputDecoration(border: OutlineInputBorder(), hintText: 'Add tag', hintStyle: inputTextStyle.copyWith(color: Colors.grey)),
+                    onFieldSubmitted: (value) async {
+                      if (value != "") {
+                        setState(() {
+                          loading = true;
+                        });
+                        await widget.company.updateCompany(newTag: value, addTag: true);
+                        setState(() {
+                          loading = false;
+                        });
+                      }
+                      Navigator.of(context).pop();
                     },
                   ),
                 ),

@@ -92,7 +92,7 @@ class _JoinCompanyState extends State<JoinCompany> {
                                     if (selectedCompany == null) return;
                                     setState(() {
                                       loading = true;
-                                      widget.employee.sendRequestToCompany(selectedCompany, selectedUid);
+                                      //widget.employee.sendRequestToCompany(selectedCompany, selectedUid);
                                       Navigator.pop(context);
                                     });
                                   },

@@ -52,7 +52,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                   : TextButton(
                                       onPressed: () async {
                                         setState(() => isCancelDisabled = true);
-                                        await employee.cancelRequestToCompany();
+                                        //await employee.cancelRequestToCompany();
                                         setState(() => isCancelDisabled = false);
                                       },
                                       child: Text("Cancel request", style: inputTextStyle),
