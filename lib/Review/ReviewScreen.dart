@@ -36,13 +36,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   Widget categoryRow = Padding(
       padding: EdgeInsets.only(top: 5),
-      child: Row(children: [
-        Text('Category', style: inputTextStyle),
-        Text(
-          'Top',
-          style: inputTextStyle,
-        )
-      ]));
+      child: Column(
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text('Category', style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              'Top',
+              style: inputTextStyle.copyWith(fontWeight: FontWeight.bold),
+            )
+          ]),
+          SizedBox(child: Divider(color: Colors.white), height: 15),
+        ],
+      ));
 
   @override
   void initState() {
@@ -88,9 +93,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   strengths.clear();
                   averageCategories.clear();
                   weaknesses.clear();
+                  strengths.add(categoryRow);
+                  averageCategories.add(categoryRow);
+                  weaknesses.add(categoryRow);
                   yourIndustry ? selectedIndustry = company.industry : selectedIndustry = null;
                   categories.forEach((cat) {
-                    int percentage = analysis.getPosition(selectedCategoryIndex,
+                    int percentage = analysis.getPosition(categories.indexOf(cat),
                         industry: selectedIndustry, country: selectedCountry == 'global' ? null : selectedCountry);
                     Widget el = Padding(
                       padding: EdgeInsets.only(top: 5),
@@ -106,155 +114,172 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     else
                       averageCategories.add(el);
                   });
-                  // ifEmptyAddNone(strengths);
-                  // ifEmptyAddNone(averageCategories);
-                  // ifEmptyAddNone(weaknesses);
+                  ifEmptyAddNone(strengths);
+                  ifEmptyAddNone(averageCategories);
+                  ifEmptyAddNone(weaknesses);
                   return ListView(
                     shrinkWrap: true,
                     children: [
                       Container(
-                        padding: EdgeInsets.all(10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // padding: EdgeInsets.all(20),
+                        // decoration: BoxDecoration(
+                        //     border: Border.all(color: Colors.white),
+                        //     borderRadius: borderRadius), //RoundedRectangleBorder(borderRadius: borderRadius))),
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Industry: ' + (yourIndustry ? company.industry : 'All'),
-                              style: inputTextStyle.copyWith(fontSize: 20),
+                            // Text('Filters: ', style: inputTextStyle),
+                            Container(
+                              padding: EdgeInsets.only(left: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Industry: ' + (yourIndustry ? company.industry : 'All'),
+                                    style: inputTextStyle, //.copyWith(fontSize: 20),
+                                  ),
+                                  Switch(
+                                    value: yourIndustry,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        yourIndustry = value;
+                                      });
+                                    },
+                                    // trackColor: MaterialStateProperty.all<Color>(Colors.grey),
+                                    inactiveTrackColor: Colors.grey,
+                                    activeTrackColor: primaryBlue.withOpacity(0.7),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Switch(
-                              value: yourIndustry,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  yourIndustry = value;
-                                });
-                              },
-                              // trackColor: MaterialStateProperty.all<Color>(Colors.grey),
-                              inactiveTrackColor: Colors.grey,
-                              activeTrackColor: primaryBlue.withOpacity(0.7),
+
+                            // country search
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(child: Divider(color: Colors.white), height: 10),
+                                SearchChoices.single(
+                                    isExpanded: true,
+                                    icon: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.white,
+                                    ),
+                                    clearIcon: Icon(
+                                      Icons.clear,
+                                      color: Colors.white,
+                                    ),
+                                    iconSize: 30,
+                                    underline: Container(),
+                                    menuBackgroundColor: Colors.black,
+                                    items: searchCountries,
+                                    value: selectedCountry,
+                                    style: inputTextStyle,
+                                    hint: Text(
+                                      'Global',
+                                      style: inputTextStyle,
+                                    ),
+                                    // isExpanded: true,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedCountry = value;
+                                      });
+                                    },
+                                    onClear: () {
+                                      setState(() {
+                                        selectedCountry = 'global';
+                                      });
+                                    },
+                                    displayItem: (item, selected) {
+                                      return Column(children: [
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        (Row(children: [
+                                          selected
+                                              ? Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                )
+                                              : Icon(
+                                                  Icons.radio_button_off_outlined,
+                                                  color: Colors.grey,
+                                                ),
+                                          SizedBox(width: 7),
+                                          Expanded(
+                                            child: Text(
+                                              item.value,
+                                              style: inputTextStyle,
+                                            ),
+                                          ),
+                                        ])),
+                                      ]);
+                                    }),
+                                SizedBox(child: Divider(color: Colors.white), height: 10),
+                                // category search
+                                SearchChoices.single(
+                                    isExpanded: true,
+                                    icon: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Colors.white,
+                                    ),
+                                    clearIcon: Icon(
+                                      Icons.clear,
+                                      color: Colors.white,
+                                    ),
+                                    iconSize: 30,
+                                    underline: Container(),
+                                    menuBackgroundColor: Colors.black,
+                                    items: searchCategories,
+                                    value: selectedCategory,
+                                    style: inputTextStyle,
+                                    hint: Text(
+                                      'Total score',
+                                      style: inputTextStyle,
+                                    ),
+                                    // isExpanded: true,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedCategory = value == -1 ? 5 : value;
+                                        selectedCategoryIndex = value == null ? 5 : categories.indexOf(value);
+                                      });
+                                    },
+                                    onClear: () {
+                                      setState(() {
+                                        selectedCategory = 'Total score';
+                                        selectedCategoryIndex = 5;
+                                      });
+                                    },
+                                    displayItem: (item, selected) {
+                                      return Column(children: [
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        (Row(children: [
+                                          selected
+                                              ? Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                )
+                                              : Icon(
+                                                  Icons.radio_button_off_outlined,
+                                                  color: Colors.grey,
+                                                ),
+                                          SizedBox(width: 7),
+                                          Expanded(
+                                            child: Text(
+                                              item.value,
+                                              style: inputTextStyle,
+                                            ),
+                                          ),
+                                        ])),
+                                      ]);
+                                    }),
+                                SizedBox(child: Divider(color: Colors.white), height: 10),
+                              ],
                             ),
                           ],
                         ),
-                      ),
-
-                      // country search
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SearchChoices.single(
-                              icon: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.white,
-                              ),
-                              clearIcon: Icon(
-                                Icons.clear,
-                                color: Colors.white,
-                              ),
-                              iconSize: 30,
-                              underline: Container(),
-                              menuBackgroundColor: Colors.black,
-                              items: searchCountries,
-                              value: selectedCountry,
-                              style: inputTextStyle,
-                              hint: Text(
-                                'Global',
-                                style: inputTextStyle,
-                              ),
-                              // isExpanded: true,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedCountry = value;
-                                });
-                              },
-                              onClear: (value) {
-                                setState(() {
-                                  selectedCountry = 'global';
-                                });
-                              },
-                              displayItem: (item, selected) {
-                                return Column(children: [
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  (Row(children: [
-                                    selected
-                                        ? Icon(
-                                            Icons.check,
-                                            color: Colors.green,
-                                          )
-                                        : Icon(
-                                            Icons.radio_button_off_outlined,
-                                            color: Colors.grey,
-                                          ),
-                                    SizedBox(width: 7),
-                                    Expanded(
-                                      child: Text(
-                                        item.value,
-                                        style: inputTextStyle,
-                                      ),
-                                    ),
-                                  ])),
-                                ]);
-                              }),
-                          // SizedBox(width: 50),
-                          // category search
-                          SearchChoices.single(
-                              icon: Icon(
-                                Icons.arrow_drop_down,
-                                color: Colors.white,
-                              ),
-                              clearIcon: Icon(
-                                Icons.clear,
-                                color: Colors.white,
-                              ),
-                              iconSize: 30,
-                              underline: Container(),
-                              menuBackgroundColor: Colors.black,
-                              items: searchCategories,
-                              value: selectedCategory,
-                              style: inputTextStyle,
-                              hint: Text(
-                                'Total score',
-                                style: inputTextStyle,
-                              ),
-                              // isExpanded: true,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedCategory = value;
-                                  selectedCategoryIndex = categories.indexOf(value);
-                                });
-                              },
-                              onClear: () {
-                                setState(() {
-                                  selectedCategory = 'Total score';
-                                  selectedCategoryIndex = 5;
-                                });
-                              },
-                              displayItem: (item, selected) {
-                                return Column(children: [
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  (Row(children: [
-                                    selected
-                                        ? Icon(
-                                            Icons.check,
-                                            color: Colors.green,
-                                          )
-                                        : Icon(
-                                            Icons.radio_button_off_outlined,
-                                            color: Colors.grey,
-                                          ),
-                                    SizedBox(width: 7),
-                                    Expanded(
-                                      child: Text(
-                                        item.value,
-                                        style: inputTextStyle,
-                                      ),
-                                    ),
-                                  ])),
-                                ]);
-                              }),
-                        ],
                       ),
                       SizedBox(height: 20),
                       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
@@ -314,8 +339,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           ListView.builder(
                             itemCount: strengths.length,
                             itemBuilder: (context, index) {
-                              int r = ifEmptyAddNone(strengths);
-                              if (r == -1) strengths.add(categoryRow);
                               return strengths[index];
                             },
                             physics: ClampingScrollPhysics(),
@@ -323,7 +346,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           )
                         ]),
                       ),
-
                       SizedBox(height: 20),
                       Container(
                         padding: EdgeInsets.all(15),
@@ -335,9 +357,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
                             ListView.builder(
                               itemCount: averageCategories.length,
                               itemBuilder: (context, index) {
-                                int r = ifEmptyAddNone(averageCategories);
-                                if (r == -1) averageCategories.add(categoryRow);
-
                                 return averageCategories[index];
                               },
                               physics: ClampingScrollPhysics(),
@@ -360,9 +379,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
                             ListView.builder(
                               itemCount: weaknesses.length,
                               itemBuilder: (context, index) {
-                                int r = ifEmptyAddNone(weaknesses);
-                                if (r == -1) weaknesses.add(categoryRow);
-
                                 return weaknesses[index];
                               },
                               physics: ClampingScrollPhysics(),
@@ -372,7 +388,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         ),
                       ),
                       SizedBox(height: 20),
-
                       Container(
                         height: 140,
                         child: ListView.separated(
@@ -548,16 +563,13 @@ class _ReviewScreenState extends State<ReviewScreen> {
     ];
   }
 
-  int ifEmptyAddNone(List<Widget> list) {
-    if (list.isEmpty) {
+  void ifEmptyAddNone(List<Widget> list) {
+    if (list.length == 1) {
+      list.clear();
       list.add(Row(
         children: [Text('None', style: inputTextStyle), Text('')],
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       ));
-      // print(-1);
-      return -1;
     }
-    // print(0);
-    return 0;
   }
 }
