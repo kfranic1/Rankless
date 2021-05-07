@@ -50,7 +50,8 @@ class Analysis {
             }));
   }
 
-  double getMaxScore(int index, int category, {String country, String industry}) {
+  double getMaxScore(int category, {String country, String industry}) {
+    int index = _surveys.length - 1;
     double ret = 0;
     for (int i = 0; i < _data[index].length; i++) {
       if (country != null && country != _data[index][i].country) continue;
