@@ -122,18 +122,18 @@ class Employee {
   }
 
   Future leaveCompany(Company company) async {
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      List<String> employeesTemp = company.employees.map((e) => e.uid).toList();
-      employeesTemp.remove(this.uid);
-      transaction.update(companiesCollection.doc(company.uid), {
-        'employees': employeesTemp,
-      });
-    }).whenComplete(() async => await updateEmployee(
-          newCompanyUid: null,
-          newPosition: '',
-          newTags: [],
-          newAdmin: false,
-        ));
+    await updateEmployee(
+      newCompanyUid: null,
+      newPosition: '',
+      newTags: [],
+      newAdmin: false,
+    ).whenComplete(() async => await FirebaseFirestore.instance.runTransaction((transaction) async {
+          List<String> employeesTemp = company.employees.map((e) => e.uid).toList();
+          employeesTemp.remove(this.uid);
+          transaction.update(companiesCollection.doc(company.uid), {
+            'employees': employeesTemp,
+          });
+        }));
   }
 
   Future joinCompany(String companyUid) async {
