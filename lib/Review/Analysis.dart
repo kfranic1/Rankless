@@ -2,7 +2,7 @@ import 'package:rankless/shared/Interface.dart';
 
 class Analysis {
   String _companyUid;
-  Set<String> activeCountries = {};
+  Set<String> activeCountries = Set<String>();
   List<String> _surveys = [];
   List<String> _companies = [];
   Map<int, List<double>> _myScore = Map<int, List<double>>();
@@ -47,12 +47,6 @@ class Analysis {
                 });
               });
               index++;
-            }))
-        .whenComplete(() => _data.forEach((key, value) {
-              print(key);
-              value.forEach((element) {
-                print(element.score);
-              });
             }));
   }
 
@@ -92,7 +86,7 @@ class Analysis {
       if (_data[index][i].score[category] > _myScore[index][category]) better++;
       count++;
     }
-    return ((better / count) * 100).round() + 1;
+    return ((better / count + 0.005) * 100).round();
   }
 
   int getNumOfSurveys() {
@@ -102,8 +96,8 @@ class Analysis {
   String getMessage(int category, {String country, String industry}) {
     int index = _surveys.length - 1;
     int requiredPercentage = getPosition(category, country: country, industry: industry);
-    int upgrade = requiredPercentage > 5 ? 5 : requiredPercentage;
-    requiredPercentage += upgrade;
+    if (requiredPercentage <= 5) return 'You are already in top 5% in this category';
+    requiredPercentage -= 5;
     double ans = _myScore[index][category];
     for (; ans <= 5; ans += 0.1) {
       int better = 0;
@@ -124,7 +118,7 @@ class Analysis {
     int actualUpgrade = actualPosition - fakePosition;
     ans -= _myScore[index][category];
 
-    return "To get $actualUpgrade% better score your score need to improve by " + ans.toStringAsFixed(1);
+    return "To get $actualUpgrade% better score your score needs to improve by " + ans.toStringAsFixed(1);
   }
 }
 

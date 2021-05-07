@@ -66,10 +66,6 @@ class Employee {
         run['surname'] = this.surname;
       }
       if (newTags != null) {
-        if (this.tags.contains('admin'))
-          run['admin'] = true;
-        else
-          run['admin'] = false;
         this.tags = newTags;
         run['tags'] = this.tags;
       }
@@ -171,14 +167,15 @@ class Employee {
   }*/
 
   Future handleSurveys() async {
-    await Future.wait(this.surveys.map((e) async => await e.getSurvey(false)).toList());
-    List<String> past = [];
-    for (Survey s in surveys) {
-      if (s.status == STATUS.Past) past.add(s.uid);
-    }
-    if (past.length == 0) return;
-    this.surveys.removeWhere((element) => past.contains(element.uid));
-    await updateEmployee(newSurveys: this.surveys);
+    await Future.wait(this.surveys.map((e) async => await e.getSurvey(false)).toList()).whenComplete(() async {
+      List<String> past = [];
+      for (Survey s in surveys) {
+        if (s.status == STATUS.Past) past.add(s.uid);
+      }
+      if (past.length == 0) return;
+      this.surveys.removeWhere((element) => past.contains(element.uid));
+      await updateEmployee(newSurveys: this.surveys);
+    });
   }
 
   /*Future<NetworkImage> getImage() async {

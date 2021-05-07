@@ -19,8 +19,6 @@ class Company {
   List<String> requests = [];
   List<Survey> surveys = [];
   List<Survey> publicSurveys = [];
-  double percentage = 0.0;
-  int surveysDone = 0;
   bool dummy;
 
   Company({
@@ -47,8 +45,6 @@ class Company {
       'surveys': <String>[],
       'publicSurveys': <String>[],
       'positions': <String>[],
-      'totalScore': this.percentage,
-      'surveysDone': this.surveysDone,
     });
     this.uid = ref.id;
     return this;
@@ -107,8 +103,6 @@ class Company {
     this.employees = (employeesFromFirebase as List<dynamic>).map((e) => Employee(uid: e as String)).toList();
     this.surveys = List<String>.from(ref['surveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
     this.publicSurveys = List<String>.from(ref['publicSurveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
-    //this.surveysDone = ref['surveysDone'];
-    //this.percentage = ref['percentage'];
     return this;
   }
 
@@ -117,7 +111,7 @@ class Company {
       await e.getEmployee();
     });
   }
-
+  /*
   /// Accepts or Denies access to Company based on [accepted]
   ///
   /// Pass [position] and/or [tags] only when [accepted == true]
@@ -140,7 +134,7 @@ class Company {
         'employees': employeesTemp,
       });
     });
-  }
+  }*/
 
   /// Updates position or tags or both.
   /// If [remove == true] then newTags will be removed from tags.
