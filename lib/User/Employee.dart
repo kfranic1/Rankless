@@ -66,6 +66,10 @@ class Employee {
         run['surname'] = this.surname;
       }
       if (newTags != null) {
+        if (this.tags.contains('admin'))
+          run['admin'] = true;
+        else
+          run['admin'] = false;
         this.tags = newTags;
         run['tags'] = this.tags;
       }

@@ -54,7 +54,7 @@ class Analysis {
     for (int i = 0; i < _data[index].length; i++) {
       if (country != null && country != _data[index][i].country) continue;
       if (industry != null && industry != _data[index][i].industry) continue;
-      if (_data[index][i].score[5] > ret) ret = _data[index][i].score[category];
+      if (_data[index][i].score[index] > ret) ret = _data[index][i].score[category];
     }
     return ret;
   }
