@@ -21,8 +21,10 @@ class Analysis {
         await publicCollection.doc(element.id).collection('results').get().then((value) {
           if (skip) skip = value.docs.fold(true, (previousValue, temp) => previousValue & (temp.id != _companyUid));
           if (skip) return;
+          _myScore[index] = List<double>.filled(6, 0);
           _surveys.add(element.id);
           value.docs.forEach((value) {
+            print(value.data());
             String industry = value.data()['industry'];
             String country = value.data()['country'];
             activeCountries.add(country);
@@ -40,6 +42,7 @@ class Analysis {
             ));
             if (value.id == _companyUid) _myScore[index] = ocjene;
           });
+          print('-');
         });
         if (!skip) index++;
       });

@@ -72,7 +72,6 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                           TextButton(
                             onPressed: () {
                               setState(() => loading = true);
-                              joinController.text = 'Je4QaC1JnMeceBqixAWb'; //TODO treba popravit
                               employee.joinCompany(joinController.text).whenComplete(() => setState(() => loading = false));
                             },
                             child: Text('Join'),
@@ -92,172 +91,84 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                           ),
                         ],
                       )
-                    /*employee.request != '' && employee.request != 'denied'
-                        ? Column(
-                            children: [
-                              Text("You sent request to " + employee.request.substring(employee.request.indexOf('%') + 1), style: inputTextStyle),
-                              SizedBox(height: 20),
-                              isCancelDisabled
-                                  ? Container()
-                                  : TextButton(
-                                      onPressed: () async {
-                                        setState(() => isCancelDisabled = true);
-                                        //await employee.cancelRequestToCompany();
-                                        setState(() => isCancelDisabled = false);
-                                      },
-                                      child: Text("Cancel request", style: inputTextStyle),
-                                      style: textButtonStyleRegister,
-                                    ),
-                            ],
-                          )
-                        : Row(
-                            children: [
-                              //TODO stilizirat ovaj text ispod jer je nedavno dodan
-                              if (employee.request == 'denied') Text('Your last request was denied.'),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: TextButton(
-                                    child: Text(
-                                      "Create Company",
-                                      style: TextStyle(fontFamily: font, fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
-                                    ),
-                                    onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => CreateCompany(employee),
-                                      ),
-                                    ),
-                                    style: textButtonStyleRegister,
-                                  ),
-                                ),
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Row(children: [
+                              Icon(
+                                Icons.home_rounded,
+                                color: Colors.white.withOpacity(0.4),
+                                size: 40,
                               ),
-                              SizedBox(
-                                height: 100,
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: TextButton(
-                                    child: Text("Join Company",
-                                        style: TextStyle(
-                                          fontFamily: font,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        )),
-                                    onPressed: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => JoinCompany(employee),
-                                        )),
-                                    style: textButtonStyleRegister,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )*/
-                    : Expanded(
-                        child: ListView(
-                          shrinkWrap: true,
-                          children: [
+                              SizedBox(width: 10),
+                              Text(company.name, style: inputTextStyle.copyWith(fontSize: detailsSize)),
+                            ]),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                  Row(children: [
-                                    Icon(
-                                      Icons.home_rounded,
-                                      color: Colors.white.withOpacity(0.4),
-                                      size: 40,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(company.name, style: inputTextStyle.copyWith(fontSize: detailsSize)),
-                                  ]),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.home_repair_service_rounded,
-                                        color: Colors.white.withOpacity(0.4),
-                                        size: 40,
-                                      ),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        employee.position == '' ? 'Position' : employee.position,
-                                        style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                      )
-                                    ],
-                                  ),
-                                ]),
-                                // RichText(
-                                //     text: TextSpan(children: [
-                                //   WidgetSpan(
-                                //       child: Icon(
-                                //     Icons.home_repair_service_outlined,
-                                //     color: Colors.white,
-                                //   )),
-                                //   TextSpan(
-                                //       text: 'pos' /*employee.position*/,
-                                //       style: inputTextStyle)
-                                // ])),
-                                SizedBox(
-                                  width: 35,
+                                Icon(
+                                  Icons.home_repair_service_rounded,
+                                  color: Colors.white.withOpacity(0.4),
+                                  size: 40,
                                 ),
-                                TextButton(
-                                  style: textButtonStyleRegister,
-                                  child: Text(
-                                    'My tags',
-                                    style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                  ),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      //Koristi widget.survey.results jer su results u ovom widgetu podlozni filterima
-                                      builder: (context) => Dialog(
-                                        child: Container(
-                                          padding: EdgeInsets.all(25),
-                                          height: 300,
-                                          color: Colors.blue,
-                                          child: employee.tags.isNotEmpty
-                                              ? ListView.separated(
-                                                  itemBuilder: (context, index) {
-                                                    return Text(
-                                                      employee.tags[index],
-                                                      style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                                    );
-                                                  },
-                                                  itemCount: employee.tags.length,
-                                                  separatorBuilder: (context, index) => SizedBox(height: 20),
-                                                )
-                                              : Text(
-                                                  'You don\'t have any tags',
-                                                  style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                                ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  employee.position == '' ? 'Position' : employee.position,
+                                  style: inputTextStyle.copyWith(fontSize: detailsSize),
+                                )
                               ],
                             ),
-                            SizedBox(height: 50),
-                            Container(
-                                child: Text(
-                              'Surveys',
+                          ]),
+                          SizedBox(
+                            width: 35,
+                          ),
+                          TextButton(
+                            style: textButtonStyleRegister,
+                            child: Text(
+                              'My tags',
                               style: inputTextStyle.copyWith(fontSize: detailsSize),
-                            )),
-                            SizedBox(height: 30),
-                            employee.surveys.length > 0
-                                ? surveys
-                                : Center(
-                                    child: Text(
-                                      'There are no new surveys',
-                                      style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                    ),
-                                  )
-                          ],
-                        ),
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                //Koristi widget.survey.results jer su results u ovom widgetu podlozni filterima
+                                builder: (context) => Dialog(
+                                  child: Container(
+                                    padding: EdgeInsets.all(25),
+                                    height: 300,
+                                    color: Colors.blue,
+                                    child: employee.tags.isNotEmpty
+                                        ? ListView.separated(
+                                            itemBuilder: (context, index) {
+                                              return Text(
+                                                employee.tags[index],
+                                                style: inputTextStyle.copyWith(fontSize: detailsSize),
+                                              );
+                                            },
+                                            itemCount: employee.tags.length,
+                                            separatorBuilder: (context, index) => SizedBox(height: 20),
+                                          )
+                                        : Text(
+                                            'You don\'t have any tags',
+                                            style: inputTextStyle.copyWith(fontSize: detailsSize),
+                                          ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
+                SizedBox(height: 50),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    employee.surveys.length > 0 ? 'Surveys' : 'There are no new surveys',
+                    style: inputTextStyle.copyWith(fontSize: detailsSize),
+                  ),
+                ),
+                SizedBox(height: 30),
+                Expanded(child: surveys),
               ],
             ),
     );
