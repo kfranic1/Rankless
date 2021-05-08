@@ -5,7 +5,6 @@ import 'package:rankless/shared/Interface.dart';
 import 'Company.dart';
 import 'CreateCompany.dart';
 import 'package:rankless/Survey/Survey.dart';
-import 'JoinCompany.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 
@@ -44,6 +43,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
           : Column(
               children: [
                 Container(
+                  alignment: Alignment.centerLeft,
                   padding: EdgeInsets.all(30),
                   child: Text(
                     employee.name + " " + employee.surname,
@@ -150,7 +150,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                           )
                                         : Text(
                                             'You don\'t have any tags',
-                                            style: inputTextStyle.copyWith(fontSize: detailsSize),
+                                            style: inputTextStyle.copyWith(fontSize: 20),
                                           ),
                                   ),
                                 ),
@@ -160,10 +160,11 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                         ],
                       ),
                 SizedBox(height: 50),
-                Align(
-                  alignment: Alignment.centerLeft,
+                Container(
+                  padding: EdgeInsets.only(left: 25),
+                  //alignment: Alignment.center,
                   child: Text(
-                    employee.surveys.length > 0 ? 'Surveys' : 'There are no new surveys',
+                    employee.surveys.length > 0 ? 'Surveys:' : 'There are no new surveys',
                     style: inputTextStyle.copyWith(fontSize: detailsSize),
                   ),
                 ),
@@ -202,7 +203,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Colors.indigo, Colors.blue],
+          colors: survey.isPublic ? [Colors.teal[600], Colors.cyan] : [Colors.indigo, Colors.blue],
         ),
       ),
       child: TextButton.icon(

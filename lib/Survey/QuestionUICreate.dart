@@ -193,7 +193,12 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
           title: TextFormField(
             controller: _controllers[index],
             style: inputTextStyle,
+            cursorColor: Colors.white,
             decoration: InputDecoration(
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
                 hintText: "Add text...",
                 hintStyle: TextStyle(
                   fontFamily: font,

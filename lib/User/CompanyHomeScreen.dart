@@ -50,14 +50,14 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                               onPressed: () {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => Manage(company)));
                               }),
-                          Container(
-                            height: 20,
-                            width: 20,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: company.requests.length != 0 ? Colors.red : Colors.transparent,
-                            ),
-                          ),
+                          // Container(
+                          //   height: 20,
+                          //   width: 20,
+                          //   decoration: BoxDecoration(
+                          //     shape: BoxShape.circle,
+                          //     color: company.requests.length != 0 ? Colors.red : Colors.transparent,
+                          //   ),
+                          // ),
                         ],
                       ),
                     )
@@ -201,7 +201,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
           size: 50,
         ),
         label: Text(
-          survey.name + "\n" + (survey.status == STATUS.Active ? "active until: " : "ended ") + _formatted.format(survey.to),
+          survey.name + "\n" + (survey.status == STATUS.Active ? "active until: " : "ended: ") + _formatted.format(survey.to),
           style: TextStyle(fontFamily: font, fontSize: 22, color: Colors.white),
           textAlign: TextAlign.center,
         ),

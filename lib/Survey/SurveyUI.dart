@@ -162,6 +162,7 @@ class _SurveyUIState extends State<SurveyUI> {
                             selectedValueWidgetFn: (item) {
                               return Container();
                             },
+                            style: inputTextStyle,
                             icon: Icon(Icons.add_circle_outline),
                             underline: Container(),
                             onChanged: (value) {
@@ -170,7 +171,7 @@ class _SurveyUIState extends State<SurveyUI> {
                                 widget.survey.tags = showTagsUpdate(_selectedTags);
                               });
                             },
-                            menuBackgroundColor: Colors.lightBlue[50],
+                            menuBackgroundColor: Colors.black,
                             displayItem: (item, selected) {
                               return Column(children: [
                                 SizedBox(
@@ -190,7 +191,7 @@ class _SurveyUIState extends State<SurveyUI> {
                                   Expanded(
                                     child: Text(
                                       item.value,
-                                      style: TextStyle(fontFamily: font, fontSize: 17),
+                                      style: TextStyle(fontFamily: font, fontSize: 18, color: Colors.white),
                                     ),
                                   ),
                                 ])),
@@ -205,7 +206,7 @@ class _SurveyUIState extends State<SurveyUI> {
 
                             searchHint: Text(
                               'Who should get the survey',
-                              style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold, fontSize: 18),
+                              style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
                             ),
                             isExpanded: false,
                             displayClearIcon: false,
@@ -292,26 +293,6 @@ class _SurveyUIState extends State<SurveyUI> {
                       "Add question",
                       style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: font),
                     ),
-                  ),
-                  Expanded(
-                    //bilo bi dobro kada bi ta predlozena pitanja bila neki gumbi pa bi se otvarao dijalog za potvrdu unosa pitanja
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _suggestedQ.length,
-                      itemBuilder: (context, index) {
-                        return _suggestedQ[index];
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return SizedBox(
-                          width: 10,
-                        );
-                      },
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.grey[700],
-                    thickness: 2.0,
-                    height: 50,
                   ),
 
                   //questions

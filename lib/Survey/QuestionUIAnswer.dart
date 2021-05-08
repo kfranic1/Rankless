@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:rankless/shared/Interface.dart';
 
@@ -71,8 +69,7 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
                                   ),
                                 ),
                                 value: e,
-                                groupValue:
-                                    widget.question.mask == 0 ? null : widget.question.multipleAnswers[getFromMask(widget.question.mask)],
+                                groupValue: widget.question.mask == 0 ? null : widget.question.multipleAnswers[getFromMask(widget.question.mask)],
                                 onChanged: (String value) {
                                   setState(() => widget.question.mask = (1 << widget.question.multipleAnswers.indexOf(value)));
                                 },

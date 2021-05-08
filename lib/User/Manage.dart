@@ -1,16 +1,9 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_tags/flutter_tags.dart';
 import 'package:provider/provider.dart';
-import 'package:rankless/Survey/Results.dart';
-import 'package:rankless/Survey/Survey.dart';
-import 'package:rankless/Survey/SurveyUI.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/shared/Interface.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:search_choices/search_choices.dart';
 import 'Company.dart';
 
@@ -28,7 +21,6 @@ class _ManageState extends State<Manage> {
   List<bool> isSelected = [true, false, false];
   List<DropdownMenuItem<String>> positions = [];
   List<DropdownMenuItem<String>> tags = [];
-  //List<int> _selectedTags = [];
   bool loading = false;
   var _searchview = new TextEditingController();
   List<Employee> _filterListEmp = [];
@@ -42,10 +34,8 @@ class _ManageState extends State<Manage> {
   Future _future;
 
   _ManageState() {
-    //Register a closure to be called when the object changes.
     _searchview.addListener(() {
       if (_searchview.text.isEmpty) {
-        //Notify the framework that the internal state of this object has changed.
         setState(() {
           _firstSearch = true;
           _query = "";
@@ -607,25 +597,6 @@ class _ManageState extends State<Manage> {
                                   activeColor: Colors.white,
                                 ),
                               ]),
-                              // Expanded(
-                              //     child: Tags(
-                              //   key: _tagStateKey,
-                              //   itemCount: widget.company.employees[index].tags.length,
-                              //   itemBuilder: (idx) {
-                              //     final item = widget.company.employees[index].tags[idx];
-                              //     return ItemTags(
-                              //       active: true,
-                              //       key: Key(index.toString()),
-                              //       index: idx,
-                              //       title: item,
-                              //       textStyle: const TextStyle(fontFamily: font, fontSize: 17),
-                              //       pressEnabled: false,
-                              //       singleItem: false,
-                              //       activeColor: Colors.blue,
-                              //       color: Colors.grey,
-                              //     );
-                              //   },
-                              // ))
                             ]),
                           ),
                         );
