@@ -37,6 +37,15 @@ List<String> categories = [
   'Other',
 ];
 
+List<String> categoryDescriptions = [
+  'Employee engagement is the extent to which employees feel passionate about their jobs, are committed to the organization, and put discretionary effort into their work.' //Engagement - how passionate people are about work',
+  ,
+  'Performance - how your employees behave in the workplace and how well they perform their duties',
+  'Satisfaction - how happy or content your employees are',
+  'Prospects - how much people feel they can develop and advance in your company',
+  'Other',
+];
+
 List<String> months = [
   'Jan',
   'Feb',
