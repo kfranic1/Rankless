@@ -18,30 +18,27 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
   Widget build(BuildContext context) {
     return Container(
       decoration: widget.notAnsweredD,
-      //color: Colors.transparent,
-      // padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(30),
       child: ListView(
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,
         children: [
           Container(
-            // decoration: BoxDecoration(
-            //   color: Colors.blue[200],
-            //   borderRadius: borderRadius,
-            // ),
             padding: EdgeInsets.all(10.0),
             child: Text(
               widget.question.questionText,
-              style: TextStyle(fontFamily: font, color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontFamily: font,
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           widget.question.answerType == TYPE.Text
               ? TextFormField(
                   initialValue: widget.question.singleAnswer,
-                  onChanged: (value) {
-                    setState(() => widget.question.singleAnswer = value);
-                  },
+                  onChanged: (value) => setState(() => widget.question.singleAnswer = value),
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   decoration: InputDecoration(
@@ -70,9 +67,8 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
                                 ),
                                 value: e,
                                 groupValue: widget.question.mask == 0 ? null : widget.question.multipleAnswers[getFromMask(widget.question.mask)],
-                                onChanged: (String value) {
-                                  setState(() => widget.question.mask = (1 << widget.question.multipleAnswers.indexOf(value)));
-                                },
+                                onChanged: (String value) =>
+                                    setState(() => widget.question.mask = (1 << widget.question.multipleAnswers.indexOf(value))),
                                 activeColor: Colors.white,
                                 // selectedTileColor: Colors.white,
                               ),
@@ -89,12 +85,13 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
                         child: CheckboxListTile(
                           title: Text(
                             widget.question.multipleAnswers[index],
-                            style: TextStyle(color: Colors.white, fontFamily: 'Mulish'),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Mulish',
+                            ),
                           ),
                           value: widget.question.mask & (1 << index) != 0,
-                          onChanged: (value) {
-                            setState(() => widget.question.mask ^= 1 << index);
-                          },
+                          onChanged: (value) => setState(() => widget.question.mask ^= 1 << index),
                           controlAffinity: ListTileControlAffinity.leading,
                           checkColor: Colors.white,
                           activeColor: Colors.transparent,

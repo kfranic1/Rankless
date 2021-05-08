@@ -17,10 +17,11 @@ class SurveyUIFill extends StatefulWidget {
   _SurveyUIFillState createState() => _SurveyUIFillState();
 }
 
-bool allAnswered;
+//Todo stavit u interface
 BoxDecoration decorate = BoxDecoration(border: Border.all(color: Colors.transparent));
 
 class _SurveyUIFillState extends State<SurveyUIFill> {
+  bool allAnswered;
   bool finishing = false;
   List<QuestionUIAnswer> qNa;
 
@@ -41,13 +42,15 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                 child: Column(
                   children: <Widget>[
                     Container(
-                      child: Text(widget.survey.name,
-                          style: TextStyle(
-                            fontFamily: font,
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          )),
+                      child: Text(
+                        widget.survey.name,
+                        style: TextStyle(
+                          fontFamily: font,
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       alignment: Alignment.topCenter,
                       padding: EdgeInsets.all(20), //ovo bi moglop biti drugacije
                     ),
@@ -62,25 +65,33 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                           shrinkWrap: true,
                           itemCount: qNa.length,
                           itemBuilder: (context, index) {
-                            return (ListTile(
+                            return ListTile(
                               leading: Text(
                                 (index + 1).toString(),
-                                style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 18),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: font,
+                                  fontSize: 18,
+                                ),
                               ),
                               title: Container(
                                 decoration: decorate,
-                                child: Transform.translate(offset: Offset(-15, -22), child: qNa[index]),
+                                child: Transform.translate(
+                                  offset: Offset(-15, -22),
+                                  child: qNa[index],
+                                ),
                               ),
                               minVerticalPadding: 0,
                               minLeadingWidth: 0,
-                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: -10),
-                            ));
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: -10,
+                              ),
+                            );
                           },
                           separatorBuilder: (context, index) {
                             return SizedBox(
-                              child: Divider(
-                                color: Colors.white,
-                              ),
+                              child: Divider(color: Colors.white),
                               height: 15,
                             );
                           },
@@ -89,11 +100,8 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                     ),
                     TextButton(
                       onPressed: () {
-                        //ovo je samo demonstraciju funkcionalnosti
                         allAnswered = true;
-                        setState(() {
-                          qNa = checkAnswered(qNa);
-                        });
+                        setState(() => qNa = checkAnswered(qNa));
 
                         if (!allAnswered) {
                           var snackBar = showWarning();
@@ -101,21 +109,22 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                         } else {
                           showConformationDialog(context);
                         }
-
-                        //Navigator.pop(context);
                       },
                       child: Container(
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(color: Colors.transparent, borderRadius: borderRadius),
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: borderRadius,
+                          ),
                           height: 60,
                           width: 200,
                           child: Text(
                             'Submit',
                             style: TextStyle(
-                                //fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontFamily: font,
-                                fontSize: 22),
+                              color: Colors.white,
+                              fontFamily: font,
+                              fontSize: 22,
+                            ),
                           )),
                     )
                   ],
@@ -145,9 +154,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
           element.notAnsweredD = BoxDecoration(border: Border.all(color: Colors.red));
         });
       } else {
-        setState(() {
-          element.notAnsweredD = BoxDecoration(border: Border.all(color: Colors.transparent));
-        });
+        setState(() => element.notAnsweredD = BoxDecoration(border: Border.all(color: Colors.transparent)));
       }
       result.add(element);
     });
@@ -160,13 +167,13 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
   }
 
   SnackBar showWarning() {
-    return (SnackBar(
+    return SnackBar(
       duration: Duration(seconds: 2),
       content: Text(
         'You must answer on all of the questions',
         style: inputTextStyle.copyWith(fontSize: snackFontSize),
       ),
-    ));
+    );
   }
 
   showConformationDialog(BuildContext context) {
@@ -174,23 +181,31 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
     Widget cancelButton = TextButton(
       child: Text(
         "No",
-        style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          fontFamily: font,
+          fontWeight: FontWeight.bold,
+        ),
       ),
-      onPressed: () {
-        Navigator.pop(context);
-      },
+      onPressed: () => Navigator.pop(context),
     );
     Widget continueButton = TextButton(
       child: Text(
         "Yes",
-        style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          fontFamily: font,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       onPressed: () async {
-        setState(() {
-          finishing = true;
-        });
+        setState(() => finishing = true);
         Navigator.pop(context); //Close alert
-        await widget.survey.submitSurvey(widget.who, industry: widget.industry, country: widget.country).whenComplete(() => Navigator.pop(context));
+        await widget.survey
+            .submitSurvey(
+              widget.who,
+              industry: widget.industry,
+              country: widget.country,
+            )
+            .whenComplete(() => Navigator.pop(context));
         //ovdje bi trebala ići neka radnja da se izlazi iz surveya i ulazi u izbornik anketa
       },
     );
@@ -198,7 +213,10 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
     AlertDialog alert = AlertDialog(
       content: Text(
         "Are you sure you want to submit survey?",
-        style: TextStyle(fontFamily: font, fontSize: 20),
+        style: TextStyle(
+          fontFamily: font,
+          fontSize: 20,
+        ),
       ),
       actions: [
         continueButton,
@@ -208,9 +226,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
+      builder: (BuildContext context) => alert,
     );
   }
 }

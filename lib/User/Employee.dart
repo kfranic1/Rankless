@@ -13,7 +13,6 @@ class Employee {
   String companyUid;
   String email;
   String position = '';
-  String request = '';
   String filePath = '';
   bool admin = false;
   List<String> tags = [];
@@ -39,7 +38,6 @@ class Employee {
       'companyUid': null,
       'tags': <String>[],
       'surveys': <String>[],
-      'request': this.request,
       'admin': this.admin,
       'position': this.position,
     });
@@ -49,8 +47,7 @@ class Employee {
     String newName,
     String newSurname,
     List<String> newTags,
-    String newCompanyUid,
-    String newRequest,
+    String newCompanyUid = "NONE",
     List<Survey> newSurveys,
     bool newAdmin,
     String newPosition,
@@ -69,13 +66,9 @@ class Employee {
         this.tags = newTags;
         run['tags'] = this.tags;
       }
-      if (newCompanyUid != null) {
+      if (newCompanyUid != "NONE") {
         this.companyUid = newCompanyUid;
         run['companyUid'] = this.companyUid;
-      }
-      if (newRequest != null) {
-        this.request = newRequest;
-        run['request'] = this.request;
       }
       if (newSurveys != null) {
         this.surveys = newSurveys;
@@ -110,7 +103,6 @@ class Employee {
     this.companyUid = ref['companyUid'];
     this.tags = List<String>.from(ref['tags'] as List<dynamic>);
     this.surveys = List<String>.from(ref['surveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
-    this.request = ref['request'];
     this.admin = ref['admin'];
     this.position = ref['position'];
     this.hasData = true;
@@ -124,14 +116,13 @@ class Employee {
       transaction.update(companiesCollection.doc(company.uid), {
         'employees': employeesTemp,
       });
-      transaction.update(userCollection.doc(this.uid), {
-        'companyUid': null,
-        'position': '',
-        'tags': [],
-        'surveys': [],
-        'admin': false,
-      });
-    });
+    }).whenComplete(() async => await updateEmployee(
+          newCompanyUid: null,
+          newPosition: '',
+          newTags: [],
+          newSurveys: [],
+          newAdmin: false,
+        ));
   }
 
   Future<String> joinCompany(String companyUid) async {

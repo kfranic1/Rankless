@@ -163,7 +163,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
       numOfSurveys = company.surveys.length;
     });
     return FutureBuilder(
-        future: company.getAllSurveys(false),
+        future: company.getAllSurveys(false).whenComplete(() => setState(() => gettingSurveys = false)),
         builder: (context, snapshot) {
           return snapshot.connectionState != ConnectionState.done
               ? loader
@@ -183,18 +183,17 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     return Container(
       //width: 250,
       decoration: BoxDecoration(
-          color: Colors.blue[50],
-          borderRadius: borderRadius,
-          gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.indigo, Colors.blue])),
+        color: Colors.blue[50],
+        borderRadius: borderRadius,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.indigo, Colors.blue],
+        ),
+      ),
       child: TextButton.icon(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                //fullscreenDialog: true,
-                builder: (context) => Results(survey),
-              ));
-        },
+        onPressed: () =>
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Results(survey))),
         icon: Icon(
           Icons.bar_chart_rounded,
           color: Colors.greenAccent,

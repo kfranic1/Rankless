@@ -21,9 +21,7 @@ class _LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        titleText: 'Login',
-      ),
+      appBar: CustomAppBar(titleText: 'Login'),
       body: Container(
         decoration: backgroundDecoration,
         padding: EdgeInsets.all(20),
@@ -36,53 +34,48 @@ class _LogInState extends State<LogIn> {
                       key: _formKey,
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           TextFormField(
                             initialValue: email,
                             decoration: registerInputDecoration.copyWith(labelText: "email"),
                             style: inputTextStyle,
-                            onChanged: (value) {
-                              setState(() => email = value);
-                            },
+                            onChanged: (value) => setState(() => email = value),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           ListTile(
                             contentPadding: EdgeInsets.all(0),
                             title: TextFormField(
-                              initialValue: password,
-                              decoration: registerInputDecoration.copyWith(labelText: "password"),
-                              style: inputTextStyle,
-                              obscureText: obscureText,
-                              onChanged: (value) {
-                                setState(() => password = value);
-                              },
-                            ),
+                                initialValue: password,
+                                decoration: registerInputDecoration.copyWith(labelText: "password"),
+                                style: inputTextStyle,
+                                obscureText: obscureText,
+                                onChanged: (value) => setState(() => password = value)),
                             trailing: IconButton(
-                              icon: Icon(Icons.remove_red_eye, color: Colors.white),
-                              onPressed: () {
-                                setState(() {
-                                  obscureText = !obscureText;
-                                });
-                              },
+                              icon: Icon(Icons.remove_red_eye, color: Colors.white,),
+                              onPressed: () => setState(() => obscureText = !obscureText),
                             ),
                           ),
-                          SizedBox(
-                            height: 20,
+                          SizedBox(height: 20),
+                          Text(
+                            error,
+                            style: inputTextStyle.copyWith(
+                              fontSize: 12,
+                              color: Colors.blue,
+                            ),
                           ),
-                          Text(error, style: inputTextStyle.copyWith(fontSize: 12, color: Colors.blue)),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           TextButton(
-                            child: Text("Log In", style: inputTextStyle),
+                            child: Text(
+                              "Log In",
+                              style: inputTextStyle,
+                            ),
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
                                 _formKey.currentState.setState(() => loading = true);
-                                dynamic result = await _auth.logInWithEmailAndPassword(email, password);
+                                dynamic result = await _auth.logInWithEmailAndPassword(
+                                  email,
+                                  password,
+                                );
                                 if (result is String) {
                                   setState(() {
                                     error = result;
@@ -91,7 +84,6 @@ class _LogInState extends State<LogIn> {
                                 } else {
                                   Navigator.pop(context);
                                 }
-                                //automatic homescreen from stream
                               }
                             },
                             style: textButtonStyleRegister,
@@ -99,10 +91,18 @@ class _LogInState extends State<LogIn> {
                           SizedBox(height: 20),
                           TextButton(
                               child: RichText(
-                                  text: new TextSpan(style: inputTextStyle, children: <TextSpan>[
-                                new TextSpan(text: 'Don\'t have an acount? '),
-                                new TextSpan(text: 'Register', style: TextStyle(fontWeight: FontWeight.bold))
-                              ])),
+                                text: new TextSpan(
+                                  style: inputTextStyle,
+                                  children: <TextSpan>[
+                                    new TextSpan(text: 'Don\'t have an acount? '),
+                                    new TextSpan(
+                                        text: 'Register',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ))
+                                  ],
+                                ),
+                              ),
                               onPressed: () => Navigator.pop(context)),
                         ],
                       ),

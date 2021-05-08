@@ -59,7 +59,11 @@ class _ResultsState extends State<Results> {
                       TextButton(
                         child: Text(
                           'Done',
-                          style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: font,
+                            fontSize: 20,
+                          ),
                         ),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -80,33 +84,31 @@ class _ResultsState extends State<Results> {
               height: 300,
               child: ListView.builder(
                 itemCount: widget.survey.results.length + 1,
-                itemBuilder: (context, index) {
-                  return Container(
-                    child: index < widget.survey.results.length
-                        ? TextButton(
-                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(primaryBlue)),
-                            child: Text(
-                              widget.survey.results.keys.toList()[index],
-                              style: inputTextStyle,
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              setState(() => results = widget.survey.getResults(filter: [widget.survey.results.keys.toList()[index]]));
-                            },
-                          )
-                        : TextButton(
-                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
-                            child: Text(
-                              'Remove filters',
-                              style: inputTextStyle,
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              setState(() => results = widget.survey.getResults());
-                            },
+                itemBuilder: (context, index) => Container(
+                  child: index < widget.survey.results.length
+                      ? TextButton(
+                          style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(primaryBlue)),
+                          child: Text(
+                            widget.survey.results.keys.toList()[index],
+                            style: inputTextStyle,
                           ),
-                  );
-                },
+                          onPressed: () {
+                            Navigator.pop(context);
+                            setState(() => results = widget.survey.getResults(filter: [widget.survey.results.keys.toList()[index]]));
+                          },
+                        )
+                      : TextButton(
+                          style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                          child: Text(
+                            'Remove filters',
+                            style: inputTextStyle,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            setState(() => results = widget.survey.getResults());
+                          },
+                        ),
+                ),
               ),
             ),
           ),
@@ -186,17 +188,18 @@ class _ResultsState extends State<Results> {
                           physics: ClampingScrollPhysics(),
                           shrinkWrap: true,
                           itemBuilder: (context, index2) => ListTile(
-                              title: Padding(
-                                padding: const EdgeInsets.only(bottom: 10.0),
-                                child: Text(
-                                  position,
-                                  style: inputTextStyle,
+                                title: Padding(
+                                  padding: const EdgeInsets.only(bottom: 10.0),
+                                  child: Text(
+                                    position,
+                                    style: inputTextStyle,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  results[position][questionNum][index2],
+                                  style: inputTextStyle.copyWith(fontSize: 15),
                                 ),
                               ),
-                              subtitle: Text(
-                                results[position][questionNum][index2],
-                                style: inputTextStyle.copyWith(fontSize: 15),
-                              )),
                           itemCount: results[position][questionNum].length,
                           separatorBuilder: (context, index) => Divider());
                     },
@@ -221,8 +224,6 @@ class _ResultsState extends State<Results> {
     }
     return Container(
       color: const Color(0xff2c4260),
-      // color: Colors.blue[900],
-      // color: Colors.indigo[800], // 800?
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         title: Padding(
@@ -236,11 +237,12 @@ class _ResultsState extends State<Results> {
                 ),
               ),
               TextButton(
-                  onPressed: () => showDialog(
-                        context: context,
-                        builder: (context) => answers(question, questionNum),
-                      ),
-                  child: Text('Answers')),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => answers(question, questionNum),
+                ),
+                child: Text('Answers'),
+              ),
             ],
           ),
         ),
@@ -276,11 +278,13 @@ class _ResultsState extends State<Results> {
                 show: true,
                 bottomTitles: SideTitles(
                   showTitles: true,
-                  getTextStyles: (value) => const TextStyle(color: Color(0xff7589a2), fontWeight: FontWeight.bold, fontSize: 14),
+                  getTextStyles: (value) => const TextStyle(
+                    color: Color(0xff7589a2),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
                   margin: 0,
-                  getTitles: (double value) {
-                    return (value + 1).toInt().toString();
-                  },
+                  getTitles: (double value) => (value + 1).toInt().toString(),
                 ),
                 leftTitles: SideTitles(showTitles: false),
               ),
@@ -316,25 +320,26 @@ class _ResultsState extends State<Results> {
       shape: dialogShape,
       backgroundColor: primaryBlue,
       child: Container(
-          constraints: BoxConstraints(maxHeight: 300),
-          child: RawScrollbar(
-            thumbColor: Colors.black54,
-            isAlwaysShown: true,
-            child: ListView.separated(
-              itemBuilder: (context, index) => ListTile(
-                leading: Text(
-                  (index + 1).toString(),
-                  style: inputTextStyle,
-                ),
-                title: Text(
-                  question.multipleAnswers[index],
-                  style: inputTextStyle,
-                ),
+        constraints: BoxConstraints(maxHeight: 300),
+        child: RawScrollbar(
+          thumbColor: Colors.black54,
+          isAlwaysShown: true,
+          child: ListView.separated(
+            itemBuilder: (context, index) => ListTile(
+              leading: Text(
+                (index + 1).toString(),
+                style: inputTextStyle,
               ),
-              separatorBuilder: (context, index) => Divider(),
-              itemCount: question.multipleAnswers.length,
+              title: Text(
+                question.multipleAnswers[index],
+                style: inputTextStyle,
+              ),
             ),
-          )),
+            separatorBuilder: (context, index) => Divider(),
+            itemCount: question.multipleAnswers.length,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'package:rankless/Survey/Survey.dart';
 import 'package:rankless/shared/Interface.dart';
 
 import 'Employee.dart';
-import 'Post.dart';
 
 class Company {
   bool triedImage = false;
@@ -13,7 +12,6 @@ class Company {
   String description;
   String country;
   List<Employee> employees = [];
-  List<Post> posts = [];
   List<String> tags = [];
   List<String> positions = [];
   List<String> requests = [];

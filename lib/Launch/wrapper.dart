@@ -10,7 +10,6 @@ import 'package:rankless/shared/custom_app_bar.dart';
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //TODO izvuci StreamProvidere u posebne widgete da se ne zove new Widget svaki put
     final Employee employee = Provider.of<Employee>(context);
     Company company = Company(dummy: true);
     //Return to register screen implicitly by creating new instance of Authenticate
@@ -38,7 +37,6 @@ class Wrapper extends StatelessWidget {
                             updateShouldNotify: (a, b) => true,
                             value: company.self,
                             builder: (context, child) {
-                              print('rebuilding');
                               return EmployeeHome();
                             });
                       }),

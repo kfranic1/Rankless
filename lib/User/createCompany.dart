@@ -41,35 +41,7 @@ class _CreateCompanyState extends State<CreateCompany> {
                     selectionColor: Colors.white,
                     selectionHandleColor: Colors.white,
                   ),
-                  primaryColor: Colors.black45, // mijenja search icon kod drzava
-                  // secondaryHeaderColor: Colors.white,  // nista
-                  // errorColor: Colors.white,
-                  // cardColor: Colors.white,             // nista
-                  // textSelectionColor: Colors.white,
-                  // selectedRowColor: Colors.white,
-                  // canvasColor: Colors.white,           // nista
-                  // accentColor: Colors.white,
-
-                  // colorScheme: ColorScheme(
-                  //     primary: Colors.white,
-                  //     primaryVariant: Colors.white,
-                  //     secondary: Colors.white,
-                  //     secondaryVariant: Colors.white,
-                  //     surface: Colors.white,
-                  //     background: Colors.transparent,
-                  //     error: Colors.red,
-                  //     onPrimary: Colors.white,
-                  //     onSecondary: Colors.white,
-                  //     onSurface: Colors.white,
-                  //     onBackground: Colors.transparent,
-                  //     onError: Colors.red,
-                  //     brightness: Brightness.light),
-
-                  // indicatorColor: Colors.white,        // nista
-                  // textSelectionColor: Colors.white,    // nista
-                  // textSelectionHandleColor: Colors.white,
-                  // splashColor: Colors.white,
-                  // buttonColor: Colors.white,
+                  primaryColor: Colors.black45,
                   hintColor: Colors.white, // boja naziva dropdowna
                   fontFamily: font,
                 ),
@@ -82,23 +54,15 @@ class _CreateCompanyState extends State<CreateCompany> {
                           key: _formKey,
                           child: Column(
                             children: [
-                              SizedBox(
-                                height: 20,
-                              ),
+                              SizedBox(height: 20),
                               TextFormField(
                                 initialValue: name,
-                                validator: (value) {
-                                  return value.isEmpty ? "Name can't be empty" : null;
-                                },
+                                validator: (value) => value.isEmpty ? "Name can't be empty" : null,
                                 decoration: registerInputDecoration.copyWith(labelText: 'Company name'),
                                 style: inputTextStyle,
-                                onChanged: (value) {
-                                  setState(() => name = value);
-                                },
+                                onChanged: (value) => setState(() => name = value),
                               ),
-                              SizedBox(
-                                height: 30,
-                              ),
+                              SizedBox(height: 30),
                               CountryCodePicker(
                                 initialSelection: country,
                                 showCountryOnly: true,
@@ -109,34 +73,36 @@ class _CreateCompanyState extends State<CreateCompany> {
                                 barrierColor: Colors.transparent, //blue[900],
                                 dialogTextStyle: inputTextStyle,
                                 textStyle: inputTextStyle,
-                                searchStyle: inputTextStyle.copyWith(
-                                  color: Colors.black,
-                                ),
+                                searchStyle: inputTextStyle.copyWith(color: Colors.black),
                                 searchDecoration: registerInputDecoration.copyWith(hintStyle: TextStyle(color: Colors.white)),
                                 boxDecoration: popOutDecoration,
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
+                              SizedBox(height: 20),
                               SearchChoices.single(
                                 hint: 'industry',
                                 value: industry,
                                 style: inputTextStyle.copyWith(color: Colors.white),
                                 menuBackgroundColor: Colors.blueAccent,
                                 isExpanded: true,
-                                items: industries.map((e) => DropdownMenuItem(value: e, child: Text(e, style: inputTextStyle))).toList(),
+                                items: industries
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Text(
+                                          e,
+                                          style: inputTextStyle,
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                                 onChanged: (index) => setState(() => industry = index),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              SizedBox(height: 10),
                               Text(
                                 error,
                                 style: TextStyle(color: Colors.red[400]),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              SizedBox(height: 10),
                               TextButton(
                                 child: Text(
                                   "Register Company with this data",
