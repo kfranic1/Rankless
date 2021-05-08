@@ -17,7 +17,7 @@ class _EmployeeHomeState extends State<EmployeeHome> {
   List<Widget> _screens = [
     KeepAliveThis(child: CompanyHomeScreen()),
     KeepAliveThis(child: EmployeeHomeScreen()),
-    ReviewScreen(),
+    KeepAliveThis(child: ReviewScreen()),
   ];
 
   @override
