@@ -16,30 +16,6 @@ class QuestionUICreate extends StatefulWidget {
   }
 }
 
-// constants, decorations, style...
-
-const shadedWhite = Colors.white70; // used for icons in multiple answers types
-Color lighterBlue = Colors.blue[200]; // used as background for containers
-Color opacityWhite = Colors.white.withOpacity(0.4); // optional: used as background for containers
-Color containerBackgroundColor = opacityWhite;
-// uredit cu jos ove boje
-
-Decoration lighterContainerDecoration = BoxDecoration(
-  borderRadius: borderRadius,
-  color: containerBackgroundColor,
-);
-
-InputDecoration textFieldDecoration = InputDecoration(
-  // border: InputBorder.none,
-  hintStyle: TextStyle(fontFamily: font, color: Colors.white60, fontSize: 15),
-);
-
-TextStyle header = TextStyle(
-  fontFamily: font,
-  color: Colors.white,
-  fontSize: 20,
-);
-
 class _QuestionUICreateState extends State<QuestionUICreate> {
   _QuestionUICreateState(this._question, this._controllers);
 
@@ -122,12 +98,9 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
                 }),
                 color: Colors.white,
                 selectedColor: Colors.deepPurple[900],
-                //fillColor: containerBackgroundColor, // lighterBlue / opacityWhite
-                //unselectedFillColor: containerBackgroundColor,
                 fillColor: Colors.white.withOpacity(0.4),
                 borderRadius: borderRadius,
                 renderBorder: false,
-                //spacing: 30.0,
               ),
             ),
           ),
@@ -202,7 +175,6 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
                 hintStyle: TextStyle(
                   fontFamily: font,
                   fontSize: 16,
-                  // color: Colors.blue[200],
                   decorationColor: Colors.white,
                 ),
                 enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue[200]))),

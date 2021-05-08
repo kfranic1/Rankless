@@ -76,6 +76,7 @@ const secondaryGradient = LinearGradient(begin: Alignment.topCenter, end: Alignm
 const primaryBlue = Colors.blue;
 const secondaryBlue = Colors.blueAccent;
 Color buttonColor = Colors.blue.withOpacity(0.7);
+const shadedWhite = Colors.white70; // used for icons in multiple answers types
 
 // DECORATIONS
 Decoration secondaryGradientDecoration = BoxDecoration(
@@ -106,6 +107,11 @@ InputDecoration registerInputDecoration = textFieldDecoration.copyWith(
   labelStyle: TextStyle(fontSize: 18, fontFamily: font, color: Colors.white),
 );
 
+Decoration lighterContainerDecoration = BoxDecoration(
+  borderRadius: borderRadius,
+  color: Colors.white.withOpacity(0.4),
+);
+
 // STYLES
 TextStyle titleNameStyle = TextStyle(
   color: Colors.white,
@@ -118,6 +124,12 @@ TextStyle inputTextStyle = TextStyle(
   fontFamily: font,
   color: Colors.white,
   fontSize: 18,
+);
+
+TextStyle header = TextStyle(
+  fontFamily: font,
+  color: Colors.white,
+  fontSize: 20,
 );
 
 const double snackFontSize = 18;
