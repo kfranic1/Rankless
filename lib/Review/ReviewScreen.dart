@@ -24,6 +24,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   bool admin = false;
   String selectedIndustry;
   Company company;
+  Employee employee;
   Analysis analysis;
   Future _future;
   List<Widget> strengths = [];
@@ -54,6 +55,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   @override
   void initState() {
     company = Provider.of<Company>(context, listen: false);
+    employee = Provider.of<Employee>(context, listen: false);
     analysis = Analysis(company.uid);
     _future = analysis.getData().whenComplete(() {
       searchCountries = analysis.activeCountries.map<DropdownMenuItem<String>>((String value) {
@@ -75,7 +77,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
     myColor = Colors.blue;
     avgColor = Colors.white;
     maxColor = Colors.greenAccent;
-    admin = Provider.of<Employee>(context, listen: false).admin;
+    admin = employee.admin;
 
     return Scaffold(
       body: Container(
@@ -83,7 +85,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
         height: double.infinity,
         width: double.infinity,
         padding: EdgeInsets.all(10),
-        child: company.dummy
+        child: company.dummy || employee.companyUid == null
             ? Container(
                 decoration: backgroundDecoration,
                 width: double.infinity,
@@ -427,23 +429,25 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         children: [
                           Text(categories[index], style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
                           IconButton(
-                              icon: Icon(
-                                Icons.info_outline,
-                                color: Colors.white54,
+                            icon: Icon(
+                              Icons.info_outline,
+                              color: Colors.white60,
+                            ),
+                            onPressed: () => showDialog(
+                              context: context,
+                              builder: (context) => Dialog(
+                                backgroundColor: primaryBlue,
+                                shape: dialogShape,
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Text(
+                                    categoryDescriptions[index],
+                                    style: inputTextStyle,
+                                  ),
+                                ),
                               ),
-                              onPressed: () => showDialog(
-                                  context: context,
-                                  builder: (context) => StatefulBuilder(
-                                      builder: (context, setState) => Dialog(
-                                            backgroundColor: primaryBlue,
-                                            shape: dialogShape,
-                                            child: Container(
-                                                padding: EdgeInsets.all(10),
-                                                child: Text(
-                                                  categoryDescriptions[index],
-                                                  style: inputTextStyle,
-                                                )),
-                                          ))))
+                            ),
+                          )
                         ],
                       ),
                       SizedBox(height: 10),

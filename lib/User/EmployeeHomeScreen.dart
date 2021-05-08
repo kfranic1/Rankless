@@ -59,6 +59,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                           Expanded(
                             child: TextField(
                               controller: joinController,
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                           IconButton(
@@ -72,7 +73,17 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                           TextButton(
                             onPressed: () {
                               setState(() => loading = true);
-                              employee.joinCompany(joinController.text).whenComplete(() => setState(() => loading = false));
+                              employee.joinCompany(joinController.text).then((value) {
+                                if (value == "Error")
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                      "Company with that code doesn't exist",
+                                      style: TextStyle(fontFamily: font, fontSize: snackFontSize),
+                                    ),
+                                    duration: Duration(seconds: 2),
+                                  ));
+                                setState(() => loading = false);
+                              });
                             },
                             child: Text('Join'),
                           ),
@@ -94,31 +105,36 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Row(children: [
-                              Icon(
-                                Icons.home_rounded,
-                                color: Colors.white.withOpacity(0.4),
-                                size: 40,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.home_rounded,
+                                    color: Colors.white.withOpacity(0.4),
+                                    size: 40,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(company.name, style: inputTextStyle.copyWith(fontSize: detailsSize)),
+                                ],
                               ),
-                              SizedBox(width: 10),
-                              Text(company.name, style: inputTextStyle.copyWith(fontSize: detailsSize)),
-                            ]),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.home_repair_service_rounded,
-                                  color: Colors.white.withOpacity(0.4),
-                                  size: 40,
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  employee.position == '' ? 'Position' : employee.position,
-                                  style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                )
-                              ],
-                            ),
-                          ]),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.home_repair_service_rounded,
+                                    color: Colors.white.withOpacity(0.4),
+                                    size: 40,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    employee.position == '' ? 'Position' : employee.position,
+                                    style: inputTextStyle.copyWith(fontSize: detailsSize),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                           SizedBox(
                             width: 35,
                           ),

@@ -96,7 +96,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         width: double.infinity,
         height: double.infinity,
         decoration: backgroundDecoration,
-        child: company.dummy
+        child: company.dummy || me.companyUid == null
             ? Center(
                 child: Text(
                   'You are not in any company',
