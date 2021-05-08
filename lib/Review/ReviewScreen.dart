@@ -123,8 +123,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   ifEmptyAddNone(strengths);
                   ifEmptyAddNone(averageCategories);
                   ifEmptyAddNone(weaknesses);
-                  return ListView(
-                    shrinkWrap: true,
+                  return Column(
+                    // shrinkWrap: true,
                     children: [
                       Container(
                         child: Column(
@@ -279,55 +279,64 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 20),
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                        Container(
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.remove,
-                                color: myColor,
+                      Expanded(
+                        child: ListView(
+                          // TODO check this new list view
+                          shrinkWrap: true,
+                          children: [
+                            SizedBox(height: 20),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                              Container(
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.remove,
+                                      color: myColor,
+                                    ),
+                                    Text(
+                                      'Your score',
+                                      style: inputTextStyle,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Text(
-                                'Your score',
-                                style: inputTextStyle,
-                              ),
-                            ],
-                          ),
+                              if (admin)
+                                Container(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.remove,
+                                        color: avgColor,
+                                      ),
+                                      Text(
+                                        'Average',
+                                        style: inputTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              if (admin)
+                                Container(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.remove,
+                                        color: maxColor,
+                                      ),
+                                      Text(
+                                        'Top',
+                                        style: inputTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ]),
+                            getGraph(selectedCategoryIndex,
+                                country: selectedCountry == 'global' ? null : selectedCountry, industry: selectedIndustry),
+                            if (admin) adminExtraData()
+                          ],
                         ),
-                        if (admin)
-                          Container(
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.remove,
-                                  color: avgColor,
-                                ),
-                                Text(
-                                  'Average',
-                                  style: inputTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                        if (admin)
-                          Container(
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.remove,
-                                  color: maxColor,
-                                ),
-                                Text(
-                                  'Top',
-                                  style: inputTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                      ]),
-                      getGraph(selectedCategoryIndex, country: selectedCountry == 'global' ? null : selectedCountry, industry: selectedIndustry),
-                      if (admin) adminExtraData()
+                      )
                     ],
                   );
                 }),
