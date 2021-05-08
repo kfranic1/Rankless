@@ -27,12 +27,7 @@ class _QuestionUIAnswerState extends State<QuestionUIAnswer> {
             padding: EdgeInsets.all(10.0),
             child: Text(
               widget.question.questionText,
-              style: TextStyle(
-                fontFamily: font,
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: inputTextStyle.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
           widget.question.answerType == TYPE.Text

@@ -68,11 +68,7 @@ class _SurveyUIFillState extends State<SurveyUIFill> {
                             return ListTile(
                               leading: Text(
                                 (index + 1).toString(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: font,
-                                  fontSize: 18,
-                                ),
+                                style: inputTextStyle,
                               ),
                               title: Container(
                                 decoration: decorate,

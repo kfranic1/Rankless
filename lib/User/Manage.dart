@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rankless/Survey/QuestionUICreate.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'package:flutter/widgets.dart';
@@ -366,7 +367,7 @@ class _ManageState extends State<Manage> {
               flag
                   ? widget.company.employees[index].name + ' ' + widget.company.employees[index].surname
                   : _filterListEmp[index].name + ' ' + _filterListEmp[index].surname,
-              style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
+              style: header,
               textAlign: TextAlign.left,
             ),
             trailing: Text(

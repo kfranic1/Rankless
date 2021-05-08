@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rankless/Survey/QuestionUICreate.dart';
 import 'package:rankless/Survey/Results.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'package:rankless/Survey/SurveyUI.dart';
@@ -137,14 +138,14 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                       ? Center(
                           child: Text(
                             "You don't have any completed surveys",
-                            style: TextStyle(fontFamily: font, fontSize: 20, color: Colors.white),
+                            style: header,
                           ),
                         )
                       : Container(
                           margin: EdgeInsets.only(left: 20),
                           child: Text(
                             "Survey results:",
-                            style: TextStyle(fontFamily: font, fontSize: 20, color: Colors.white),
+                            style: header,
                           ),
                         ),
                   SizedBox(
@@ -192,8 +193,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         ),
       ),
       child: TextButton.icon(
-        onPressed: () =>
-          Navigator.push(context, MaterialPageRoute(builder: (context) => Results(survey))),
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Results(survey))),
         icon: Icon(
           Icons.bar_chart_rounded,
           color: Colors.greenAccent,

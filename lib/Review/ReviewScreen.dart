@@ -127,15 +127,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     shrinkWrap: true,
                     children: [
                       Container(
-                        // padding: EdgeInsets.all(20),
-                        // decoration: BoxDecoration(
-                        //     border: Border.all(color: Colors.white),
-                        //     borderRadius: borderRadius), //RoundedRectangleBorder(borderRadius: borderRadius))),
                         child: Column(
-                          // mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Text('Filters: ', style: inputTextStyle),
                             Container(
                               padding: EdgeInsets.only(left: 10),
                               child: Row(
@@ -143,7 +137,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                 children: [
                                   Text(
                                     'Industry: ' + (yourIndustry ? company.industry : 'All'),
-                                    style: inputTextStyle, //.copyWith(fontSize: 20),
+                                    style: inputTextStyle,
                                   ),
                                   Switch(
                                     value: yourIndustry,
@@ -152,7 +146,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                         yourIndustry = value;
                                       });
                                     },
-                                    // trackColor: MaterialStateProperty.all<Color>(Colors.grey),
                                     inactiveTrackColor: Colors.grey,
                                     activeTrackColor: primaryBlue.withOpacity(0.7),
                                   ),
@@ -185,7 +178,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                       'Global',
                                       style: inputTextStyle,
                                     ),
-                                    // isExpanded: true,
                                     onChanged: (value) {
                                       setState(() {
                                         selectedCountry = value;
@@ -222,6 +214,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                       ]);
                                     }),
                                 SizedBox(child: Divider(color: Colors.white), height: 10),
+
                                 // category search
                                 SearchChoices.single(
                                     isExpanded: true,
@@ -243,7 +236,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                       'Total score',
                                       style: inputTextStyle,
                                     ),
-                                    // isExpanded: true,
                                     onChanged: (value) {
                                       setState(() {
                                         selectedCategory = value == -1 ? 5 : value;
@@ -350,7 +342,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
       children: [
         Container(
           padding: EdgeInsets.all(15),
-          // height: 100,
           decoration: BoxDecoration(
               borderRadius: borderRadius,
               gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.teal[600], Colors.blue[700]])),
@@ -369,7 +360,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
         SizedBox(height: 20),
         Container(
           padding: EdgeInsets.all(15),
-          // height: 100,
           decoration: BoxDecoration(borderRadius: borderRadius, color: Colors.indigo[900]),
           child: Column(
             children: [
@@ -388,7 +378,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
         SizedBox(height: 20),
         Container(
           padding: EdgeInsets.all(15),
-          // height: 100,
           decoration: BoxDecoration(
               borderRadius: borderRadius,
               gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.red[900], Colors.pink[900]])),

@@ -93,7 +93,7 @@ class _SurveyUIState extends State<SurveyUI> {
                     child: Row(
                       children: <Widget>[
                         //date
-                        Text('Date', style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: font)),
+                        Text('Date', style: header),
                         SizedBox(
                           width: 20,
                         ),
@@ -149,7 +149,7 @@ class _SurveyUIState extends State<SurveyUI> {
                       children: [
                         Text(
                           'For: ',
-                          style: TextStyle(fontSize: 20, color: Colors.white, fontFamily: font),
+                          style: header,
                         ),
                         SizedBox(
                           width: 20,
@@ -190,7 +190,7 @@ class _SurveyUIState extends State<SurveyUI> {
                                   Expanded(
                                     child: Text(
                                       item.value,
-                                      style: TextStyle(fontFamily: font, fontSize: 18, color: Colors.white),
+                                      style: inputTextStyle,
                                     ),
                                   ),
                                 ])),
@@ -205,7 +205,7 @@ class _SurveyUIState extends State<SurveyUI> {
 
                             searchHint: Text(
                               'Who should get the survey',
-                              style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+                              style: inputTextStyle.copyWith(fontWeight: FontWeight.bold),
                             ),
                             isExpanded: false,
                             displayClearIcon: false,
@@ -273,7 +273,7 @@ class _SurveyUIState extends State<SurveyUI> {
                                   },
                                   child: Text(
                                     'Add',
-                                    style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
+                                    style: header,
                                   ),
                                 ),
                               ],
@@ -290,7 +290,7 @@ class _SurveyUIState extends State<SurveyUI> {
                     ),
                     label: Text(
                       "Add question",
-                      style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: font),
+                      style: header,
                     ),
                   ),
 
@@ -426,7 +426,7 @@ class _SurveyUIState extends State<SurveyUI> {
       child: (ListTile(
         leading: Text(
           (index + 1).toString(),
-          style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
+          style: header,
         ),
         title: Container(
           constraints: BoxConstraints(
@@ -436,7 +436,7 @@ class _SurveyUIState extends State<SurveyUI> {
           padding: EdgeInsets.only(left: 10, right: 10),
           child: Text(
             question.questionText,
-            style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 20),
+            style: header,
             textAlign: TextAlign.left,
           ),
           decoration: BoxDecoration(

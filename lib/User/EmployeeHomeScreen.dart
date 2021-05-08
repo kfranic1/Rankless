@@ -166,7 +166,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                           )
                                         : Text(
                                             'You don\'t have any tags',
-                                            style: inputTextStyle.copyWith(fontSize: 20),
+                                            style: header,
                                           ),
                                   ),
                                 ),

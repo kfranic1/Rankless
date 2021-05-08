@@ -59,11 +59,7 @@ class _ResultsState extends State<Results> {
                       TextButton(
                         child: Text(
                           'Done',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: font,
-                            fontSize: 20,
-                          ),
+                          style: header,
                         ),
                         onPressed: () => Navigator.pop(context),
                       ),
