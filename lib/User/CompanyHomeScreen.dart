@@ -41,7 +41,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                         children: [
                           FloatingActionButton(
                               heroTag: 'left',
-                              backgroundColor: buttonColor,
+                              backgroundColor: Colors.black.withOpacity(0.7),
                               child: Icon(
                                 Icons.group_add_rounded,
                                 color: Colors.white,
@@ -72,7 +72,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 child: Stack(children: [
                   FloatingActionButton(
                     heroTag: 'right',
-                    backgroundColor: buttonColor,
+                    backgroundColor: Colors.black.withOpacity(0.7),
                     child: Icon(
                       Icons.post_add_rounded,
                       size: 30,
@@ -103,100 +103,35 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               )
-            : ListView(
-                shrinkWrap: true,
+            : Column(
+                //physics: ClampingScrollPhysics(),
+                //shrinkWrap: true,
                 children: [
                   Align(
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.topLeft,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(30),
                       child: Text(
                         company.name,
-                        style: titleNameStyle,
+                        style: titleNameStyle.copyWith(fontSize: nameFontSize),
                       ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                          flex: 3,
-                          child: Container(
-                            child: ListTile(
-                              leading: Icon(
-                                Icons.list,
-                                color: Colors.white,
-                                size: 50,
-                              ),
-                              title: Text(
-                                company.industry,
-                                style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 22),
-                              ),
-                            ),
-                          )),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          //padding: EdgeInsets.only(left: 70),
-                          child: ListTile(
-                            leading: Icon(
-                              Icons.format_list_numbered_rounded,
-                              color: Colors.white,
-                              size: 50,
-                            ),
-                            title: Text(
-                              '#',
-                              style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 22),
-                            ), //ovdje ide pozicija na rankingu
-                          ),
-                        ),
+                  Container(
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.list,
+                        color: Colors.white.withOpacity(0.4),
+                        size: 40,
                       ),
-                    ],
+                      title: Text(
+                        company.industry,
+                        style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 22),
+                      ),
+                    ),
                   ),
                   SizedBox(
                     height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: IconButton(
-                            icon: Icon(
-                              Icons.info_outline_rounded,
-                              color: Colors.white,
-                              size: 50,
-                            ),
-                            onPressed: () {}),
-                      ),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      Expanded(
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.insert_chart_outlined_rounded,
-                            color: Colors.white,
-                            size: 50,
-                          ),
-                          onPressed: () {},
-                        ),
-                      ),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      Expanded(
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.chat_bubble_outline_rounded,
-                            color: Colors.white,
-                            size: 50,
-                          ),
-                          onPressed: () {},
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 50,
                   ),
                   company.surveys.length == 0
                       ? Center(
@@ -232,13 +167,12 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         builder: (context, snapshot) {
           return snapshot.connectionState != ConnectionState.done
               ? loader
-              : Container(
-                  height: 80,
+              : Expanded(
                   child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
+                      physics: ClampingScrollPhysics(),
                       shrinkWrap: true,
                       itemBuilder: (context, index) => filledSurveys(company.surveys[index]),
-                      separatorBuilder: (context, index) => SizedBox(width: 20),
+                      separatorBuilder: (context, index) => SizedBox(height: 20),
                       itemCount: company.surveys.length),
                 );
         });
@@ -267,7 +201,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
           size: 50,
         ),
         label: Text(
-          survey.name + "\n" + (survey.status == STATUS.Active ? "active until: " : "ended") + _formatted.format(survey.to),
+          survey.name + "\n" + (survey.status == STATUS.Active ? "active until: " : "ended ") + _formatted.format(survey.to),
           style: TextStyle(fontFamily: font, fontSize: 22, color: Colors.white),
           textAlign: TextAlign.center,
         ),

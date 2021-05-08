@@ -28,7 +28,7 @@ class _ManageState extends State<Manage> {
   List<bool> isSelected = [true, false, false];
   List<DropdownMenuItem<String>> positions = [];
   List<DropdownMenuItem<String>> tags = [];
-  List<int> _selectedTags = [];
+  //List<int> _selectedTags = [];
   bool loading = false;
   var _searchview = new TextEditingController();
   List<Employee> _filterListEmp = [];
@@ -359,7 +359,7 @@ class _ManageState extends State<Manage> {
                 style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
               ),
               content: const Text(
-                "Are you sure you remove this employee from your company?",
+                "Are you sure you want to remove this employee from your company?",
                 style: TextStyle(fontFamily: font),
               ),
               actions: <Widget>[

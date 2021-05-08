@@ -111,6 +111,7 @@ TextStyle inputTextStyle = TextStyle(
 );
 
 const double snackFontSize = 18;
+const double nameFontSize = 30;
 
 RoundedRectangleBorder dialogShape = RoundedRectangleBorder(borderRadius: borderRadius);
 
