@@ -49,7 +49,7 @@ class Employee {
     String newName,
     String newSurname,
     List<String> newTags,
-    String newCompanyUid = 'none',
+    String newCompanyUid,
     String newRequest,
     List<Survey> newSurveys,
     bool newAdmin,
@@ -69,7 +69,7 @@ class Employee {
         this.tags = newTags;
         run['tags'] = this.tags;
       }
-      if (newCompanyUid != 'none') {
+      if (newCompanyUid != null) {
         this.companyUid = newCompanyUid;
         run['companyUid'] = this.companyUid;
       }
@@ -121,17 +121,17 @@ class Employee {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       List<String> employeesTemp = company.employees.map((e) => e.uid).toList();
       employeesTemp.remove(this.uid);
-      transaction.update(
-        companiesCollection.doc(company.uid),
-        {'employees': employeesTemp},
-      );
-    }).whenComplete(() => updateEmployee(
-          newCompanyUid: null,
-          newPosition: '',
-          newTags: [],
-          newAdmin: false,
-          newSurveys: [],
-        ));
+      transaction.update(companiesCollection.doc(company.uid), {
+        'employees': employeesTemp,
+      });
+      transaction.update(userCollection.doc(this.uid), {
+        'companyUid': null,
+        'position': '',
+        'tags': [],
+        'surveys': [],
+        'admin': false,
+      });
+    });
   }
 
   Future<String> joinCompany(String companyUid) async {
