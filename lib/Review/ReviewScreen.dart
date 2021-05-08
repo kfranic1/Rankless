@@ -406,7 +406,29 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                 padding: const EdgeInsets.all(15),
                                 child: Column(
                                   children: [
-                                    Text(categories[index], style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
+                                    Row(
+                                      children: [
+                                        Text(categories[index], style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
+                                        IconButton(
+                                            icon: Icon(
+                                              Icons.info_outline,
+                                              color: Colors.white54,
+                                            ),
+                                            onPressed: () => showDialog(
+                                                context: context,
+                                                builder: (context) => StatefulBuilder(
+                                                    builder: (context, setState) => Dialog(
+                                                          backgroundColor: primaryBlue,
+                                                          shape: dialogShape,
+                                                          child: Container(
+                                                              padding: EdgeInsets.all(10),
+                                                              child: Text(
+                                                                categoryDescriptions[index],
+                                                                style: inputTextStyle,
+                                                              )),
+                                                        ))))
+                                      ],
+                                    ),
                                     SizedBox(height: 10),
                                     Text(
                                       analysis.getMessage(index,
