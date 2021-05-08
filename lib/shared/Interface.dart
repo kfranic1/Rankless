@@ -33,17 +33,18 @@ List<String> categories = [
   "Engagement",
   "Performance",
   "Satisfaction",
+  "Work environment",
   "Prospects",
-  'Other',
 ];
 
 List<String> categoryDescriptions = [
-  'Employee engagement is the extent to which employees feel passionate about their jobs, are committed to the organization, and put discretionary effort into their work.' //Engagement - how passionate people are about work',
+  'Engagement - how passionate people are about their work and commited to their organization', //'Employee engagement is the extent to which employees feel passionate about their jobs, are committed to the organization, and put discretionary effort into their work.',
+
+  'Performance - how employees behave in the workplace and how well they perform their duties',
+  'Satisfaction - do employees feel recognized, properly rewarded for their work and content with their responsibilities' //employee recognition and factors such as job stability', //'how happy or content your employees are'
   ,
-  'Performance - how your employees behave in the workplace and how well they perform their duties',
-  'Satisfaction - how happy or content your employees are',
-  'Prospects - how much people feel they can develop and advance in your company',
-  'Other',
+  'Work environment - conditions employees work in and relationships with their co-workers',
+  'Prospects - how much people feel they can develop and advance in their company',
 ];
 
 List<String> months = [
