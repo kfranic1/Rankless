@@ -16,7 +16,7 @@ class Survey {
   STATUS status;
   Map<String, Map<int, List<String>>> results = new Map<String, Map<int, List<String>>>();
   bool hasData = false;
-  bool isPublic = true; //TODO treba bit false
+  bool isPublic = false;
 
   Survey({this.uid, this.name, this.company});
 
@@ -28,7 +28,7 @@ class Survey {
       'from': this.from.toString(),
       'to': this.to.toString(),
       'tags': this.tags,
-      'public': true, //TODO treba bit false
+      'public': false,
     });
     this.uid = ref.id;
     await company.updateCompany(newSurvey: this);
@@ -132,7 +132,7 @@ class Survey {
         }
       }, SetOptions(merge: true)).onError((error, stackTrace) => failed = true);
     if (failed) return;
-    //TODO who.surveys.remove(this);
+    who.surveys.remove(this);
     await who.updateEmployee(newSurveys: who.surveys);
   }
 

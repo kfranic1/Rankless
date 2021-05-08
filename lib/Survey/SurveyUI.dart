@@ -24,7 +24,6 @@ class _SurveyUIState extends State<SurveyUI> {
   List<int> _selectedTags = [];
   QuestionUICreate _createdQ;
   List<QuestionUICreate> _questions = [];
-  List<ListTile> _suggestedQ = [];
   List<DropdownMenuItem> tags = [];
   final TextEditingController nameEditing = TextEditingController();
   bool loading = false;

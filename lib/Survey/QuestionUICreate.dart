@@ -96,7 +96,6 @@ class _QuestionUICreateState extends State<QuestionUICreate> {
               builder: (context, constraints) => ToggleButtons(
                 constraints: BoxConstraints.expand(width: constraints.maxWidth / 3, height: 60),
                 children: [
-                  // TODO labels
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

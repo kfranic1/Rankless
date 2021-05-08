@@ -128,20 +128,6 @@ class _CreateCompanyState extends State<CreateCompany> {
                                 onChanged: (index) => setState(() => industry = index),
                               ),
                               SizedBox(
-                                height: 20,
-                              ),
-                              TextFormField(
-                                initialValue: info,
-                                validator: (value) {
-                                  return value.isEmpty ? "Info can't be empty" : null;
-                                },
-                                decoration: registerInputDecoration.copyWith(labelText: 'Info'),
-                                style: inputTextStyle,
-                                onChanged: (value) {
-                                  setState(() => info = value);
-                                },
-                              ),
-                              SizedBox(
                                 height: 10,
                               ),
                               Text(

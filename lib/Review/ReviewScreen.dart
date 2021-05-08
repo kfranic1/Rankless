@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rankless/User/Company.dart';
+import 'package:rankless/User/Employee.dart';
 import 'package:rankless/shared/Interface.dart';
 import 'package:search_choices/search_choices.dart';
 import 'Analysis.dart';
@@ -20,6 +21,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   String selectedCategory;
   int selectedCategoryIndex = 5;
   bool yourIndustry = false;
+  bool admin = false;
   String selectedIndustry;
   Company company;
   Analysis analysis;
@@ -73,6 +75,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
     myColor = Colors.blue;
     avgColor = Colors.white;
     maxColor = Colors.greenAccent;
+    admin = Provider.of<Employee>(context, listen: false).admin;
+
     return Scaffold(
       body: Container(
         decoration: backgroundDecoration,
@@ -291,161 +295,170 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                 color: myColor,
                               ),
                               Text(
-                                'You',
+                                'Your score',
                                 style: inputTextStyle,
                               ),
                             ],
                           ),
                         ),
-                        Container(
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.remove,
-                                color: avgColor,
-                              ),
-                              Text(
-                                'Average',
-                                style: inputTextStyle,
-                              ),
-                            ],
+                        if (admin)
+                          Container(
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.remove,
+                                  color: avgColor,
+                                ),
+                                Text(
+                                  'Average',
+                                  style: inputTextStyle,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.remove,
-                                color: maxColor,
-                              ),
-                              Text(
-                                'Top',
-                                style: inputTextStyle,
-                              ),
-                            ],
+                        if (admin)
+                          Container(
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.remove,
+                                  color: maxColor,
+                                ),
+                                Text(
+                                  'Top',
+                                  style: inputTextStyle,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
                       ]),
                       getGraph(selectedCategoryIndex, country: selectedCountry == 'global' ? null : selectedCountry, industry: selectedIndustry),
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        // height: 100,
-                        decoration: BoxDecoration(
-                            borderRadius: borderRadius,
-                            gradient: LinearGradient(
-                                begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.teal[600], Colors.blue[700]])),
-                        child: Column(children: [
-                          Text('Your Strenghts:', style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
-                          ListView.builder(
-                            itemCount: strengths.length,
-                            itemBuilder: (context, index) {
-                              return strengths[index];
-                            },
-                            physics: ClampingScrollPhysics(),
-                            shrinkWrap: true,
-                          )
-                        ]),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        // height: 100,
-                        decoration: BoxDecoration(borderRadius: borderRadius, color: Colors.indigo[900]),
-                        child: Column(
-                          children: [
-                            Text('Average:', style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
-                            ListView.builder(
-                              itemCount: averageCategories.length,
-                              itemBuilder: (context, index) {
-                                return averageCategories[index];
-                              },
-                              physics: ClampingScrollPhysics(),
-                              shrinkWrap: true,
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        // height: 100,
-                        decoration: BoxDecoration(
-                            borderRadius: borderRadius,
-                            gradient:
-                                LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.red[900], Colors.pink[900]])),
-                        child: Column(
-                          children: [
-                            Text('Your weaknesses:', style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
-                            ListView.builder(
-                              itemCount: weaknesses.length,
-                              itemBuilder: (context, index) {
-                                return weaknesses[index];
-                              },
-                              physics: ClampingScrollPhysics(),
-                              shrinkWrap: true,
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        height: 140,
-                        child: ListView.separated(
-                          separatorBuilder: (context, index) {
-                            return SizedBox(width: 20);
-                          },
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          itemCount: categories.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              height: 100,
-                              width: 250,
-                              decoration: BoxDecoration(borderRadius: borderRadius, color: Colors.indigo[900]),
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(categories[index], style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.info_outline,
-                                              color: Colors.white54,
-                                            ),
-                                            onPressed: () => showDialog(
-                                                context: context,
-                                                builder: (context) => StatefulBuilder(
-                                                    builder: (context, setState) => Dialog(
-                                                          backgroundColor: primaryBlue,
-                                                          shape: dialogShape,
-                                                          child: Container(
-                                                              padding: EdgeInsets.all(10),
-                                                              child: Text(
-                                                                categoryDescriptions[index],
-                                                                style: inputTextStyle,
-                                                              )),
-                                                        ))))
-                                      ],
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      analysis.getMessage(index,
-                                          country: selectedCountry == 'global' ? null : selectedCountry, industry: selectedIndustry),
-                                      style: inputTextStyle,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                      if (admin) adminExtraData()
                     ],
                   );
                 }),
       ),
+    );
+  }
+
+  Widget adminExtraData() {
+    return ListView(
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      children: [
+        Container(
+          padding: EdgeInsets.all(15),
+          // height: 100,
+          decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.teal[600], Colors.blue[700]])),
+          child: Column(children: [
+            Text('Your Strenghts:', style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
+            ListView.builder(
+              itemCount: strengths.length,
+              itemBuilder: (context, index) {
+                return strengths[index];
+              },
+              physics: ClampingScrollPhysics(),
+              shrinkWrap: true,
+            )
+          ]),
+        ),
+        SizedBox(height: 20),
+        Container(
+          padding: EdgeInsets.all(15),
+          // height: 100,
+          decoration: BoxDecoration(borderRadius: borderRadius, color: Colors.indigo[900]),
+          child: Column(
+            children: [
+              Text('Average:', style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
+              ListView.builder(
+                itemCount: averageCategories.length,
+                itemBuilder: (context, index) {
+                  return averageCategories[index];
+                },
+                physics: ClampingScrollPhysics(),
+                shrinkWrap: true,
+              )
+            ],
+          ),
+        ),
+        SizedBox(height: 20),
+        Container(
+          padding: EdgeInsets.all(15),
+          // height: 100,
+          decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.red[900], Colors.pink[900]])),
+          child: Column(
+            children: [
+              Text('Your weaknesses:', style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
+              ListView.builder(
+                itemCount: weaknesses.length,
+                itemBuilder: (context, index) {
+                  return weaknesses[index];
+                },
+                physics: ClampingScrollPhysics(),
+                shrinkWrap: true,
+              )
+            ],
+          ),
+        ),
+        SizedBox(height: 20),
+        Container(
+          height: 140,
+          child: ListView.separated(
+            separatorBuilder: (context, index) {
+              return SizedBox(width: 20);
+            },
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              return Container(
+                height: 100,
+                width: 250,
+                decoration: BoxDecoration(borderRadius: borderRadius, color: Colors.indigo[900]),
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text(categories[index], style: inputTextStyle.copyWith(fontWeight: FontWeight.bold)),
+                          IconButton(
+                              icon: Icon(
+                                Icons.info_outline,
+                                color: Colors.white54,
+                              ),
+                              onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (context) => StatefulBuilder(
+                                      builder: (context, setState) => Dialog(
+                                            backgroundColor: primaryBlue,
+                                            shape: dialogShape,
+                                            child: Container(
+                                                padding: EdgeInsets.all(10),
+                                                child: Text(
+                                                  categoryDescriptions[index],
+                                                  style: inputTextStyle,
+                                                )),
+                                          ))))
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        analysis.getMessage(index, country: selectedCountry == 'global' ? null : selectedCountry, industry: selectedIndustry),
+                        style: inputTextStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -478,8 +491,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 ),
                 margin: 10,
                 getTitles: (value) {
-                  if (value % 3 != 0 && value != min(12, analysis.getNumOfSurveys().toDouble()) && analysis.getNumOfSurveys() > 3) return '';
-                  if (value <= analysis.getNumOfSurveys()) return months[(value.round() + 4) % 12];
+                  int val = value.round() + analysis.getFirstMonth();
+                  if (val % 3 != analysis.getFirstMonth() % 3 &&
+                      val != min(12, analysis.getNumOfSurveys().toDouble()) &&
+                      analysis.getNumOfSurveys() > 3) return '';
+                  if (value <= analysis.getNumOfSurveys()) return months[val % 12];
                   return '';
                 },
               ),
@@ -533,7 +549,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
       maxScore.add(FlSpot(i.toDouble(), analysis.getMaxScore(i, questionCategory, country: country, industry: industry)));
       myScore.add(FlSpot(i.toDouble(), analysis.getMyScore(i, questionCategory)));
     }
-    final LineChartBarData lineChartBarData1 = LineChartBarData(
+    final LineChartBarData avg = LineChartBarData(
       spots: avgScore,
       isCurved: true,
       colors: [
@@ -548,7 +564,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
         show: false,
       ),
     );
-    final LineChartBarData lineChartBarData2 = LineChartBarData(
+    final LineChartBarData max = LineChartBarData(
       spots: maxScore,
       isCurved: true,
       colors: [
@@ -563,7 +579,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
         const Color(0x00aa4cfc),
       ]),
     );
-    final LineChartBarData lineChartBarData3 = LineChartBarData(
+    final LineChartBarData my = LineChartBarData(
       spots: myScore,
       isCurved: true,
       colors: [
@@ -578,11 +594,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
         show: false,
       ),
     );
-    return [
-      lineChartBarData1,
-      lineChartBarData2,
-      lineChartBarData3,
-    ];
+    return admin ? [avg, max, my] : [my];
   }
 
   void ifEmptyAddNone(List<Widget> list) {

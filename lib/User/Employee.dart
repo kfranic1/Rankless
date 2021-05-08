@@ -136,6 +136,7 @@ class Employee {
   Future joinCompany(String companyUid) async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       DocumentReference ref = companiesCollection.doc(companyUid);
+      print(ref);
       List<String> employees = ((await ref.get())['employees'] as List).map((e) => e.toString()).toList();
       employees.add(this.uid);
       transaction.update(ref, {

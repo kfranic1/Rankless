@@ -553,7 +553,6 @@ class _ManageState extends State<Manage> {
                                 Switch(
                                   value: widget.company.employees[index].admin,
                                   onChanged: (value) async {
-                                    int cnt = 0;
                                     setState(() {
                                       loading = true;
                                     });

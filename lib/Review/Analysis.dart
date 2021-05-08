@@ -4,9 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rankless/shared/Interface.dart';
 
 class Analysis {
+  int startIndex = 0;
+  int solvedSurveys = 0;
   String _companyUid;
   Set<String> activeCountries = Set<String>();
-  List<String> _surveys = [];
   Map<int, List<double>> _myScore = Map<int, List<double>>();
   Map<int, List<Scores>> _data = Map<int, List<Scores>>();
 
@@ -15,16 +16,16 @@ class Analysis {
   Future getData() async {
     int index = 0;
     bool skip = true;
-    //TODO fix
     await publicCollection.orderBy('number').get().then((value) async {
       await Future.forEach(value.docs, (QueryDocumentSnapshot element) async {
         await publicCollection.doc(element.id).collection('results').get().then((value) {
+          startIndex++;
           if (skip) skip = value.docs.fold(true, (previousValue, temp) => previousValue & (temp.id != _companyUid));
           if (skip) return;
+          startIndex--;
+          solvedSurveys++;
           _myScore[index] = List<double>.filled(6, 0);
-          _surveys.add(element.id);
           value.docs.forEach((value) {
-            print(value.data());
             String industry = value.data()['industry'];
             String country = value.data()['country'];
             activeCountries.add(country);
@@ -42,7 +43,6 @@ class Analysis {
             ));
             if (value.id == _companyUid) _myScore[index] = ocjene;
           });
-          print('-');
         });
         if (!skip) index++;
       });
@@ -59,15 +59,21 @@ class Analysis {
     return fix(ret);
   }
 
+  int getFirstMonth() {
+    return (4 + startIndex) % 12;
+  }
+
   double getAvgScore(int index, int category, {String country, String industry}) {
     double ret = 0;
     int count = 0;
     for (int i = 0; i < _data[index].length; i++) {
       if (country != null && country != _data[index][i].country) continue;
       if (industry != null && industry != _data[index][i].industry) continue;
+      if (_data[index][i].score[5] == 0) continue; //Discard surveys that weren't filled
       ret += _data[index][i].score[category];
       count++;
     }
+    if (count == 0) return 0;
     return fix(ret / count);
   }
 
@@ -76,7 +82,7 @@ class Analysis {
   }
 
   int getPosition(int category, {String country, String industry}) {
-    int index = _surveys.length - 1;
+    int index = solvedSurveys - 1;
     int better = 0;
     int count = 0;
     for (int i = 0; i < _data[index].length; i++) {
@@ -85,15 +91,17 @@ class Analysis {
       if (_data[index][i].score[category] > _myScore[index][category]) better++;
       count++;
     }
+    if (count == 0) return 0;
     return ((better / count + 0.005) * 100).round();
   }
 
+  ///number of solved surveys
   int getNumOfSurveys() {
-    return _surveys.length;
+    return solvedSurveys;
   }
 
   String getMessage(int category, {String country, String industry}) {
-    int index = _surveys.length - 1;
+    int index = solvedSurveys - 1;
     int requiredPercentage = getPosition(category, country: country, industry: industry);
     if (requiredPercentage <= 5) return 'You are already in top 5% in this category';
     requiredPercentage -= 5;
@@ -122,8 +130,9 @@ class Analysis {
     //return "To get $actualUpgrade% better score your score needs to improve by " + ans.toStringAsFixed(1);
   }
 
+  ///round to [1] decimal point
   double fix(double x) {
-    return (x * 100).roundToDouble() / 100;
+    return (x * 10).roundToDouble() / 10;
   }
 }
 
