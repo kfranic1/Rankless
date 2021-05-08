@@ -124,25 +124,34 @@ class Employee {
       transaction.update(companiesCollection.doc(company.uid), {
         'employees': employeesTemp,
       });
-      transaction.update(userCollection.doc(this.uid), {
-        'companyUid': null,
-        'position': '',
-        'tags': [],
-        'admin': false,
-      });
-    });
+    }).whenComplete(() => updateEmployee(
+      newCompanyUid: null,
+      newPosition: '',
+      newTags: [],
+      newAdmin: false,
+      newSurveys: [],
+    ));
   }
 
-  Future joinCompany(String companyUid) async {
+  Future<String> joinCompany(String companyUid) async {
+    String ret = "";
+    if (companyUid.length == 0) return "Error";
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       DocumentReference ref = companiesCollection.doc(companyUid);
-      print(ref);
+      DocumentSnapshot snapshot = await ref.get();
+      if (!snapshot.exists) {
+        ret = "Error";
+        return;
+      }
       List<String> employees = ((await ref.get())['employees'] as List).map((e) => e.toString()).toList();
       employees.add(this.uid);
       transaction.update(ref, {
         'employees': employees,
       });
-    }).whenComplete(() async => await updateEmployee(newCompanyUid: companyUid));
+    }).whenComplete(() async {
+      if (ret != "Error") await updateEmployee(newCompanyUid: companyUid);
+    });
+    return ret;
   }
 
   /*Future sendRequestToCompany(String futureCompanyName, String futureCompanyUid) async {
