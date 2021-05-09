@@ -33,64 +33,58 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: me.admin
-          ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              me.admin
-                  ? Expanded(
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        alignment: AlignmentDirectional.topEnd,
-                        children: [
-                          FloatingActionButton(
-                              heroTag: 'left',
-                              backgroundColor: Colors.black.withOpacity(0.7),
-                              child: Icon(
-                                Icons.group_add_rounded,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => Manage(company)));
-                              }),
-                          // Container(
-                          //   height: 20,
-                          //   width: 20,
-                          //   decoration: BoxDecoration(
-                          //     shape: BoxShape.circle,
-                          //     color: company.requests.length != 0 ? Colors.red : Colors.transparent,
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    )
-                  : Container(),
-              Expanded(
-                flex: 3,
-                child: Container(
-                  height: 0,
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                me.admin
+                    ? Expanded(
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          alignment: AlignmentDirectional.topEnd,
+                          children: [
+                            FloatingActionButton(
+                                heroTag: 'left',
+                                backgroundColor: Colors.black.withOpacity(0.7),
+                                child: Icon(
+                                  Icons.group_add_rounded,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Manage(company)))),
+                          ],
+                        ),
+                      )
+                    : Container(),
+                Expanded(
+                  flex: 3,
+                  child: Container(height: 0),
                 ),
-              ),
-              Expanded(
-                child: Stack(children: [
-                  FloatingActionButton(
-                    heroTag: 'right',
-                    backgroundColor: Colors.black.withOpacity(0.7),
-                    child: Icon(
-                      Icons.post_add_rounded,
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SurveyUI(
-                          new Survey(name: '', company: company),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      FloatingActionButton(
+                        heroTag: 'right',
+                        backgroundColor: Colors.black.withOpacity(0.7),
+                        child: Icon(
+                          Icons.post_add_rounded,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SurveyUI(new Survey(
+                              name: '',
+                              company: company,
+                            )),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ]),
-              ),
-            ])
+                ),
+              ],
+            )
           : Container(),
       body: Container(
         padding: EdgeInsets.all(10),
@@ -105,8 +99,6 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                 ),
               )
             : Column(
-                //physics: ClampingScrollPhysics(),
-                //shrinkWrap: true,
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
@@ -127,13 +119,15 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                       ),
                       title: Text(
                         company.industry,
-                        style: TextStyle(color: Colors.white, fontFamily: font, fontSize: 22),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: font,
+                          fontSize: 22,
+                        ),
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  SizedBox(height: 20),
                   company.surveys.length == 0
                       ? Center(
                           child: Text(
@@ -148,9 +142,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
                             style: header,
                           ),
                         ),
-                  SizedBox(
-                    height: 30,
-                  ),
+                  SizedBox(height: 30),
                   surveys
                 ],
               ),
@@ -164,7 +156,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
       numOfSurveys = company.surveys.length;
     });
     return FutureBuilder(
-        future: company.getAllSurveys(false).whenComplete(() => setState(() => gettingSurveys = false)),
+        future: company.getAllSurveys(false) /*.whenComplete(() => setState(() => gettingSurveys = false))*/,
         builder: (context, snapshot) {
           return snapshot.connectionState != ConnectionState.done
               ? loader
@@ -201,7 +193,11 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         ),
         label: Text(
           survey.name + "\n" + (survey.status == STATUS.Active ? "active until: " : "ended: ") + _formatted.format(survey.to),
-          style: TextStyle(fontFamily: font, fontSize: 22, color: Colors.white),
+          style: TextStyle(
+            fontFamily: font,
+            fontSize: 22,
+            color: Colors.white,
+          ),
           textAlign: TextAlign.center,
         ),
       ),

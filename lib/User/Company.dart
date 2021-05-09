@@ -16,7 +16,6 @@ class Company {
   List<String> positions = [];
   List<String> requests = [];
   List<Survey> surveys = [];
-  List<Survey> publicSurveys = [];
   bool dummy;
 
   Company({
@@ -41,7 +40,6 @@ class Company {
       'country': this.country,
       'requests': <String>[],
       'surveys': <String>[],
-      'publicSurveys': <String>[],
       'positions': <String>[],
     });
     this.uid = ref.id;
@@ -100,7 +98,6 @@ class Company {
     this.positions = List<String>.from(ref['positions'] as List<dynamic>);
     this.employees = (employeesFromFirebase as List<dynamic>).map((e) => Employee(uid: e as String)).toList();
     this.surveys = List<String>.from(ref['surveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
-    this.publicSurveys = List<String>.from(ref['publicSurveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
     return this;
   }
 
@@ -159,15 +156,16 @@ class Company {
     //   ..toSet()
     //   ..toList();
 
-    await who.updateEmployee(newPosition: who.position, newTags: who.tags, newSurveys: who.surveys);
+    await who.updateEmployee(
+      newPosition: who.position,
+      newTags: who.tags,
+      newSurveys: who.surveys,
+    );
   }
 
-  ///Returns [List] of [surveys] without [results]
+  ///Returns [List] of [surveys] without [results] //TODO updated
   Future<List<Survey>> getAllSurveys(bool withResults) async {
-    await Future.wait(publicSurveys.map((e) async => await e.getSurvey(withResults)).toList())
-        .whenComplete(() async => await Future.wait(surveys.map((e) async => await e.getSurvey(withResults)).toList()));
-    this.surveys.addAll(publicSurveys);
-    return this.surveys;
+    return this.surveys = await Future.wait(surveys.map((e) async => await e.getSurvey(withResults)).toList());
   }
 
   /*Future<NetworkImage> getImage() async {
