@@ -20,8 +20,6 @@ class _ManageState extends State<Manage> {
   List<DropdownMenuItem<String>> tags = [];
   bool loading = false;
   var _searchview = new TextEditingController();
-  List<String> _filterListPos = [];
-  List<String> _filterListTag = [];
   String _query = "";
 
   String myUid;
@@ -36,7 +34,7 @@ class _ManageState extends State<Manage> {
     _searchview.addListener(() {
       setState(() => _query = _searchview.text);
     });
-    setFuture();
+    _future = widget.company.getEmployees();
   }
 
   @override
@@ -61,9 +59,7 @@ class _ManageState extends State<Manage> {
         child: Text(value),
       );
     }).toList();
-    widget.company.employees.forEach((element) {
-      print(element.name);
-    });
+
     return Scaffold(
       floatingActionButton: isSelected[1] || isSelected[2]
           ? FloatingActionButton(
@@ -154,7 +150,7 @@ class _ManageState extends State<Manage> {
                         ),
                       ),
                       _createSearchView(),
-                      _performSearch(),
+                      _createFilteredListView(isSelected.indexOf(true)),
                     ],
                   );
                 })),
@@ -185,28 +181,6 @@ class _ManageState extends State<Manage> {
     );
   }
 
-  Widget _performSearch() {
-    _filterListPos.clear();
-    for (int i = 0; i < widget.company.positions.length; i++) {
-      String inputPosition = widget.company.positions[i];
-
-      if (inputPosition.toLowerCase().contains(_query.toLowerCase())) {
-        _filterListPos.add(inputPosition);
-      }
-    }
-
-    _filterListTag.clear();
-    for (int i = 0; i < widget.company.tags.length; i++) {
-      String inputTag = widget.company.tags[i];
-
-      if (inputTag.toLowerCase().contains(_query.toLowerCase())) {
-        _filterListTag.add(inputTag);
-      }
-    }
-
-    return _createFilteredListView(isSelected.indexOf(true));
-  }
-
   Widget _createFilteredListView(int i) {
     return Expanded(
       child: Container(
@@ -217,9 +191,9 @@ class _ManageState extends State<Manage> {
               return employeeStaisfy(widget.company.employees[index]) ? buildEmpTile(index) : Container();
             }
             if (i == 1) {
-              return widget.company.positions[index].contains(_query) ? buildPosTile(index) : Container();
+              return widget.company.positions[index].toLowerCase().contains(_query.toLowerCase()) ? buildPosTile(true, index) : Container();
             }
-            return widget.company.tags[index].contains(_query) ? buildTagTile(index) : Container();
+            return widget.company.tags[index].toLowerCase().contains(_query.toLowerCase()) ? buildPosTile(false, index) : Container();
           },
           separatorBuilder: (context, index) {
             if (i == 0) {
@@ -251,9 +225,7 @@ class _ManageState extends State<Manage> {
   }
 
   bool employeeStaisfy(Employee emp) {
-    print("error1");
     String name = emp.name + ' ' + emp.surname + ' ' + (emp.position != '' ? emp.position : "No position") + (emp.admin ? " admin" : "");
-    print("error2");
     return (name.toLowerCase().contains(_query.toLowerCase()));
   }
 
@@ -579,215 +551,127 @@ class _ManageState extends State<Manage> {
     );
   }
 
-  Widget buildPosTile(int index) {
-    return Dismissible(
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 20),
-        child: Icon(Icons.delete),
-        color: Colors.red,
-      ),
-      key: UniqueKey(),
-      onDismissed: (direction) async {
-        print(_filterListPos[index]);
-        print(widget.company.uid);
-        setState(() {
-          loading = true;
-        });
-        await widget.company
-            .updateCompany(
-              newPosition: _filterListPos[index],
-              addPosition: false,
-            )
-            .whenComplete(() => setFuture());
-        print(widget.company.positions);
-        setState(() {
-          loading = false;
-        });
-      },
-      confirmDismiss: (DismissDirection direction) async {
-        return await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            if (hasPosition(_filterListPos[index], widget.company.employees)) {
-              return AlertDialog(
-                content: Text(
-                  'You can not remove position because there are still employees with this position.',
-                  style: TextStyle(fontFamily: font),
-                ),
-              );
-            }
-            return AlertDialog(
-              title: const Text(
-                "Confirm",
-                style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
-              ),
-              content: const Text(
-                "Are you sure you want to remove this position from your company?",
-                style: TextStyle(fontFamily: font),
-              ),
-              actions: <Widget>[
-                TextButton(onPressed: () => Navigator.of(context).pop(true), child: const Text("DELETE", style: TextStyle(fontFamily: font))),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text("CANCEL", style: TextStyle(fontFamily: font)),
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Text(
-          _filterListPos[index],
+  Widget buildPosTile(bool pos, int index) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: ListTile(
+        title: Text(
+          pos ? widget.company.positions[index] : widget.company.tags[index],
           style: inputTextStyle,
-          textAlign: TextAlign.center,
         ),
-        alignment: Alignment.center,
-      ),
-    );
-  }
+        trailing: IconButton(
+          icon: Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+          onPressed: () async => showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return (pos
+                      ? hasPosition(widget.company.positions[index], widget.company.employees)
+                      : hasTag(widget.company.tags[index], widget.company.employees))
+                  ? AlertDialog(
+                      content: Text(
+                        pos
+                            ? 'You can not remove position because there are still employees with this position.'
+                            : 'You can not remove tag because there are still employees with this tag.',
+                        style: TextStyle(fontFamily: font),
+                      ),
+                    )
+                  : AlertDialog(
+                      title: const Text(
+                        "Confirm",
+                        style: TextStyle(
+                          fontFamily: font,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      content: Text(
+                        pos
+                            ? "Are you sure you want to remove this position from your company?"
+                            : "Are you sure you want to remove this position from your company?",
+                        style: TextStyle(fontFamily: font),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () async {
+                            setState(() {
+                              loading = true;
+                            });
+                            await (pos
+                                ? widget.company.updateCompany(
+                                    newPosition: widget.company.positions[index],
+                                    addPosition: false,
+                                  )
+                                : widget.company.updateCompany(
+                                    newTag: widget.company.tags[index],
+                                    addTag: false,
+                                  ));
+                            setState(() {
+                              loading = false;
+                            });
 
-  Widget buildTagTile(int index) {
-    return Dismissible(
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 20),
-        child: Icon(Icons.delete),
-        color: Colors.red,
-      ),
-      key: UniqueKey(),
-      onDismissed: (direction) async {
-        setState(() {
-          loading = true;
-        });
-        await widget.company
-            .updateCompany(
-              newTag: _filterListTag[index],
-              addTag: false,
-            )
-            .whenComplete(() => setFuture());
-        setState(() {
-          loading = false;
-        });
-      },
-      confirmDismiss: (DismissDirection direction) async {
-        return await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            if (hasTag(_filterListTag[index], widget.company.employees)) {
-              return AlertDialog(
-                content: Text(
-                  'You can not remove tag because there are still employees with this tag.',
-                  style: TextStyle(fontFamily: font),
-                ),
-              );
-            }
-            return AlertDialog(
-              title: const Text(
-                "Confirm",
-                style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
-              ),
-              content: const Text(
-                "Are you sure you want to remove this position from your company?",
-                style: TextStyle(fontFamily: font),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text(
-                    "DELETE",
-                    style: TextStyle(fontFamily: font),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text(
-                    "CANCEL",
-                    style: TextStyle(fontFamily: font),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Text(
-          _filterListTag[index],
-          style: inputTextStyle,
-          textAlign: TextAlign.center,
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            "DELETE",
+                            style: TextStyle(fontFamily: font),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text(
+                            "CANCEL",
+                            style: TextStyle(fontFamily: font),
+                          ),
+                        ),
+                      ],
+                    );
+            },
+          ),
         ),
-        alignment: Alignment.center,
       ),
     );
   }
 
   void addPosOrTag() {
+    bool pos = isSelected[1] == true;
     showDialog(
       context: context,
-      builder: (BuildContext context) => isSelected[1] == true
-          ? Dialog(
-              backgroundColor: buttonColor,
-              child: Container(
-                child: TextFormField(
-                  style: inputTextStyle,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Add position',
-                    hintStyle: inputTextStyle.copyWith(color: Colors.grey),
-                  ),
-                  onFieldSubmitted: (value) async {
-                    if (value != "") {
-                      setState(() {
-                        loading = true;
-                      });
-                      await widget.company.updateCompany(
+      builder: (context) => Dialog(
+        backgroundColor: buttonColor,
+        child: Container(
+          child: TextFormField(
+            style: inputTextStyle,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: pos ? 'Add position' : 'Add tag',
+              hintStyle: inputTextStyle.copyWith(color: Colors.grey),
+            ),
+            onFieldSubmitted: (value) async {
+              if (value != "") {
+                setState(() {
+                  loading = true;
+                });
+                await (pos
+                    ? widget.company.updateCompany(
                         newPosition: value,
                         addPosition: true,
-                      );
-                      setState(() {
-                        loading = false;
-                      });
-                    }
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            )
-          : Dialog(
-              backgroundColor: buttonColor,
-              child: Container(
-                child: TextFormField(
-                  style: inputTextStyle,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Add tag',
-                    hintStyle: inputTextStyle.copyWith(color: Colors.grey),
-                  ),
-                  onFieldSubmitted: (value) async {
-                    if (value != "") {
-                      setState(() {
-                        loading = true;
-                      });
-                      await widget.company.updateCompany(
+                      )
+                    : widget.company.updateCompany(
                         newTag: value,
                         addTag: true,
-                      );
-                      setState(() {
-                        loading = false;
-                      });
-                    }
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
-            ),
-    ).whenComplete(() => setFuture());
+                      ));
+                setState(() {
+                  loading = false;
+                });
+              }
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   List<int> selectedTags(Employee e) {
@@ -811,16 +695,7 @@ class _ManageState extends State<Manage> {
   }
 
   void loseFocus() {
-    FocusScopeNode focus = FocusScope.of(context);
-    if (!focus.hasPrimaryFocus && focus.focusedChild != null) {
-      focus.focusedChild.unfocus();
-    }
-  }
-
-  void setFuture() {
-    setState(() {
-      _future = widget.company.getEmployees();
-    });
+    FocusScope.of(context).requestFocus(new FocusNode());
   }
 
   bool hasTag(String tag, List<Employee> listEmp) {
