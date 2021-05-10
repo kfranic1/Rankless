@@ -27,11 +27,13 @@ class Wrapper extends StatelessWidget {
                       value: employee.self,
                       builder: (context, child) {
                         final Employee temp = Provider.of<Employee>(context);
-                        company = temp.companyUid == null
-                            ? Company(dummy: true)
-                            : company.uid != temp.companyUid
-                                ? Company(uid: temp.companyUid)
-                                : company;
+                        if (temp.companyUid == null) {
+                          company = Company(dummy: true);
+                          print("dummy");
+                        } else if (company.uid != temp.companyUid) {
+                          company = Company(uid: temp.companyUid);
+                          print("New company " + temp.uid.toString());
+                        }
                         return StreamProvider<Company>.value(
                             initialData: company,
                             updateShouldNotify: (a, b) => true,

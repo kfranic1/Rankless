@@ -20,18 +20,34 @@ class _ManageState extends State<Manage> {
   List<DropdownMenuItem<String>> tags = [];
   bool loading = false;
   var _searchview = new TextEditingController();
-  List<Employee> _filterListEmp = [];
   List<String> _filterListPos = [];
   List<String> _filterListTag = [];
   String _query = "";
-  int filterListCnt = 0;
+
   String myUid;
   Future _future;
 
   @override
   void initState() {
+    super.initState();
     final Employee me = Provider.of<Employee>(context, listen: false);
     myUid = me.uid;
+
+    _searchview.addListener(() {
+      setState(() => _query = _searchview.text);
+    });
+    setFuture();
+  }
+
+  @override
+  void dispose() {
+    _searchview.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //print(widget.company.employees[0].name);
     positions = widget.company.positions.map<DropdownMenuItem<String>>((String value) {
       return DropdownMenuItem<String>(
         value: value,
@@ -45,25 +61,9 @@ class _ManageState extends State<Manage> {
         child: Text(value),
       );
     }).toList();
-
-    _searchview.addListener(() {
-      setState(() => _query = _searchview.text);
+    widget.company.employees.forEach((element) {
+      print(element.name);
     });
-
-    _future = widget.company.getEmployees().whenComplete(() => setState(() {
-          _filterListEmp.addAll(widget.company.employees);
-        }));
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _searchview.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: isSelected[1] || isSelected[2]
           ? FloatingActionButton(
@@ -71,90 +71,94 @@ class _ManageState extends State<Manage> {
               onPressed: () => addPosOrTag(),
             )
           : Container(),
-      body: Container(
-          padding: EdgeInsets.all(10),
-          height: double.infinity,
-          width: double.infinity,
-          decoration: backgroundDecoration,
-          child: FutureBuilder(
-              future: _future,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) return loader;
-                return Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 30),
-                      child: Text(
-                        "Manage",
-                        style: titleNameStyle,
+      body: GestureDetector(
+        onTap: () => loseFocus(),
+        child: Container(
+            padding: EdgeInsets.all(10),
+            height: double.infinity,
+            width: double.infinity,
+            decoration: backgroundDecoration,
+            child: FutureBuilder(
+                future: _future,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) return loader;
+                  return Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 30),
+                        child: Text(
+                          "Manage",
+                          style: titleNameStyle,
+                        ),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(top: 30),
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return ToggleButtons(
-                            color: Colors.white,
-                            textStyle: TextStyle(fontSize: 18, fontFamily: font),
-                            renderBorder: false,
-                            constraints: BoxConstraints.expand(width: constraints.maxWidth / 3, height: 50),
-                            borderRadius: borderRadius,
-                            children: <Widget>[
-                              Text("Employees"),
-                              Text("Positions"),
-                              Text("Tags"),
-                            ],
-                            onPressed: (int index) {
-                              setState(() {
-                                for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
-                                  if (buttonIndex == index) {
-                                    isSelected[buttonIndex] = true;
-                                  } else {
-                                    isSelected[buttonIndex] = false;
-                                  }
-                                }
-                              });
-                            },
-                            isSelected: isSelected,
-                          );
-                        },
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(15),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              "Code: " + widget.company.uid,
-                              style: inputTextStyle,
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
-                            ),
-                          ),
-                          IconButton(
-                              icon: Icon(
-                                Icons.copy,
-                                color: Colors.grey,
+                      Container(
+                        padding: EdgeInsets.only(top: 30),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return ToggleButtons(
+                              color: Colors.white,
+                              textStyle: TextStyle(
+                                fontSize: 18,
+                                fontFamily: font,
                               ),
-                              onPressed: () {
-                                Clipboard.setData(ClipboardData(text: widget.company.uid))
-                                    .whenComplete(() => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                          content: Text(
-                                            "Copied to clipboard",
-                                            style: TextStyle(fontFamily: font),
-                                          ),
-                                          duration: Duration(seconds: 1),
-                                        )));
-                              })
-                        ],
+                              renderBorder: false,
+                              constraints: BoxConstraints.expand(
+                                width: constraints.maxWidth / 3,
+                                height: 50,
+                              ),
+                              borderRadius: borderRadius,
+                              children: <Widget>[
+                                Text("Employees"),
+                                Text("Positions"),
+                                Text("Tags"),
+                              ],
+                              onPressed: (int index) {
+                                setState(() {
+                                  isSelected = [false, false, false];
+                                  isSelected[index] = true;
+                                });
+                              },
+                              isSelected: isSelected,
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    _createSearchView(),
-                    _performSearch(),
-                  ],
-                );
-              })),
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Code: " + widget.company.uid,
+                                style: inputTextStyle,
+                                overflow: TextOverflow.fade,
+                                softWrap: false,
+                              ),
+                            ),
+                            IconButton(
+                                icon: Icon(
+                                  Icons.copy,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  Clipboard.setData(ClipboardData(text: widget.company.uid))
+                                      .whenComplete(() => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                            content: Text(
+                                              "Copied to clipboard",
+                                              style: TextStyle(fontFamily: font),
+                                            ),
+                                            duration: Duration(seconds: 1),
+                                          )));
+                                })
+                          ],
+                        ),
+                      ),
+                      _createSearchView(),
+                      _performSearch(),
+                    ],
+                  );
+                })),
+      ),
     );
   }
 
@@ -182,16 +186,7 @@ class _ManageState extends State<Manage> {
   }
 
   Widget _performSearch() {
-    _filterListEmp.clear();
-    for (int i = 0; i < widget.company.employees.length; i++) {
-      Employee emp = widget.company.employees[i];
-      String name = emp.name + ' ' + emp.surname + ' ' + (emp.position != '' ? emp.position : "No position");
-      if (_query.length == 0 || name.toLowerCase().contains(_query.toLowerCase())) {
-        _filterListEmp.add(emp);
-      }
-    }
-
-    _filterListPos = [];
+    _filterListPos.clear();
     for (int i = 0; i < widget.company.positions.length; i++) {
       String inputPosition = widget.company.positions[i];
 
@@ -200,7 +195,7 @@ class _ManageState extends State<Manage> {
       }
     }
 
-    _filterListTag = [];
+    _filterListTag.clear();
     for (int i = 0; i < widget.company.tags.length; i++) {
       String inputTag = widget.company.tags[i];
 
@@ -208,349 +203,378 @@ class _ManageState extends State<Manage> {
         _filterListTag.add(inputTag);
       }
     }
-    return _createFilteredListView(getCount());
+
+    return _createFilteredListView(isSelected.indexOf(true));
   }
 
   Widget _createFilteredListView(int i) {
-    return Visibility(
-      visible: isSelected[i],
-      child: Expanded(
-        child: Container(
-          child: ListView.separated(
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                if (i == 0) {
-                  return buildEmpTile(index);
-                }
-                if (i == 1) {
-                  return buildPosTile(index);
-                }
-                return buildTagTile(index);
-              },
-              separatorBuilder: (context, index) => i == 1 || i == 2
+    return Expanded(
+      child: Container(
+        child: ListView.separated(
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            if (i == 0) {
+              return employeeStaisfy(widget.company.employees[index]) ? buildEmpTile(index) : Container();
+            }
+            if (i == 1) {
+              return widget.company.positions[index].contains(_query) ? buildPosTile(index) : Container();
+            }
+            return widget.company.tags[index].contains(_query) ? buildTagTile(index) : Container();
+          },
+          separatorBuilder: (context, index) {
+            if (i == 0) {
+              return employeeStaisfy(widget.company.employees[index]) ? SizedBox(height: 20) : Container();
+            } else if (i == 1) {
+              return widget.company.positions[index].contains(_query)
                   ? SizedBox(
-                      child: Divider(
-                        color: Colors.white,
-                      ),
+                      child: Divider(color: Colors.white),
                       height: 15,
                     )
-                  : SizedBox(
-                      height: 20,
-                    ),
-              itemCount: filterListCnt),
+                  : Container();
+            } else {
+              return widget.company.tags[index].contains(_query)
+                  ? SizedBox(
+                      child: Divider(color: Colors.white),
+                      height: 15,
+                    )
+                  : Container();
+            }
+          },
+          itemCount: i == 0
+              ? widget.company.employees.length
+              : i == 1
+                  ? widget.company.positions.length
+                  : widget.company.tags.length,
         ),
       ),
     );
   }
 
-  int getCount() {
-    if (isSelected[0]) {
-      filterListCnt = _filterListEmp.length;
-      return 0;
-    }
-    if (isSelected[1]) {
-      filterListCnt = _filterListPos.length;
-      return 1;
-    }
-    filterListCnt = _filterListTag.length;
-    return 2;
+  bool employeeStaisfy(Employee emp) {
+    print("error1");
+    String name = emp.name + ' ' + emp.surname + ' ' + (emp.position != '' ? emp.position : "No position") + (emp.admin ? " admin" : "");
+    print("error2");
+    return (name.toLowerCase().contains(_query.toLowerCase()));
   }
 
   Widget buildEmpTile(int index) {
-    return Dismissible(
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: 20),
-        child: Icon(Icons.delete),
-        color: Colors.red,
-      ),
-      key: UniqueKey(),
-      onDismissed: (direction) async {
-        Employee e = _filterListEmp[index];
-        setState(() {
-          loading = true;
-          widget.company.employees.removeWhere((employee) {
-            return employee.uid == e.uid;
-          });
-        });
-        await e.leaveCompany(widget.company);
-        setState(() {
-          loading = false;
-        });
-      },
-      confirmDismiss: (DismissDirection direction) async {
-        if (myUid == _filterListEmp[index].uid) {
-          return await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(
-                    "You can not remove yourself from company",
-                    style: TextStyle(fontFamily: font),
-                  ),
-                );
-              });
-        }
-        return await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text(
-                "Confirm",
-                style: TextStyle(fontFamily: font, fontWeight: FontWeight.bold),
-              ),
-              content: const Text(
-                "Are you sure you want to remove this employee from your company?",
-                style: TextStyle(fontFamily: font),
-              ),
-              actions: <Widget>[
-                TextButton(onPressed: () => Navigator.of(context).pop(true), child: const Text("DELETE", style: TextStyle(fontFamily: font))),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text("CANCEL", style: TextStyle(fontFamily: font)),
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Container(
-        padding: EdgeInsets.all(5),
-        margin: EdgeInsets.only(bottom: 10),
-        decoration: secondaryGradientDecoration,
-        child: ListTile(
-          title: Text(
-            _filterListEmp[index].name + ' ' + _filterListEmp[index].surname,
-            style: header,
-            textAlign: TextAlign.left,
-          ),
-          trailing: Text(
-            _filterListEmp[index].position == "" ? 'No position' : _filterListEmp[index].position,
-            style: inputTextStyle.copyWith(fontSize: 16),
-          ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (context) => Theme(
-                data: ThemeData(
-                  accentColor: Colors.black,
-                  focusColor: Colors.black,
-                  buttonColor: Colors.white,
-                  textSelectionTheme: TextSelectionThemeData(
-                    cursorColor: Colors.white,
-                    selectionColor: Colors.white,
-                    selectionHandleColor: Colors.white,
-                  ),
-                  hintColor: Colors.white,
-                  fontFamily: font,
-                ),
-                child: StatefulBuilder(
-                  builder: (context, setState) => Dialog(
-                    shape: dialogShape,
-                    backgroundColor: primaryBlue,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.all(30),
-                            child: Text(
-                              "Position",
-                              style: inputTextStyle.copyWith(fontSize: 22),
-                            ),
-                          ),
-                          SearchChoices.single(
-                            menuBackgroundColor: Colors.black,
-                            icon: Icon(
-                              Icons.arrow_drop_down,
-                              color: Colors.white,
-                            ),
-                            clearIcon: Icon(
-                              Icons.clear,
-                              color: Colors.white,
-                            ),
-                            iconSize: 30,
-                            style: inputTextStyle.copyWith(color: Colors.white),
-                            items: positions,
-                            value: _filterListEmp[index].position,
-                            hint: _filterListEmp[index].position == ""
-                                ? Text(
-                                    'No position',
-                                    style: inputTextStyle,
-                                  )
-                                : _filterListEmp[index].position,
-                            searchHint: "Select one",
-                            onChanged: (String value) async {
-                              setState(() {
-                                loading = true;
-                              });
-                              await widget.company.addPositionOrTags(_filterListEmp[index], position: value);
-                              setState(() {
-                                loading = false;
-                              });
-                            },
-                            onClear: () async {
-                              setState(() {
-                                loading = true;
-                              });
-                              await widget.company.addPositionOrTags(_filterListEmp[index], position: "");
-                              setState(() {
-                                loading = false;
-                              });
-                            },
-                            displayItem: (item, selected) => Column(
-                              children: [
-                                SizedBox(height: 20),
-                                Row(
-                                  children: [
-                                    selected
-                                        ? Icon(
-                                            Icons.check,
-                                            color: Colors.green,
-                                          )
-                                        : Icon(
-                                            Icons.radio_button_off_outlined,
-                                            color: Colors.grey,
-                                          ),
-                                    SizedBox(width: 7),
-                                    Expanded(
-                                      child: Text(
-                                        item.value,
-                                        style: inputTextStyle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            isExpanded: true,
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: EdgeInsets.all(30),
-                            child: Text(
-                              "Tags",
-                              style: inputTextStyle.copyWith(fontSize: 22),
-                            ),
-                          ),
-                          SearchChoices.multiple(
-                            doneButton: Container(),
-                            selectedItems: selectedTags(_filterListEmp[index]),
-                            menuBackgroundColor: Colors.black,
-                            icon: Icon(
-                              Icons.arrow_drop_down,
-                              color: Colors.white,
-                            ),
-                            displayClearIcon: false,
-                            iconSize: 30,
-                            style: inputTextStyle.copyWith(color: Colors.white),
-                            items: tags,
-                            hint: 'Add new tag',
-                            searchHint: "Select one",
-                            onChanged: (value) async {
-                              setState(() => loading = true);
-                              List<String> list = [];
-                              value.forEach((element) => list.add(widget.company.tags[element]));
-                              await widget.company.addPositionOrTags(
-                                _filterListEmp[index],
-                                addTags: list,
-                              );
-                              setState(() => loading = false);
-                            },
-                            displayItem: (item, selected) => Column(
-                              children: [
-                                SizedBox(height: 20),
-                                Row(
-                                  children: [
-                                    selected
-                                        ? Icon(
-                                            Icons.check,
-                                            color: Colors.green,
-                                          )
-                                        : Icon(
-                                            Icons.check_box_outline_blank,
-                                            color: Colors.grey,
-                                          ),
-                                    SizedBox(width: 7),
-                                    Expanded(
-                                      child: Text(
-                                        item.value,
-                                        style: inputTextStyle,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            isExpanded: true,
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(30),
-                                child: Text(
-                                  'Admin',
-                                  style: inputTextStyle.copyWith(fontSize: 22),
-                                ),
-                              ),
-                              Switch(
-                                value: _filterListEmp[index].admin,
-                                onChanged: (value) async {
-                                  setState(() => loading = true);
-                                  if (value) {
-                                    await _filterListEmp[index].updateEmployee(newAdmin: true).whenComplete(() => _filterListEmp[index].admin = true);
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(
-                                        "You added an admin",
-                                        style: TextStyle(
-                                          fontFamily: font,
-                                          fontSize: snackFontSize,
-                                        ),
-                                      ),
-                                      duration: Duration(seconds: 2),
-                                    ));
-                                  } else if (myUid == _filterListEmp[index].uid) {
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(
-                                        "You can't remove yourself as admin!",
-                                        style: TextStyle(
-                                          fontFamily: font,
-                                          color: Colors.red,
-                                          fontSize: snackFontSize,
-                                        ),
-                                      ),
-                                      duration: Duration(seconds: 2),
-                                    ));
-                                  } else {
-                                    await _filterListEmp[index]
-                                        .updateEmployee(newAdmin: false)
-                                        .whenComplete(() => _filterListEmp[index].admin = false);
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(
-                                        "You removed an admin",
-                                        style: TextStyle(fontFamily: font, fontSize: snackFontSize),
-                                      ),
-                                      duration: Duration(seconds: 2),
-                                    ));
-                                  }
-
-                                  setState(() => loading = false);
-                                },
-                                activeTrackColor: Colors.deepPurple[900],
-                                activeColor: Colors.white,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ).whenComplete(() => _setState());
-          },
+    return Container(
+      padding: EdgeInsets.all(5),
+      margin: EdgeInsets.only(bottom: 10),
+      decoration: secondaryGradientDecoration,
+      child: ListTile(
+        title: Text(
+          widget.company.employees[index].name + ' ' + widget.company.employees[index].surname,
+          style: header,
+          textAlign: TextAlign.left,
         ),
+        trailing: Text(
+          widget.company.employees[index].position == "" ? 'No position' : widget.company.employees[index].position,
+          style: inputTextStyle.copyWith(fontSize: 16),
+        ),
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) => Theme(
+              data: ThemeData(
+                accentColor: Colors.black,
+                focusColor: Colors.black,
+                buttonColor: Colors.white,
+                textSelectionTheme: TextSelectionThemeData(
+                  cursorColor: Colors.white,
+                  selectionColor: Colors.white,
+                  selectionHandleColor: Colors.white,
+                ),
+                hintColor: Colors.white,
+                fontFamily: font,
+              ),
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  bool innerLoading = false;
+                  return innerLoading
+                      ? loader
+                      : Dialog(
+                          shape: dialogShape,
+                          backgroundColor: primaryBlue,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.all(30),
+                                  child: Text(
+                                    "Position",
+                                    style: inputTextStyle.copyWith(fontSize: 22),
+                                  ),
+                                ),
+                                SearchChoices.single(
+                                  menuBackgroundColor: Colors.black,
+                                  icon: Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.white,
+                                  ),
+                                  clearIcon: Icon(
+                                    Icons.clear,
+                                    color: Colors.white,
+                                  ),
+                                  iconSize: 30,
+                                  style: inputTextStyle.copyWith(color: Colors.white),
+                                  items: positions,
+                                  value: widget.company.employees[index].position,
+                                  hint: widget.company.employees[index].position == ""
+                                      ? Text(
+                                          'No position',
+                                          style: inputTextStyle,
+                                        )
+                                      : widget.company.employees[index].position,
+                                  searchHint: "Select one",
+                                  onChanged: (String value) async {
+                                    setState(() {
+                                      innerLoading = true;
+                                    });
+                                    await widget.company.addPositionOrTags(widget.company.employees[index], position: value);
+                                    setState(() {
+                                      innerLoading = false;
+                                    });
+                                  },
+                                  onClear: () async {
+                                    setState(() {
+                                      innerLoading = true;
+                                    });
+                                    await widget.company.addPositionOrTags(widget.company.employees[index], position: "");
+                                    setState(() {
+                                      innerLoading = false;
+                                    });
+                                  },
+                                  displayItem: (item, selected) => Column(
+                                    children: [
+                                      SizedBox(height: 20),
+                                      Row(
+                                        children: [
+                                          selected
+                                              ? Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                )
+                                              : Icon(
+                                                  Icons.radio_button_off_outlined,
+                                                  color: Colors.grey,
+                                                ),
+                                          SizedBox(width: 7),
+                                          Expanded(
+                                            child: Text(
+                                              item.value,
+                                              style: inputTextStyle,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  isExpanded: true,
+                                ),
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.all(30),
+                                  child: Text(
+                                    "Tags",
+                                    style: inputTextStyle.copyWith(fontSize: 22),
+                                  ),
+                                ),
+                                SearchChoices.multiple(
+                                  doneButton: Container(),
+                                  selectedItems: selectedTags(widget.company.employees[index]),
+                                  menuBackgroundColor: Colors.black,
+                                  icon: Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.white,
+                                  ),
+                                  displayClearIcon: false,
+                                  iconSize: 30,
+                                  style: inputTextStyle.copyWith(color: Colors.white),
+                                  items: tags,
+                                  hint: 'Add new tag',
+                                  searchHint: "Select one",
+                                  onChanged: (value) async {
+                                    setState(() => innerLoading = true);
+                                    List<String> list = [];
+                                    value.forEach((element) => list.add(widget.company.tags[element]));
+                                    await widget.company.addPositionOrTags(
+                                      widget.company.employees[index],
+                                      addTags: list,
+                                    );
+                                    setState(() => innerLoading = false);
+                                  },
+                                  displayItem: (item, selected) => Column(
+                                    children: [
+                                      SizedBox(height: 20),
+                                      Row(
+                                        children: [
+                                          selected
+                                              ? Icon(
+                                                  Icons.check,
+                                                  color: Colors.green,
+                                                )
+                                              : Icon(
+                                                  Icons.check_box_outline_blank,
+                                                  color: Colors.grey,
+                                                ),
+                                          SizedBox(width: 7),
+                                          Expanded(
+                                            child: Text(
+                                              item.value,
+                                              style: inputTextStyle,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  isExpanded: true,
+                                ),
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(30),
+                                      child: Text(
+                                        'Admin',
+                                        style: inputTextStyle.copyWith(fontSize: 22),
+                                      ),
+                                    ),
+                                    Switch(
+                                      value: widget.company.employees[index].admin,
+                                      onChanged: (value) async {
+                                        setState(() => innerLoading = true);
+                                        if (value) {
+                                          await widget.company.employees[index].updateEmployee(newAdmin: true);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                "You added an admin",
+                                                style: TextStyle(
+                                                  fontFamily: font,
+                                                  fontSize: snackFontSize,
+                                                ),
+                                              ),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        } else if (myUid == widget.company.employees[index].uid) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                "You can't remove yourself as admin!",
+                                                style: TextStyle(
+                                                  fontFamily: font,
+                                                  color: Colors.red,
+                                                  fontSize: snackFontSize,
+                                                ),
+                                              ),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        } else {
+                                          await widget.company.employees[index].updateEmployee(newAdmin: false);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                "You removed an admin",
+                                                style: TextStyle(fontFamily: font, fontSize: snackFontSize),
+                                              ),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        }
+                                        setState(() => innerLoading = false);
+                                      },
+                                      activeTrackColor: Colors.deepPurple[900],
+                                      activeColor: Colors.white,
+                                    ),
+                                  ],
+                                ),
+                                Divider(
+                                  thickness: 0.5,
+                                  color: Colors.grey,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(borderRadius: borderRadius),
+                                  child: TextButton(
+                                    style: textButtonStyleRegister.copyWith(backgroundColor: MaterialStateProperty.all<Color>(Colors.red[700])),
+                                    onPressed: () async => await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) => myUid == widget.company.employees[index].uid
+                                          ? AlertDialog(
+                                              title: Text(
+                                                "You can not remove yourself from company",
+                                                style: TextStyle(fontFamily: font),
+                                              ),
+                                            )
+                                          : AlertDialog(
+                                              title: const Text(
+                                                "Confirm",
+                                                style: TextStyle(
+                                                  fontFamily: font,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              content: const Text(
+                                                "Are you sure you want to remove this employee from your company?",
+                                                style: TextStyle(fontFamily: font),
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    setState(() => innerLoading = true);
+                                                    widget.company.employees.forEach((element) {
+                                                      print(element.name);
+                                                    });
+                                                    await widget.company.leaveCompany(widget.company.employees[index]).whenComplete(() {
+                                                      widget.company.employees.remove(e);
+                                                      widget.company.employees.forEach((element) {
+                                                        print(element.name);
+                                                      });
+                                                      setState(() {
+                                                        innerLoading = false;
+                                                        Navigator.of(context).pop();
+                                                        Navigator.of(context).pop();
+                                                      });
+                                                    });
+                                                  },
+                                                  child: const Text(
+                                                    "DELETE",
+                                                    style: TextStyle(fontFamily: font),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () => Navigator.of(context).pop(),
+                                                  child: const Text(
+                                                    "CANCEL",
+                                                    style: TextStyle(fontFamily: font),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                    ).whenComplete(() {
+                                      setState(() {});
+                                    }),
+                                    child: Text(
+                                      "Remove",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                },
+              ),
+            ),
+          ).whenComplete(() {
+            setState(() {});
+            loseFocus();
+          });
+        },
       ),
     );
   }
@@ -566,13 +590,18 @@ class _ManageState extends State<Manage> {
       ),
       key: UniqueKey(),
       onDismissed: (direction) async {
+        print(_filterListPos[index]);
+        print(widget.company.uid);
         setState(() {
           loading = true;
         });
-        await widget.company.updateCompany(
-          newPosition: widget.company.positions[index],
-          addPosition: false,
-        );
+        await widget.company
+            .updateCompany(
+              newPosition: _filterListPos[index],
+              addPosition: false,
+            )
+            .whenComplete(() => setFuture());
+        print(widget.company.positions);
         setState(() {
           loading = false;
         });
@@ -581,7 +610,7 @@ class _ManageState extends State<Manage> {
         return await showDialog(
           context: context,
           builder: (BuildContext context) {
-            if (hasPosition(widget.company.positions[index], widget.company.employees)) {
+            if (hasPosition(_filterListPos[index], widget.company.employees)) {
               return AlertDialog(
                 content: Text(
                   'You can not remove position because there are still employees with this position.',
@@ -635,10 +664,12 @@ class _ManageState extends State<Manage> {
         setState(() {
           loading = true;
         });
-        await widget.company.updateCompany(
-          newTag: widget.company.tags[index],
-          addTag: false,
-        );
+        await widget.company
+            .updateCompany(
+              newTag: _filterListTag[index],
+              addTag: false,
+            )
+            .whenComplete(() => setFuture());
         setState(() {
           loading = false;
         });
@@ -647,7 +678,7 @@ class _ManageState extends State<Manage> {
         return await showDialog(
           context: context,
           builder: (BuildContext context) {
-            if (hasTag(widget.company.tags[index], widget.company.employees)) {
+            if (hasTag(_filterListTag[index], widget.company.employees)) {
               return AlertDialog(
                 content: Text(
                   'You can not remove tag because there are still employees with this tag.',
@@ -697,10 +728,10 @@ class _ManageState extends State<Manage> {
   }
 
   void addPosOrTag() {
-    isSelected[1] == true
-        ? showDialog(
-            context: context,
-            builder: (BuildContext context) => Dialog(
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => isSelected[1] == true
+          ? Dialog(
               backgroundColor: buttonColor,
               child: Container(
                 child: TextFormField(
@@ -715,7 +746,10 @@ class _ManageState extends State<Manage> {
                       setState(() {
                         loading = true;
                       });
-                      await widget.company.updateCompany(newPosition: value, addPosition: true);
+                      await widget.company.updateCompany(
+                        newPosition: value,
+                        addPosition: true,
+                      );
                       setState(() {
                         loading = false;
                       });
@@ -724,17 +758,17 @@ class _ManageState extends State<Manage> {
                   },
                 ),
               ),
-            ),
-          )
-        : showDialog(
-            context: context,
-            builder: (BuildContext context) => Dialog(
+            )
+          : Dialog(
               backgroundColor: buttonColor,
               child: Container(
                 child: TextFormField(
                   style: inputTextStyle,
-                  decoration:
-                      InputDecoration(border: OutlineInputBorder(), hintText: 'Add tag', hintStyle: inputTextStyle.copyWith(color: Colors.grey)),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Add tag',
+                    hintStyle: inputTextStyle.copyWith(color: Colors.grey),
+                  ),
                   onFieldSubmitted: (value) async {
                     if (value != "") {
                       setState(() {
@@ -753,7 +787,7 @@ class _ManageState extends State<Manage> {
                 ),
               ),
             ),
-          );
+    ).whenComplete(() => setFuture());
   }
 
   List<int> selectedTags(Employee e) {
@@ -776,6 +810,19 @@ class _ManageState extends State<Manage> {
     return result;
   }
 
+  void loseFocus() {
+    FocusScopeNode focus = FocusScope.of(context);
+    if (!focus.hasPrimaryFocus && focus.focusedChild != null) {
+      focus.focusedChild.unfocus();
+    }
+  }
+
+  void setFuture() {
+    setState(() {
+      _future = widget.company.getEmployees();
+    });
+  }
+
   bool hasTag(String tag, List<Employee> listEmp) {
     bool result = false;
     listEmp.forEach((element) {
@@ -784,9 +831,5 @@ class _ManageState extends State<Manage> {
       });
     });
     return result;
-  }
-
-  void _setState() {
-    setState(() {});
   }
 }

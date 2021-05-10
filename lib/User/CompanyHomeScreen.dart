@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rankless/Survey/QuestionUICreate.dart';
 import 'package:rankless/Survey/Results.dart';
 import 'package:rankless/Survey/Survey.dart';
 import 'package:rankless/Survey/SurveyUI.dart';
@@ -155,52 +154,51 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
       gettingSurveys = true;
       numOfSurveys = company.surveys.length;
     });
-    return FutureBuilder(
-        future: company.getAllSurveys(false) /*.whenComplete(() => setState(() => gettingSurveys = false))*/,
-        builder: (context, snapshot) {
-          return snapshot.connectionState != ConnectionState.done
-              ? loader
-              : Expanded(
-                  child: ListView.separated(
-                      physics: ClampingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) => filledSurveys(company.surveys[index]),
-                      separatorBuilder: (context, index) => SizedBox(height: 20),
-                      itemCount: company.surveys.length),
-                );
-        });
+    return Expanded(
+      child: ListView.separated(
+          physics: ClampingScrollPhysics(),
+          shrinkWrap: true,
+          itemBuilder: (context, index) => filledSurveys(company.surveys[index]),
+          separatorBuilder: (context, index) => SizedBox(height: 20),
+          itemCount: company.surveys.length),
+    );
   }
 
   Widget filledSurveys(Survey survey) {
     DateFormat _formatted = DateFormat('dd-MM-yyyy');
-    return Container(
-      //width: 250,
-      decoration: BoxDecoration(
-        color: Colors.blue[50],
-        borderRadius: borderRadius,
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.indigo, Colors.blue],
-        ),
-      ),
-      child: TextButton.icon(
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Results(survey))),
-        icon: Icon(
-          Icons.bar_chart_rounded,
-          color: Colors.greenAccent,
-          size: 50,
-        ),
-        label: Text(
-          survey.name + "\n" + (survey.status == STATUS.Active ? "active until: " : "ended: ") + _formatted.format(survey.to),
-          style: TextStyle(
-            fontFamily: font,
-            fontSize: 22,
-            color: Colors.white,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
+    return FutureBuilder(
+      future: survey.getSurvey(false),
+      builder: (context, snapshot) => snapshot.connectionState != ConnectionState.done
+          ? loader
+          : Container(
+              //width: 250,
+              decoration: BoxDecoration(
+                color: Colors.blue[50],
+                borderRadius: borderRadius,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.indigo, Colors.blue],
+                ),
+              ),
+              child: TextButton.icon(
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Results(survey))),
+                icon: Icon(
+                  Icons.bar_chart_rounded,
+                  color: Colors.greenAccent,
+                  size: 50,
+                ),
+                label: Text(
+                  survey.name + "\n" + (survey.status == STATUS.Active ? "active until: " : "ended: ") + _formatted.format(survey.to),
+                  style: TextStyle(
+                    fontFamily: font,
+                    fontSize: 22,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
     );
   }
 }

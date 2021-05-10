@@ -91,82 +91,45 @@ class Company {
     this.name = ref['name'];
     this.description = ref['description'];
     this.industry = ref['industry'];
-    dynamic employeesFromFirebase = ref['employees'];
     this.tags = List<String>.from(ref['tags'] as List<dynamic>) ?? [];
     this.country = ref['country'];
     this.requests = List<String>.from(ref['requests'] as List<dynamic>) ?? [];
     this.positions = List<String>.from(ref['positions'] as List<dynamic>);
-    this.employees = (employeesFromFirebase as List<dynamic>).map((e) => Employee(uid: e as String)).toList();
+
+    List<String> newEmployeesList = (ref['employees'] as List<dynamic>).map((e) => e as String).toList();
+    if (this.employees == null || !isSublist(newEmployeesList, this.employees.map((e) => e.uid).toList()))
+      this.employees = newEmployeesList.map((e) => Employee(uid: e)).toList();
+    else
+      this.employees.removeWhere((element) => !newEmployeesList.contains(element.uid));
     this.surveys = List<String>.from(ref['surveys'] as List<dynamic>).map((e) => Survey(uid: e)).toList();
     return this;
   }
 
   Future getEmployees() async {
-    await Future.forEach(employees, (Employee e) async {
+    await Future.forEach(employees, (e) async {
       await e.getEmployee();
     });
   }
-  /*
-  /// Accepts or Denies access to Company based on [accepted]
-  ///
-  /// Pass [position] and/or [tags] only when [accepted == true]
-  Future handleRequest(bool accepted, {String position = '', List<String> tags = const []}) async {
-    String e = requests[0];
-    String uidTemp = e.substring(0, e.indexOf('%'));
 
-    await userCollection.doc(uidTemp).update({
-      'position': position,
-      'tags': tags,
-      'request': accepted ? '' : 'denied',
-      'companyUid': accepted ? this.uid : null,
-    });
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      this.requests.removeAt(0);
-      List<String> employeesTemp = this.employees.map((e) => e.uid).toList();
-      if (accepted) employeesTemp.add(uidTemp);
-      transaction.update(companiesCollection.doc(this.uid), {
-        'requests': this.requests,
-        'employees': employeesTemp,
-      });
-    });
-  }*/
+  Future leaveCompany(Employee who) async {
+    return await who.leaveCompany(this).whenComplete(() => this.employees.remove(who));
+  }
 
   /// Updates position or tags or both.
-  /// If [remove == true] then newTags will be removed from tags.
   ///
   /// Either [position] or [addTags] or [removeTags] should have value. Otherwise nothing will happen.
   Future addPositionOrTags(Employee who, {String position, List<String> addTags}) async {
     if (position == null && addTags == null) return;
-    //await getAllSurveys(false);
-    if (addTags != null) who.tags = addTags;
-    if (position != null) who.position = position;
-
-    //TODO provjera surveya
-
-    // List<Survey> newSurveys = surveys
-    //     .where((e) {
-    //       if (position != null && e.tags.contains(position)) return true;
-    //       if (allTags != null) for (String tag in allTags) if (e.tags.contains(tag)) return true;
-    //       return false;
-    //     })
-    //     .where((e) => e.status == STATUS.Upcoming)
-    //     .toList();
-    // who.surveys
-    //   ..addAll(newSurveys)
-    //   ..toSet()
-    //   ..toList();
-
     await who.updateEmployee(
-      newPosition: who.position,
-      newTags: who.tags,
-      newSurveys: who.surveys,
+      newPosition: position,
+      newTags: addTags,
     );
   }
 
-  ///Returns [List] of [surveys] without [results] //TODO updated
-  Future<List<Survey>> getAllSurveys(bool withResults) async {
+  ///Returns [List] of [surveys] without [results]
+  /*Future<List<Survey>> getAllSurveys(bool withResults) async {
     return this.surveys = await Future.wait(surveys.map((e) async => await e.getSurvey(withResults)).toList());
-  }
+  }*/
 
   /*Future<NetworkImage> getImage() async {
     if (triedImage || dummy) return this.image;
@@ -181,4 +144,19 @@ class Company {
     File cropped = await ImageCropper.cropImage(sourcePath: image.path);
     await updateCompany(newImage: cropped ?? File(image.path));
   }*/
+
+  ///Checks if [a] is sublist of [b]
+  bool isSublist(List<String> a, List<String> b) {
+    a.sort();
+    b.sort();
+    print(a);
+    print(b);
+    bool ret = true;
+    a.forEach((element) {
+      if (!b.contains(element)) ret = false;
+      print(ret);
+    });
+    print(ret);
+    return ret;
+  }
 }
