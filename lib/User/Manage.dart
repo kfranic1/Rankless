@@ -45,7 +45,8 @@ class _ManageState extends State<Manage> {
 
   @override
   Widget build(BuildContext context) {
-    //print(widget.company.employees[0].name);
+    print(widget.company.employees[0].name);
+    print(widget.company.employees.length);
     positions = widget.company.positions.map<DropdownMenuItem<String>>((String value) {
       return DropdownMenuItem<String>(
         value: value,
@@ -199,14 +200,14 @@ class _ManageState extends State<Manage> {
             if (i == 0) {
               return employeeStaisfy(widget.company.employees[index]) ? SizedBox(height: 20) : Container();
             } else if (i == 1) {
-              return widget.company.positions[index].contains(_query)
+              return widget.company.positions[index].toLowerCase().contains(_query.toLowerCase())
                   ? SizedBox(
                       child: Divider(color: Colors.white),
                       height: 15,
                     )
                   : Container();
             } else {
-              return widget.company.tags[index].contains(_query)
+              return widget.company.tags[index].toLowerCase().contains(_query.toLowerCase())
                   ? SizedBox(
                       child: Divider(color: Colors.white),
                       height: 15,
@@ -264,6 +265,7 @@ class _ManageState extends State<Manage> {
               ),
               child: StatefulBuilder(
                 builder: (context, setState) {
+                  print(index);
                   bool innerLoading = false;
                   return innerLoading
                       ? loader
@@ -499,11 +501,8 @@ class _ManageState extends State<Manage> {
                                                 TextButton(
                                                   onPressed: () async {
                                                     await widget.company.leaveCompany(widget.company.employees[index]).whenComplete(() {
-                                                      _setState();
-                                                      setState(() {
-                                                        Navigator.of(context).pop();
-                                                        Navigator.of(context).pop();
-                                                      });
+                                                      Navigator.of(context).pop();
+                                                      Navigator.of(context).pop();
                                                     });
                                                   },
                                                   child: const Text(
@@ -520,9 +519,7 @@ class _ManageState extends State<Manage> {
                                                 ),
                                               ],
                                             ),
-                                    ).whenComplete(() {
-                                      setState(() {});
-                                    }),
+                                    ),
                                     child: Text(
                                       "Remove",
                                       style: TextStyle(color: Colors.white),
@@ -690,10 +687,6 @@ class _ManageState extends State<Manage> {
 
   void loseFocus() {
     FocusScope.of(context).requestFocus(new FocusNode());
-  }
-
-  void _setState() {
-    setState(() {});
   }
 
   bool hasTag(String tag, List<Employee> listEmp) {

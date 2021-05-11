@@ -20,6 +20,7 @@ List<String> industries = [
   "Health",
   "Fashion",
   "Finance",
+  "IT",
   "Real Estate",
   "Science",
   "Service activities",

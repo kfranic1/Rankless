@@ -87,15 +87,27 @@ class _ReviewScreenState extends State<ReviewScreen> {
         padding: EdgeInsets.all(10),
         child: company.dummy || employee.companyUid == null
             ? Container(
-                decoration: backgroundDecoration,
-                width: double.infinity,
-                height: double.infinity,
-                child: Center(child: Text('You are not in any company', style: inputTextStyle)),
+                child: Center(
+                  child: Text(
+                    'You are not in any company',
+                    style: inputTextStyle,
+                  ),
+                ),
               )
             : FutureBuilder(
                 future: _future,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) return loader;
+                  if (analysis.getNumOfSurveys() == 0)
+                    return Container(
+                      child: Center(
+                        child: Text(
+                          'You did not participate in any public surveys',
+                          style: inputTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
                   strengths.clear();
                   averageCategories.clear();
                   weaknesses.clear();

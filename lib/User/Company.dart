@@ -34,6 +34,7 @@ class Company {
       'name': this.name,
       'industry': this.industry,
       'employees': employeeUids,
+      'pending': pending,
       'tags': <String>[],
       'country': this.country,
       'requests': <String>[],

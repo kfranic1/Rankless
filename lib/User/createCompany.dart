@@ -26,6 +26,7 @@ class _CreateCompanyState extends State<CreateCompany> {
 
   @override
   Widget build(BuildContext context) {
+    print(industries);
     return Scaffold(
       appBar: CustomAppBar(show: false),
       body: Container(

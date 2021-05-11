@@ -54,43 +54,57 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 ),
                 SizedBox(height: 20),
                 employee.companyUid == null
-                    ? Row(
+                    ? ListView(
+                        shrinkWrap: true,
                         children: [
-                          Expanded(
-                            child: TextField(
-                              controller: joinController,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          IconButton(
-                              icon: Icon(
-                                Icons.copy,
-                                color: Colors.grey,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: joinController,
+                                  style: TextStyle(color: Colors.white),
+                                  decoration: registerInputDecoration.copyWith(labelText: 'Company code'),
+                                ),
                               ),
-                              onPressed: () async {
-                                joinController.text = (await Clipboard.getData('text/plain')).text;
-                              }),
-                          TextButton(
-                            onPressed: () {
-                              setState(() => loading = true);
-                              employee.joinCompany(joinController.text).then((value) {
-                                if (value == "Error")
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text(
-                                      "Company with that code doesn't exist",
-                                      style: TextStyle(fontFamily: font, fontSize: snackFontSize),
-                                    ),
-                                    duration: Duration(seconds: 2),
-                                  ));
-                                setState(() => loading = false);
-                              });
-                            },
-                            child: Text('Join'),
+                              IconButton(
+                                  icon: Icon(
+                                    Icons.copy,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () async {
+                                    joinController.text = (await Clipboard.getData('text/plain')).text;
+                                  }),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() => loading = true);
+                                  employee.joinCompany(joinController.text).then((value) {
+                                    if (value == "Error")
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Company with that code doesn't exist",
+                                          style: TextStyle(fontFamily: font, fontSize: snackFontSize),
+                                        ),
+                                        duration: Duration(seconds: 2),
+                                      ));
+                                    setState(() => loading = false);
+                                  });
+                                },
+                                child: Text('Join'),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
                           ),
                           TextButton(
                             child: Text(
                               "Create Company",
-                              style: TextStyle(fontFamily: font, fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                              style: TextStyle(
+                                fontFamily: font,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                             onPressed: () => Navigator.push(
                               context,
@@ -102,83 +116,84 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                           ),
                         ],
                       )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.home_rounded,
-                                    color: Colors.white.withOpacity(0.4),
-                                    size: 40,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text(company.name, style: inputTextStyle.copyWith(fontSize: detailsSize)),
-                                ],
+                              Icon(
+                                Icons.home_rounded,
+                                color: Colors.white.withOpacity(0.4),
+                                size: 40,
                               ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.home_repair_service_rounded,
-                                    color: Colors.white.withOpacity(0.4),
-                                    size: 40,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    employee.position == '' ? 'Position' : employee.position,
-                                    style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                  )
-                                ],
+                              SizedBox(width: 10),
+                              Text(
+                                company.name,
+                                style: inputTextStyle.copyWith(fontSize: detailsSize),
                               ),
                             ],
                           ),
-                          SizedBox(
-                            width: 35,
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.home_repair_service_rounded,
+                                color: Colors.white.withOpacity(0.4),
+                                size: 40,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                employee.position == '' ? 'No position' : employee.position,
+                                overflow: TextOverflow.fade,
+                                softWrap: false,
+                                style: inputTextStyle.copyWith(fontSize: detailsSize),
+                              )
+                            ],
                           ),
-                          TextButton(
-                            style: textButtonStyleRegister,
-                            child: Text(
-                              'My tags',
-                              style: inputTextStyle.copyWith(fontSize: detailsSize),
-                            ),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                //Koristi widget.survey.results jer su results u ovom widgetu podlozni filterima
-                                builder: (context) => Dialog(
-                                  child: Container(
-                                    padding: EdgeInsets.all(25),
-                                    height: 300,
-                                    color: Colors.blue,
-                                    child: employee.tags.isNotEmpty
-                                        ? ListView.separated(
-                                            itemBuilder: (context, index) {
-                                              return Text(
-                                                employee.tags[index],
-                                                style: inputTextStyle.copyWith(fontSize: detailsSize),
-                                              );
-                                            },
-                                            itemCount: employee.tags.length,
-                                            separatorBuilder: (context, index) => SizedBox(height: 20),
-                                          )
-                                        : Text(
-                                            'You don\'t have any tags',
-                                            style: header,
-                                          ),
+                          SizedBox(height: 20),
+                          Align(
+                            alignment: Alignment.center,
+                            child: TextButton(
+                              style: textButtonStyleRegister,
+                              child: Text(
+                                'My tags',
+                                style: inputTextStyle.copyWith(fontSize: detailsSize),
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  //Koristi widget.survey.results jer su results u ovom widgetu podlozni filterima
+                                  builder: (context) => Dialog(
+                                    child: Container(
+                                      padding: EdgeInsets.all(25),
+                                      height: 300,
+                                      color: Colors.blue,
+                                      child: employee.tags.isNotEmpty
+                                          ? ListView.separated(
+                                              itemBuilder: (context, index) {
+                                                return Text(
+                                                  employee.tags[index],
+                                                  style: inputTextStyle.copyWith(fontSize: detailsSize),
+                                                );
+                                              },
+                                              itemCount: employee.tags.length,
+                                              separatorBuilder: (context, index) => SizedBox(height: 20),
+                                            )
+                                          : Text(
+                                              'You don\'t have any tags',
+                                              style: header,
+                                            ),
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
-                SizedBox(height: 50),
+                SizedBox(height: 20),
                 Container(
-                  padding: EdgeInsets.only(left: 25),
-                  //alignment: Alignment.center,
+                  //padding: EdgeInsets.only(left: 25),
+                  alignment: Alignment.center,
                   child: Text(
                     employee.surveys.length > 0 ? 'Surveys:' : 'There are no new surveys',
                     style: inputTextStyle.copyWith(fontSize: detailsSize),

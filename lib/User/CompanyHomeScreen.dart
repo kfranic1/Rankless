@@ -94,7 +94,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
             ? Center(
                 child: Text(
                   'You are not in any company',
-                  style: TextStyle(color: Colors.white),
+                  style: inputTextStyle,
                 ),
               )
             : Column(

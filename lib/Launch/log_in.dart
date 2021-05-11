@@ -51,7 +51,10 @@ class _LogInState extends State<LogIn> {
                                 obscureText: obscureText,
                                 onChanged: (value) => setState(() => password = value)),
                             trailing: IconButton(
-                              icon: Icon(Icons.remove_red_eye, color: Colors.white,),
+                              icon: Icon(
+                                Icons.remove_red_eye,
+                                color: Colors.white,
+                              ),
                               onPressed: () => setState(() => obscureText = !obscureText),
                             ),
                           ),
@@ -71,7 +74,7 @@ class _LogInState extends State<LogIn> {
                             ),
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
-                                _formKey.currentState.setState(() => loading = true);
+                                setState(() => loading = true);
                                 dynamic result = await _auth.logInWithEmailAndPassword(
                                   email,
                                   password,
