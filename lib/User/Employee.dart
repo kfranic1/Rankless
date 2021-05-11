@@ -135,10 +135,10 @@ class Employee {
         ret = "Error";
         return;
       }
-      List<String> employees = ((await ref.get())['employees'] as List).map((e) => e.toString()).toList();
+      List<String> employees = ((await ref.get())['pending'] as List).map((e) => e.toString()).toList();
       employees.add(this.uid);
       transaction.update(ref, {
-        'employees': employees,
+        'pending': employees,
       });
     }).whenComplete(() async {
       if (ret != "Error") await updateEmployee(newCompanyUid: companyUid);

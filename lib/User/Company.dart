@@ -12,6 +12,7 @@ class Company {
   String description;
   String country;
   List<Employee> employees = [];
+  List<Employee> pending = [];
   List<String> tags = [];
   List<String> positions = [];
   List<String> requests = [];
@@ -96,6 +97,8 @@ class Company {
     this.requests = List<String>.from(ref['requests'] as List<dynamic>) ?? [];
     this.positions = List<String>.from(ref['positions'] as List<dynamic>);
 
+    this.pending = (ref['pending'] as List<dynamic>).map((e) => e as String).toList().map((e) => Employee(uid: e));
+
     List<String> newEmployeesList = (ref['employees'] as List<dynamic>).map((e) => e as String).toList();
     if (this.employees == null || !isSublist(newEmployeesList, this.employees.map((e) => e.uid).toList()))
       this.employees = newEmployeesList.map((e) => Employee(uid: e)).toList();
@@ -106,9 +109,13 @@ class Company {
   }
 
   Future getEmployees() async {
-    await Future.forEach(employees, (e) async {
-      await e.getEmployee();
-    });
+    FirebaseFirestore.instance.runTransaction((transaction) {
+      this.employees.addAll(this.pending);
+      transaction.update(companiesCollection.doc(this.uid), {'employees': this.employees});
+      return;
+    }).whenComplete(() => Future.forEach(employees, (e) async {
+          await e.getEmployee();
+        }));
   }
 
   Future leaveCompany(Employee who) async {

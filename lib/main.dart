@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rankless/User/Employee.dart';
 import 'package:rankless/Launch/auth.dart';
@@ -8,6 +9,7 @@ import 'package:rankless/shared/Interface.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(AppStarter());
 }
 
