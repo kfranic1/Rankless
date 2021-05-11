@@ -3,6 +3,7 @@ import 'package:fluttericon/entypo_icons.dart';
 import 'package:rankless/Launch/auth.dart';
 
 import 'package:rankless/User/Employee.dart';
+import 'package:rankless/shared/Interface.dart';
 
 class CustomAppBar extends AppBar {
   final String titleText;
@@ -16,7 +17,10 @@ class CustomAppBar extends AppBar {
                   size: 30,
                 )
               : null,
-          title: Text(titleText),
+          title: Text(
+            titleText,
+            style: TextStyle(fontFamily: font),
+          ),
           actions: [
             employee == null
                 ? Container()

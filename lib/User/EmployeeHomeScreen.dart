@@ -75,6 +75,7 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                     joinController.text = (await Clipboard.getData('text/plain')).text;
                                   }),
                               TextButton(
+                                style: textButtonStyleRegister,
                                 onPressed: () {
                                   setState(() => loading = true);
                                   employee.joinCompany(joinController.text).then((value) {
@@ -89,13 +90,14 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                     setState(() => loading = false);
                                   });
                                 },
-                                child: Text('Join'),
+                                child: Text(
+                                  'Join',
+                                  style: inputTextStyle,
+                                ),
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 40),
                           TextButton(
                             child: Text(
                               "Create Company",
@@ -163,10 +165,11 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                                   context: context,
                                   //Koristi widget.survey.results jer su results u ovom widgetu podlozni filterima
                                   builder: (context) => Dialog(
+                                    backgroundColor: Colors.transparent,
                                     child: Container(
+                                      decoration: popOutDecoration,
                                       padding: EdgeInsets.all(25),
                                       height: 300,
-                                      color: Colors.blue,
                                       child: employee.tags.isNotEmpty
                                           ? ListView.separated(
                                               itemBuilder: (context, index) {
@@ -194,10 +197,12 @@ class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
                 Container(
                   //padding: EdgeInsets.only(left: 25),
                   alignment: Alignment.center,
-                  child: Text(
-                    employee.surveys.length > 0 ? 'Surveys:' : 'There are no new surveys',
-                    style: inputTextStyle.copyWith(fontSize: detailsSize),
-                  ),
+                  child: employee.companyUid != null
+                      ? Text(
+                          employee.surveys.length > 0 ? 'Surveys:' : 'There are no new surveys',
+                          style: inputTextStyle.copyWith(fontSize: detailsSize),
+                        )
+                      : Container(),
                 ),
                 SizedBox(height: 30),
                 Expanded(child: surveys),
