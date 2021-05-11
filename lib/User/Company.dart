@@ -103,7 +103,10 @@ class Company {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       if (this.pending != null && this.pending.length > 0) {
         this.employees.addAll(this.pending);
-        transaction.update(companiesCollection.doc(this.uid), {'employees': this.employees});
+        transaction.update(companiesCollection.doc(this.uid), {
+          'pending': [],
+          'employees': this.employees.map((e) => e.uid).toList(),
+        });
       }
     }).whenComplete(() => Future.forEach(employees, (e) async {
           await e.getEmployee();
@@ -112,6 +115,9 @@ class Company {
 
   Future leaveCompany(Employee who) async {
     this.employees.remove(who);
+    this.employees.forEach((element) {
+      print(element.uid);
+    });
     await who.leaveCompany(this);
   }
 

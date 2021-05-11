@@ -230,6 +230,8 @@ class _ManageState extends State<Manage> {
   }
 
   Widget buildEmpTile(int index) {
+    print(index);
+    print(widget.company.employees[index].position);
     return Container(
       padding: EdgeInsets.all(5),
       margin: EdgeInsets.only(bottom: 10),
@@ -496,17 +498,9 @@ class _ManageState extends State<Manage> {
                                               actions: <Widget>[
                                                 TextButton(
                                                   onPressed: () async {
-                                                    setState(() => innerLoading = true);
-                                                    widget.company.employees.forEach((element) {
-                                                      print(element.name);
-                                                    });
                                                     await widget.company.leaveCompany(widget.company.employees[index]).whenComplete(() {
-                                                      widget.company.employees.remove(e);
-                                                      widget.company.employees.forEach((element) {
-                                                        print(element.name);
-                                                      });
+                                                      _setState();
                                                       setState(() {
-                                                        innerLoading = false;
                                                         Navigator.of(context).pop();
                                                         Navigator.of(context).pop();
                                                       });
@@ -696,6 +690,10 @@ class _ManageState extends State<Manage> {
 
   void loseFocus() {
     FocusScope.of(context).requestFocus(new FocusNode());
+  }
+
+  void _setState() {
+    setState(() {});
   }
 
   bool hasTag(String tag, List<Employee> listEmp) {
