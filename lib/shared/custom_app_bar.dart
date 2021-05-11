@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttericon/entypo_icons.dart';
 import 'package:rankless/Launch/auth.dart';
 
 import 'package:rankless/User/Employee.dart';
@@ -9,7 +10,12 @@ class CustomAppBar extends AppBar {
   final bool show;
   CustomAppBar({this.titleText = 'Rankless', this.employee, this.show = true})
       : super(
-          leading: show ? Icon(Icons.circle) : null,
+          leading: show
+              ? Icon(
+                  Entypo.chart_line,
+                  size: 30,
+                )
+              : null,
           title: Text(titleText),
           actions: [
             employee == null
