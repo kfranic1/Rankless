@@ -19,7 +19,6 @@ class _CreateCompanyState extends State<CreateCompany> {
   CollectionReference industriesReference = FirebaseFirestore.instance.collection('industries');
 
   String name = '';
-  String info = '';
   String error = '';
   String industry = '';
   String country = 'Hrvatska';
@@ -151,7 +150,6 @@ class _CreateCompanyState extends State<CreateCompany> {
       name: this.name,
       industry: this.industry,
       employees: [widget.employee],
-      description: this.info,
       country: this.country,
     );
     dynamic result = await company.createCompany();

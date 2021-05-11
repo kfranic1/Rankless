@@ -9,7 +9,6 @@ class Company {
   String uid;
   String name;
   String industry;
-  String description;
   String country;
   List<Employee> employees = [];
   List<Employee> pending = [];
@@ -24,7 +23,6 @@ class Company {
     this.name,
     this.industry,
     this.employees,
-    this.description,
     this.country,
     this.dummy = false,
   });
@@ -36,7 +34,6 @@ class Company {
       'name': this.name,
       'industry': this.industry,
       'employees': employeeUids,
-      'description': this.description,
       'tags': <String>[],
       'country': this.country,
       'requests': <String>[],
@@ -48,7 +45,6 @@ class Company {
   }
 
   Future updateCompany({
-    String newDescription,
     Survey newSurvey,
     String newPosition,
     bool addPosition = true,
@@ -57,10 +53,6 @@ class Company {
   }) async {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       Map<String, dynamic> run = {};
-      if (newDescription != null) {
-        this.description = newDescription;
-        run['description'] = this.description;
-      }
       if (newSurvey != null) {
         this.surveys.add(newSurvey);
         run['surveys'] = this.surveys.map((e) => e.uid).toList();
@@ -90,14 +82,13 @@ class Company {
 
   Company updateData(DocumentSnapshot ref) {
     this.name = ref['name'];
-    this.description = ref['description'];
     this.industry = ref['industry'];
     this.tags = List<String>.from(ref['tags'] as List<dynamic>) ?? [];
     this.country = ref['country'];
     this.requests = List<String>.from(ref['requests'] as List<dynamic>) ?? [];
     this.positions = List<String>.from(ref['positions'] as List<dynamic>);
 
-    this.pending = (ref['pending'] as List<dynamic>).map((e) => e as String).toList().map((e) => Employee(uid: e));
+    this.pending = (ref['pending'] as List<dynamic> ?? []).map((e) => e as String).toList().map((e) => Employee(uid: e)).toList();
 
     List<String> newEmployeesList = (ref['employees'] as List<dynamic>).map((e) => e as String).toList();
     if (this.employees == null || !isSublist(newEmployeesList, this.employees.map((e) => e.uid).toList()))
@@ -109,17 +100,19 @@ class Company {
   }
 
   Future getEmployees() async {
-    FirebaseFirestore.instance.runTransaction((transaction) {
-      this.employees.addAll(this.pending);
-      transaction.update(companiesCollection.doc(this.uid), {'employees': this.employees});
-      return;
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      if (this.pending != null && this.pending.length > 0) {
+        this.employees.addAll(this.pending);
+        transaction.update(companiesCollection.doc(this.uid), {'employees': this.employees});
+      }
     }).whenComplete(() => Future.forEach(employees, (e) async {
           await e.getEmployee();
         }));
   }
 
   Future leaveCompany(Employee who) async {
-    return await who.leaveCompany(this).whenComplete(() => this.employees.remove(who));
+    this.employees.remove(who);
+    await who.leaveCompany(this);
   }
 
   /// Updates position or tags or both.
@@ -156,14 +149,10 @@ class Company {
   bool isSublist(List<String> a, List<String> b) {
     a.sort();
     b.sort();
-    print(a);
-    print(b);
     bool ret = true;
     a.forEach((element) {
       if (!b.contains(element)) ret = false;
-      print(ret);
     });
-    print(ret);
     return ret;
   }
 }
