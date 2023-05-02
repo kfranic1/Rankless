@@ -1,5 +1,7 @@
 # Rankless
 
+Ova aplikacija izrađena je za natjecanje Lumen Development u 2021. godini. Na [linku](https://drive.google.com/drive/folders/13IDEvAgW9iAtkbGzAQKh97T1AJJXEu9Z?usp=sharing) nalaze se poslovni plan, dokumentacija te demo aplikacije
+
 ## IMPORTANT
 S obzirom da stvaranjem nove firme ta firma nema ispunjenih javnih anketa, preporučamo ulazak u profil sa email: ivan.horvat@email.com šifra:sifra123. 
 Ta firma će imati podatke nekih javnih anketa te će biti vidljiv graf na Review ekranu, također taj profil ima status admina te može stvarati ankete i upravljati zaposlenicima na Manage ekranu.
